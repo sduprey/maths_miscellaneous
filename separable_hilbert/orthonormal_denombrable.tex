@@ -1,0 +1,500 @@
+\documentclass[11pt,a4paper]{article}
+
+%============================================================
+%  Encodage, langue, polices
+%============================================================
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[main=french,provide=*]{babel}
+\usepackage[expansion=false]{microtype}
+
+%============================================================
+%  Mathématiques
+%============================================================
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathrsfs}   % \mathscr
+\usepackage{stmaryrd}   % \llbracket ... \rrbracket
+\usepackage{mathtools}
+
+%============================================================
+%  Mise en page
+%============================================================
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=blue!60!black,
+  citecolor=black,
+  pdftitle={Systèmes orthonormaux, séparabilité et mesure de comptage},
+  pdfauthor={Stefan}
+}
+
+%============================================================
+%  Environnements de théorèmes (style français)
+%============================================================
+\theoremstyle{plain}
+\newtheorem{theoreme}{Théorème}[section]
+\newtheorem{proposition}[theoreme]{Proposition}
+\newtheorem{lemme}[theoreme]{Lemme}
+\newtheorem{corollaire}[theoreme]{Corollaire}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theoreme]{Définition}
+\newtheorem{remarque}[theoreme]{Remarque}
+\newtheorem{exemple}[theoreme]{Exemple}
+
+\renewcommand{\proofname}{Démonstration}
+
+%============================================================
+%  Macros
+%============================================================
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\HH}{H}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\abs}[1]{\left\lvert #1 \right\rvert}
+\newcommand{\scal}[2]{\left\langle #1 , #2 \right\rangle}
+\newcommand{\card}{\operatorname{card}}
+\newcommand{\supp}{\operatorname{supp}}
+\renewcommand{\Re}{\operatorname{Re}}
+\newcommand{\muc}{\mu_{\mathrm{c}}}
+\newcommand{\dimhilb}{\dim_{\mathrm{hilb}}}
+\DeclareMathOperator{\Vect}{Vect}
+
+\begin{document}
+
+%============================================================
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries Systèmes orthonormaux, séparabilité\\[0.4em] et mesure de comptage\par}
+\vspace{1.5cm}
+{\large Un système orthonormal d'un espace de Hilbert est-il dénombrable ?\par}
+\vspace{2.5cm}
+{\large\itshape Note de synthèse\par}
+\vfill
+{\large \today\par}
+\end{titlepage}
+
+\tableofcontents
+\bigskip
+
+%============================================================
+\begin{abstract}
+\noindent
+On examine la question : \emph{un système orthonormal d'un espace de Hilbert
+est-il nécessairement dénombrable ?} La réponse est négative en général, mais
+affirmative sous l'hypothèse de \textbf{séparabilité}. On isole le mécanisme
+purement métrique de la preuve — la séparation uniforme des vecteurs à
+distance~$\sqrt{2}$ —, on montre que ce même mécanisme, \emph{lu à l'envers},
+force la non-séparabilité de $\ell^2(I)$ lorsque $I$ est non dénombrable, puis on
+identifie $\ell^2(I)$ comme l'espace $L^2$ associé à la \textbf{mesure de
+comptage}. On clôt par une analyse du rôle exact joué par cette mesure, en
+corrigeant au passage un point subtil sur les fonctions étagées.
+\end{abstract}
+
+%============================================================
+\section{Le problème et son énoncé correct}
+
+La proposition « tout système orthonormal d'un espace de Hilbert est
+dénombrable » est \textbf{fausse} en toute généralité. L'énoncé correct fait
+intervenir une hypothèse de séparabilité, qui porte toute la charge de la preuve.
+
+\begin{definition}[Séparabilité]
+Un espace métrique $\HH$ est \emph{séparable} s'il admet une partie dénombrable
+dense, c'est-à-dire une partie $D \subset \HH$ au plus dénombrable telle que
+$\overline{D} = \HH$.
+\end{definition}
+
+\begin{definition}[Système orthonormal]
+Une famille $(e_i)_{i\in I}$ d'un espace de Hilbert $\HH$ est un \emph{système
+orthonormal} si $\scal{e_i}{e_j} = \delta_{ij}$ pour tous $i,j \in I$.
+\end{definition}
+
+L'objectif de la première partie est de démontrer le résultat suivant, puis d'en
+établir la nécessité de l'hypothèse.
+
+\begin{theoreme}[Dénombrabilité sous séparabilité]\label{th:principal}
+Dans un espace de Hilbert \textbf{séparable}, tout système orthonormal est
+au plus dénombrable.
+\end{theoreme}
+
+%============================================================
+\section{Le lemme de séparation et le théorème principal}
+
+Le cœur de l'affaire est un calcul de distance élémentaire, valable dans tout
+espace préhilbertien.
+
+\begin{lemme}[Séparation uniforme à distance $\sqrt2$]\label{lem:sep}
+Soit $(e_i)_{i\in I}$ un système orthonormal. Alors, pour $i \neq j$,
+\[
+  \norm{e_i - e_j} = \sqrt{2}.
+\]
+\end{lemme}
+
+\begin{proof}
+Par bilinéarité (ou sesquilinéarité) du produit scalaire et orthonormalité,
+\[
+  \norm{e_i - e_j}^2
+   = \scal{e_i - e_j}{e_i - e_j}
+   = \norm{e_i}^2 + \norm{e_j}^2 - 2\,\Re\scal{e_i}{e_j}
+   = 1 + 1 - 0 = 2. \qedhere
+\]
+\end{proof}
+
+La séparation uniforme se traduit géométriquement par une famille de boules deux
+à deux disjointes, dont chacune isole un vecteur du système.
+
+\begin{lemme}[Boules disjointes]\label{lem:boules}
+Sous les hypothèses du lemme~\ref{lem:sep}, les boules ouvertes
+$B_i = B\!\left(e_i, \tfrac{\sqrt2}{2}\right)$, $i \in I$, sont deux à deux
+disjointes.
+\end{lemme}
+
+\begin{proof}
+Supposons $x \in B_i \cap B_j$ avec $i \neq j$. L'inégalité triangulaire et le
+lemme~\ref{lem:sep} donnent
+\[
+  \sqrt{2} = \norm{e_i - e_j}
+   \le \norm{e_i - x} + \norm{x - e_j}
+   < \frac{\sqrt2}{2} + \frac{\sqrt2}{2} = \sqrt2,
+\]
+ce qui est absurde. Donc $B_i \cap B_j = \varnothing$.
+\end{proof}
+
+\begin{proof}[Démonstration du théorème~\ref{th:principal}]
+Soit $(e_i)_{i\in I}$ un système orthonormal de $\HH$ séparable, et soit
+$D \subset \HH$ une partie dénombrable dense. Chaque boule $B_i$ du
+lemme~\ref{lem:boules} est ouverte et non vide, donc rencontre $D$ par densité :
+on peut choisir $d_i \in D \cap B_i$. Comme les $B_i$ sont deux à deux disjointes,
+l'application
+\[
+  I \longrightarrow D, \qquad i \longmapsto d_i
+\]
+est \textbf{injective}. Il existe donc une injection de $I$ dans l'ensemble
+dénombrable $D$, ce qui prouve que $I$ est au plus dénombrable.
+\end{proof}
+
+\begin{remarque}[La morale métrique]
+L'orthonormalité n'intervient qu'\emph{une seule fois}, pour produire la
+constante de séparation $\sqrt2$ (lemme~\ref{lem:sep}). Le reste est un fait
+purement métrique :
+\begin{quote}
+\itshape
+Dans un espace métrique séparable, toute partie $\delta$-séparée
+(points deux à deux à distance $\ge \delta > 0$) est au plus dénombrable.
+\end{quote}
+On loge en effet une famille de boules disjointes de rayon $\delta/2$, chacune
+capturant un point distinct de la partie dense.
+\end{remarque}
+
+%============================================================
+\section{Nécessité de la séparabilité : la construction \texorpdfstring{$\ell^2(I)$}{l2(I)}}
+
+Dire que l'hypothèse de séparabilité est \emph{nécessaire}, c'est nier
+l'implication privée de son hypothèse : il faut exhiber un espace de Hilbert
+\textbf{non séparable} portant un système orthonormal \textbf{non dénombrable}.
+Le fait remarquable est que \emph{c'est le même calcul de séparation~$\sqrt2$}
+qui, lu à l'endroit, donnait la dénombrabilité, et qui, lu à l'envers, produit la
+non-séparabilité : les deux phénomènes sont les deux faces d'une même pièce.
+
+\subsection{L'espace}
+
+\begin{definition}[$\ell^2(I)$]
+Pour un ensemble d'indices $I$ arbitraire, on pose
+\[
+  \ell^2(I) = \Bigl\{\, x = (x_i)_{i\in I} \in \C^{I} \ :\
+    \sum_{i\in I} \abs{x_i}^2 < +\infty \,\Bigr\},
+  \qquad
+  \sum_{i\in I} \abs{x_i}^2 := \sup_{\substack{F \subset I \\ F \text{ fini}}}
+    \sum_{i\in F} \abs{x_i}^2,
+\]
+muni du produit scalaire $\scal{x}{y} = \sum_{i\in I} x_i \overline{y_i}$.
+C'est un espace de Hilbert (la complétude se démontre comme pour
+$\ell^2(\N)$).
+\end{definition}
+
+\begin{remarque}[Chaque vecteur a un support dénombrable]\label{rem:support}
+La finitude de $\sum_i \abs{x_i}^2$ force le support
+$\{i : x_i \neq 0\}$ à être au plus dénombrable. En effet, pour $n \ge 1$
+l'ensemble $\{i : \abs{x_i} > 1/n\}$ est fini (sinon la somme divergerait), et
+\[
+  \{i : x_i \neq 0\} = \bigcup_{n \ge 1} \Bigl\{ i : \abs{x_i} > \tfrac1n \Bigr\}
+\]
+est réunion dénombrable d'ensembles finis. \emph{Chaque vecteur individuel ne
+« voit » qu'un nombre dénombrable de coordonnées.} On pourrait croire l'espace
+« moralement séparable » — c'est faux, et toute la finesse est là : aucun jeu
+\emph{dénombrable} de vecteurs ne les voit \emph{tous} à la fois.
+\end{remarque}
+
+\subsection{Le système orthonormal non dénombrable}
+
+Pour $i \in I$, soit $e_i = (\delta_{ij})_{j\in I}$ le vecteur valant $1$ en
+position $i$ et $0$ ailleurs. Chaque $e_i \in \ell^2(I)$ (support réduit à un
+point) et $\scal{e_i}{e_j} = \delta_{ij}$ : la famille $(e_i)_{i\in I}$ est
+orthonormale, indexée par $I$.
+
+\begin{theoreme}[Non-séparabilité]\label{th:nonsep}
+Si $I$ est non dénombrable, alors $\ell^2(I)$ possède un système orthonormal non
+dénombrable et n'est pas séparable.
+\end{theoreme}
+
+\begin{proof}
+La famille $(e_i)_{i\in I}$ est orthonormale de cardinal $\card(I)$ non
+dénombrable, ce qui règle le premier point. Par le lemme~\ref{lem:sep} elle est
+$\sqrt2$-séparée, donc les boules $B_i = B\!\left(e_i, \tfrac{\sqrt2}{2}\right)$
+sont deux à deux disjointes (lemme~\ref{lem:boules}). Supposons par l'absurde
+$\ell^2(I)$ séparable, de partie dense dénombrable $D$. Par densité, chaque $B_i$
+contient un $d_i \in D$ ; par disjonction des boules, $i \mapsto d_i$ est une
+injection de $I$ dans $D$. On obtiendrait une injection de $I$ (non dénombrable)
+dans $D$ (dénombrable) : contradiction.
+\end{proof}
+
+\begin{remarque}[La même mécanique, à rôles échangés]
+La preuve du théorème~\ref{th:nonsep} est \emph{mot pour mot} celle du
+théorème~\ref{th:principal}, à ceci près qu'on a échangé les rôles de
+l'hypothèse et de la conclusion.
+\begin{itemize}[nosep,leftmargin=1.4em]
+  \item \textbf{Sens direct} : on \emph{dispose} d'un $D$ dénombrable, et on en
+        déduit que le système orthonormal, injecté dans $D$, est dénombrable.
+  \item \textbf{Sens réciproque} : on \emph{dispose} d'un système orthonormal non
+        dénombrable, on l'injecte dans tout candidat $D$ à la densité, et on en
+        déduit que $D$ ne peut être dénombrable.
+\end{itemize}
+La famille $\sqrt2$-séparée est l'obstruction commune : tantôt objet contraint
+par la petitesse de l'espace, tantôt témoin de sa grosseur.
+\end{remarque}
+
+\begin{remarque}[Un exemple universel, non ad hoc]
+$\ell^2(I)$ n'est pas un exemple artificiel. Tout espace de Hilbert admet une
+base hilbertienne, et deux bases hilbertiennes d'un même espace ont même cardinal
+(la \emph{dimension hilbertienne} $\dimhilb$). Si $\dimhilb \HH = \kappa$, alors
+$\HH \cong \ell^2(I)$ isométriquement avec $\card(I) = \kappa$. La dichotomie est
+donc totale :
+\[
+  \HH \text{ séparable}
+  \iff \dimhilb \HH \le \aleph_0
+  \iff \HH \cong \C^{n} \ \text{ou}\ \ell^2(\N).
+\]
+Les systèmes orthonormaux non dénombrables vivent très exactement — et nulle part
+ailleurs — dans les $\ell^2(I)$ de dimension hilbertienne non dénombrable.
+\end{remarque}
+
+%============================================================
+\section{\texorpdfstring{$\ell^2(I)$}{l2(I)} comme espace \texorpdfstring{$L^2$}{L2} de la mesure de comptage}
+
+La « somme sur un ensemble d'indices arbitraire », en apparence \emph{ad hoc},
+est en réalité un cas particulier de la théorie de l'intégration.
+
+\begin{definition}[Mesure de comptage]
+Sur l'espace mesurable $(I, \mathscr{P}(I))$, la \emph{mesure de comptage}
+$\muc$ est définie par $\muc(A) = \card(A) \in [0,+\infty]$.
+\end{definition}
+
+\begin{proposition}[Identification]\label{prop:ident}
+On a l'égalité isométrique
+\[
+  \ell^2(I) = L^2\bigl(I, \mathscr{P}(I), \muc\bigr),
+\]
+et pour toute $f \ge 0$ sur $I$,
+\[
+  \int_I f \, d\muc \;=\; \sum_{i\in I} f(i)
+     \;:=\; \sup_{\substack{F \subset I \\ F \text{ fini}}} \sum_{i\in F} f(i).
+\]
+\end{proposition}
+
+Cette dernière formule n'est pas une convention : c'est un \textbf{théorème}. Le
+membre de gauche est l'intégrale de Lebesgue abstraite (borne supérieure des
+intégrales des fonctions étagées $\le f$) ; comme les fonctions étagées
+\emph{intégrables} sont ici à support fini (section~\ref{sec:etagees}), ce
+supremum se calcule sur les sommes finies. Ainsi $\sum_i \abs{x_i}^2 =
+\int_I \abs{x}^2 \, d\muc$ et $\scal{x}{y} = \int_I x\,\overline{y}\, d\muc$.
+
+\subsection{Deux simplifications offertes par $\muc$}
+
+\begin{itemize}[leftmargin=1.4em]
+  \item \textbf{La tribu est le powerset entier.} Toute fonction $I \to \C$ est
+        mesurable ; aucune vérification de mesurabilité n'est jamais requise.
+  \item \textbf{Aucun quotient par les négligeables.} Un ensemble est
+        $\muc$-négligeable si et seulement s'il est vide :
+        $\muc(A) = 0 \iff A = \varnothing$. Il n'y a donc pas d'égalité
+        « presque partout » non triviale, et $\ell^2(I)$ est un espace de
+        \emph{véritables} fonctions, non de classes d'équivalence — contrairement
+        à $L^2([0,1],\text{Leb})$. C'est pourquoi $e_i$ est \emph{le} vecteur
+        valant $1$ en $i$, sans ambiguïté.
+\end{itemize}
+
+L'orthonormalité se relit alors de façon purement mesurée : $e_i = \mathbf{1}_{\{i\}}$ et
+\[
+  \scal{e_i}{e_j} = \int_I \mathbf{1}_{\{i\}}\mathbf{1}_{\{j\}}\, d\muc
+     = \muc(\{i\}\cap\{j\}) = \delta_{ij}.
+\]
+L'orthonormalité est exactement le fait que chaque singleton a masse
+$\muc(\{i\}) = 1$.
+
+\subsection{La contrepartie : perte de la $\sigma$-finitude}
+
+\begin{proposition}[Non-$\sigma$-finitude]
+Si $I$ est non dénombrable, $\muc$ n'est pas $\sigma$-finie : les parties de
+mesure finie sont les parties finies, et une réunion dénombrable de parties
+finies reste dénombrable, donc $\neq I$.
+\end{proposition}
+
+Les théorèmes exigeant la $\sigma$-finitude (Radon--Nikodym sous forme standard,
+Fubini--Tonelli, certains cas de la dualité $L^p$--$L^q$) tombent alors. En
+revanche, un fait de $\sigma$-finitude \emph{locale} survit toujours, et il
+explique la remarque~\ref{rem:support}.
+
+\begin{proposition}[Support $\sigma$-fini universel des fonctions $L^2$]
+Soit $(X,\mathscr{A},\mu)$ un espace mesuré \emph{quelconque} et $f \in L^2(\mu)$.
+Alors $\{f \neq 0\}$ est $\sigma$-fini.
+\end{proposition}
+
+\begin{proof}
+Par l'inégalité de Bienaymé--Tchebychev, pour tout $n \ge 1$,
+\[
+  \mu\bigl(\abs{f} > \tfrac1n\bigr)
+   \le n^2 \int_X \abs{f}^2 \, d\mu < +\infty,
+\]
+donc $\{f \neq 0\} = \bigcup_{n\ge1} \{\abs{f} > \tfrac1n\}$ est réunion
+dénombrable d'ensembles de mesure finie.
+\end{proof}
+
+Pour $\muc$, « $\sigma$-fini » signifie « réunion dénombrable de parties finies »,
+c'est-à-dire « dénombrable ». Le support dénombrable de chaque $x \in \ell^2(I)$
+n'est donc \emph{pas} une curiosité : c'est le support $\sigma$-fini universel des
+fonctions $L^2$, spécialisé à la mesure de comptage. Ce qui est frappant, c'est
+que la $\sigma$-finitude reste vraie \emph{fonction par fonction} tout en
+échouant \emph{globalement} — et c'est exactement cet écart qui fabrique la
+non-séparabilité (théorème~\ref{th:nonsep}).
+
+\begin{remarque}
+La structure hilbertienne, elle, ne souffre de rien : $L^2$ d'un espace mesuré
+\emph{quelconque} est toujours complet (Riesz--Fischer n'exige pas la
+$\sigma$-finitude). Seuls certains outils annexes de la théorie de la mesure
+deviennent indisponibles.
+\end{remarque}
+
+%============================================================
+\section{Fonctions étagées et effondrement de l'intégrale en somme}
+\label{sec:etagees}
+
+Un point mérite d'être énoncé avec soin, car sa formulation naïve est fausse.
+
+\begin{remarque}[Un piège]
+Une fonction étagée (mesurable, ne prenant qu'un nombre \emph{fini} de valeurs)
+n'est \textbf{pas} nécessairement à support fini. Contre-exemple :
+$\mathbf{1}_I$ sur $I$ infini est étagée — elle ne prend que la valeur $1$ — mais
+son support est $I$ tout entier.
+\end{remarque}
+
+L'énoncé correct fait intervenir l'intégrabilité.
+
+\begin{lemme}[Étagée intégrable $\Rightarrow$ support fini]\label{lem:etagee}
+Soit $s$ une fonction étagée sur $(I, \mathscr{P}(I), \muc)$. Si
+$\int_I \abs{s}\, d\muc < +\infty$, alors $s$ est à support fini. Plus
+précisément,
+\[
+  \int_I \abs{s}\, d\muc \;\ge\; \Bigl(\min_{k} \abs{c_k}\Bigr)
+     \cdot \card\bigl(\supp s\bigr),
+\]
+où les $c_k$ sont les valeurs non nulles de $s$.
+\end{lemme}
+
+\begin{proof}
+Écrivons $s = \sum_{k=1}^{n} c_k \, \mathbf{1}_{A_k}$ avec les $c_k \neq 0$ deux à
+deux distincts (on écarte le morceau nul) et $A_k = \{s = c_k\}$ disjoints. Comme
+$\muc(\{i\}) = 1$,
+\[
+  \int_I \abs{s}\, d\muc = \sum_{k=1}^{n} \abs{c_k}\, \muc(A_k)
+     = \sum_{k=1}^{n} \abs{c_k}\, \card(A_k).
+\]
+Chaque $\abs{c_k} > 0$, donc cette somme finie de termes positifs est finie si et
+seulement si chaque $\card(A_k) < \infty$, c'est-à-dire chaque $A_k$ fini. Alors
+$\supp s = \bigcup_{k=1}^{n} A_k$, réunion \emph{finie} d'ensembles finis, est
+fini. La minoration annoncée en découle en majorant chaque $\abs{c_k}$ par le
+minimum et en sommant les cardinaux. Contraposée : support infini $\Rightarrow$
+l'un des $A_k$ (à valeur non nulle) est infini $\Rightarrow$ intégrale infinie.
+\end{proof}
+
+C'est ce lemme qui fait s'effondrer l'intégrale abstraite en somme non ordonnée.
+
+\begin{proof}[Démonstration de la proposition~\ref{prop:ident} (formule intégrale)]
+Soit $f \ge 0$. On montre l'identité
+\[
+  \int_I f\, d\muc = \sup_{F}\ \sum_{i\in F} f(i),
+\]
+le supremum portant sur les parties finies $F \subset I$.
+
+\medskip
+\noindent\textbf{Inégalité $\ge$.} Pour $F$ fini, $f\mathbf{1}_F$ est étagée à
+support fini, $0 \le f\mathbf{1}_F \le f$, et
+$\int_I f\mathbf{1}_F\, d\muc = \sum_{i\in F} f(i)$. Donc
+$\int_I f\, d\muc \ge \sum_{i\in F} f(i)$, puis $\int_I f\, d\muc \ge \sup_F$.
+
+\medskip
+\noindent\textbf{Inégalité $\le$.} Soit $s$ étagée avec $0 \le s \le f$.
+\begin{itemize}[nosep,leftmargin=1.4em]
+  \item Si $\int_I s\, d\muc = +\infty$, alors $s$ a un support infini
+        (lemme~\ref{lem:etagee}) sur lequel $f \ge s \ge \min_k c_k > 0$, d'où
+        $\sup_F \sum_{i\in F} f(i) = +\infty$ : l'inégalité est triviale.
+  \item Si $\int_I s\, d\muc < +\infty$, le lemme~\ref{lem:etagee} donne
+        $s$ à support fini ; en posant $F = \supp s$,
+        \[
+          \int_I s\, d\muc = \sum_{i \in F} s(i)
+             \le \sum_{i\in F} f(i) \le \sup_F .
+        \]
+\end{itemize}
+En prenant le supremum sur les étagées $s \le f$, on obtient
+$\int_I f\, d\muc \le \sup_F$. D'où l'égalité.
+\end{proof}
+
+\begin{remarque}[Le contraste qui isole le rôle de $\muc$]
+Le support fini des étagées intégrables est un trait \emph{spécifique} de la
+mesure de comptage. Pour la mesure de Lebesgue sur $\R$, une étagée intégrable a
+un support de \emph{mesure} finie, ce qui n'a rien à voir avec un support fini en
+\emph{cardinal} : $\mathbf{1}_{[0,1]}$ est intégrable, de support non dénombrable.
+La spécificité de $\muc$ est l'égalité $\muc(A) = \card(A)$ : « intégrale finie »
+s'y traduit \emph{mot pour mot} en « support fini », l'égalité entre masse et
+cardinal transportant la finitude de l'une à l'autre. C'est exactement cette
+traduction qui fait de $\ell^2(I)$ un espace de \emph{sommes} plutôt que
+d'\emph{intégrales}.
+\end{remarque}
+
+%============================================================
+\section{Synthèse}
+
+Le fil conducteur est une tension unique, quantifiée par la distance $\sqrt2$,
+entre deux exigences contradictoires :
+\begin{itemize}[leftmargin=1.4em]
+  \item la \textbf{séparabilité}, contrainte de petitesse topologique : tout point
+        est approchable par une réserve dénombrable fixée ;
+  \item un \textbf{système orthonormal}, configuration maximalement étalée : ses
+        points sont mutuellement à distance $\sqrt2$, chacun occupant son propre
+        territoire — une boule de rayon $\sqrt2/2$ que nul autre ne partage.
+\end{itemize}
+Un espace séparable ne loge qu'un nombre dénombrable de tels territoires
+disjoints ; dès qu'il y en a un nombre non dénombrable, la réserve dense doit
+elle-même être non dénombrable. Tout le reste — l'identification à
+$L^2(I,\muc)$, la perte de $\sigma$-finitude, le support fini des étagées
+intégrables — n'est qu'une lecture, à travers la théorie de la mesure, de ce même
+fait métrique.
+
+\begin{center}
+\fbox{\parbox{0.92\linewidth}{\centering
+\medskip
+$\HH$ séparable
+\quad$\Longleftrightarrow$\quad
+tout système orthonormal de $\HH$ est dénombrable
+\\[0.6em]
+$\Longleftrightarrow\ \dimhilb \HH \le \aleph_0
+   \ \Longleftrightarrow\ \HH \cong \C^{n}\ \text{ou}\ \ell^2(\N).$
+\medskip
+}}
+\end{center}
+
+\end{document}

@@ -1,0 +1,425 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[provide=*,french]{babel}
+\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage{mathpazo}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+
+% ------- couleurs -------
+\definecolor{accent}{RGB}{40,72,120}
+\definecolor{accentbg}{RGB}{237,242,249}
+\definecolor{warmbg}{RGB}{249,244,234}
+\definecolor{warmrule}{RGB}{176,141,87}
+
+\hypersetup{colorlinks=true,linkcolor=accent,urlcolor=accent}
+
+% guillemets francais (repli si french.ldf absent)
+\providecommand{\og}{\guillemotleft\,}
+\providecommand{\fg}{\,\guillemotright}
+
+% ------- environnements de théorèmes -------
+\theoremstyle{plain}
+\newtheorem{theoreme}{Théorème}
+\newtheorem{proposition}[theoreme]{Proposition}
+\newtheorem{lemme}[theoreme]{Lemme}
+\newtheorem{corollaire}[theoreme]{Corollaire}
+\theoremstyle{definition}
+\newtheorem{remarque}[theoreme]{Remarque}
+\renewcommand{\proofname}{\normalfont\scshape D\'emonstration}
+
+% ------- macros -------
+\newcommand{\Esp}{\mathbb{E}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Loi}{\mathcal{N}}
+\newcommand{\B}{\mathcal{B}}
+\newcommand{\abs}[1]{\left\lvert #1 \right\rvert}
+\newcommand{\ps}{\text{p.s.}}
+\DeclareMathOperator*{\limsupop}{\overline{\lim}}
+\newcommand{\ind}{\mathbf{1}}
+
+% ------- boîte résultat -------
+\newtcolorbox{resultat}[1][]{
+  enhanced, colback=warmbg, colframe=warmrule, boxrule=0.4pt,
+  left=10pt, right=10pt, top=8pt, bottom=8pt,
+  borderline west={2.5pt}{0pt}{warmrule},
+  sharp corners, #1}
+
+\newtcolorbox{apercu}[1][]{
+  enhanced, colback=accentbg, colframe=accent, boxrule=0.4pt,
+  left=10pt, right=10pt, top=8pt, bottom=8pt,
+  sharp corners, #1}
+
+\setlength{\parskip}{0.35em}
+\setlength{\parindent}{0pt}
+
+\title{\bfseries R\'egularit\'e des trajectoires browniennes\\[2pt]
+\large H\"old\'erianit\'e, non-d\'erivabilit\'e et module de L\'evy}
+\author{}
+\date{\today}
+
+\begin{document}
+\maketitle
+\vspace{-2.2em}
+
+\begin{center}
+\rule{0.42\textwidth}{0.4pt}
+\end{center}
+
+\noindent\textit{Avant-propos.} On note $(B_t)_{t\ge 0}$ le mouvement brownien standard~: $B_0=0$, accroissements ind\'ependants et stationnaires, $B_t-B_s\sim\Loi(0,\,t-s)$ pour $s<t$. Ce document \'etablit deux faits compl\'ementaires sur ses trajectoires~: elles sont \emph{aussi r\'eguli\`eres} que le permet la th\'eorie (h\"old\'eriennes d'exposant $<\tfrac12$), et \emph{pas davantage} (nulle part d\'erivables). Conform\'ement \`a l'ordre demand\'e, on traite d'abord la \textbf{non-d\'erivabilit\'e}, puis la \textbf{continuit\'e} via le crit\`ere de Kolmogorov--Chentsov, la loi du logarithme it\'er\'e locale \'etant d\'emontr\'ee en appendice.
+
+\begin{apercu}
+\textbf{Vue d'ensemble.} Presque s\^urement, la trajectoire $t\mapsto B_t$ v\'erifie~:
+\begin{enumerate}[label=\textbf{(\alph*)},leftmargin=2.2em,itemsep=2pt]
+\item elle est \emph{localement h\"old\'erienne d'exposant $\gamma$} pour tout $\gamma\in(0,\tfrac12)$~;
+\item son module de continuit\'e est exactement celui de L\'evy, $\displaystyle\limsup_{h\to0^+}\sup_t \frac{\abs{B_{t+h}-B_t}}{\sqrt{2h\log(1/h)}}=1$~;
+\item elle n'est d\'erivable en \emph{aucun} point.
+\end{enumerate}
+Les trois \'enonc\'es se recoupent~: l'\'echelle vraie des accroissements est $\sqrt h$, strictement entre $h$ (d\'erivabilit\'e) et $1$ (discontinuit\'e).
+\end{apercu}
+
+\tableofcontents
+\bigskip
+
+% =====================================================================
+\part*{Partie I. — Non-d\'erivabilit\'e}
+\addcontentsline{toc}{section}{Partie I. — Non-d\'erivabilit\'e}
+% =====================================================================
+
+\section{L'intuition~: le scaling interdit la d\'erivabilit\'e}
+
+Pour $t_0$ \textbf{fix\'e}, le taux d'accroissement s'\'ecrit
+\[
+\frac{B_{t_0+h}-B_{t_0}}{h}\;=\;\frac{1}{\sqrt h}\,Z_h,\qquad Z_h\sim\Loi(0,1).
+\]
+Son \'ecart-type vaut $1/\sqrt h\to+\infty$ lorsque $h\downarrow 0$~: le quotient ne peut converger. Plus finement, la \emph{loi du logarithme it\'er\'e locale} de L\'evy (d\'emontr\'ee en Appendice~\ref{app:lil}) affirme que, presque s\^urement,
+\[
+\limsup_{h\downarrow 0}\frac{B_{t_0+h}-B_{t_0}}{\sqrt{2h\log\log(1/h)}}=1,
+\qquad
+\liminf_{h\downarrow 0}\frac{B_{t_0+h}-B_{t_0}}{\sqrt{2h\log\log(1/h)}}=-1,
+\]
+d'o\`u, en divisant par $h$ et puisque $\sqrt{2h\log\log(1/h)}/h\to+\infty$,
+\[
+\limsup_{h\downarrow 0}\frac{B_{t_0+h}-B_{t_0}}{h}=+\infty,\qquad
+\liminf_{h\downarrow 0}\frac{B_{t_0+h}-B_{t_0}}{h}=-\infty .
+\]
+Donc $B$ n'est presque s\^urement pas d\'erivable \textbf{en ce $t_0$ fix\'e}. C'est coh\'erent avec le module de continuit\'e~: l'\'echelle authentique des accroissements est $\sqrt h$, infiniment plus grande que $h$.
+
+\section{La subtilit\'e~: \og pour chaque $t$\fg{} $\neq$ \og pour tout $t$\fg}
+
+Le paragraphe pr\'ec\'edent fournit, \emph{pour chaque} $t$, un \'ev\'enement de probabilit\'e $1$ --- mais l'ensemble n\'egligeable exceptionnel \textbf{d\'epend de $t$}, et l'on ne peut r\'eunir une infinit\'e \emph{non d\'enombrable} de n\'egligeables. Deux \'enonc\'es de force croissante s'imposent.
+
+\begin{proposition}[Version faible, par Fubini]
+Presque s\^urement, l'ensemble $\{t\in[0,1]:B_\cdot\text{ est d\'erivable en }t\}$ est de mesure de Lebesgue nulle.
+\end{proposition}
+
+\begin{proof}
+Soit $D=\{(t,\omega):B_\cdot(\omega)\text{ d\'erivable en }t\}$, mesurable (les d\'eriv\'ees sup\'erieure et inf\'erieure de Dini sont mesurables, leur \'egalit\'e et finitude aussi). \`A $t$ fix\'e, la section verticale $D_t$ a probabilit\'e nulle par le \S1. Le th\'eor\`eme de Tonelli donne
+\[
+\Esp\!\left[\lambda\{t\in[0,1]:B\text{ d\'erivable en }t\}\right]
+=\int_0^1\Prob(B\text{ d\'erivable en }t)\,dt=0,
+\]
+o\`u $\lambda$ est la mesure de Lebesgue. Une variable positive d'esp\'erance nulle est \ps{} nulle.
+\end{proof}
+
+C'est vrai mais insuffisant~: l'ensemble des temps de d\'erivabilit\'e pourrait \^etre non vide (de mesure nulle). Le r\'esultat profond, d\^u \`a Paley, Wiener et Zygmund (1933), affirme qu'il est \emph{vide}.
+
+\begin{resultat}
+\textbf{Th\'eor\`eme de Paley--Wiener--Zygmund.} \emph{Presque s\^urement, la trajectoire $t\mapsto B_t$ n'est d\'erivable en aucun point $t\ge 0$.}
+\end{resultat}
+
+L'ensemble exceptionnel est r\'eellement vide \ps{}~: cela exige un argument \emph{uniforme} en $t$, non un simple recollement d\'enombrable.
+
+\section{Un argument \og grossier\fg{} par la variation quadratique}
+
+Avant la preuve fine, une observation qui \'elimine d\'ej\`a toute d\'erivabilit\'e \emph{sur un intervalle}. Le brownien poss\`ede une variation quadratique non triviale~: le long de subdivisions de pas tendant vers $0$,
+\[
+\sum_{k}\bigl(B_{t_{k+1}}-B_{t_k}\bigr)^2 \;\xrightarrow{\;L^2\;}\; t
+\qquad\text{(soit }[B,B]_t=t\text{)}.
+\]
+Or une fonction lipschitzienne sur un intervalle $I$ y est \`a variation quadratique nulle~: si $\abs{f(u)-f(v)}\le L\abs{u-v}$, alors $\sum_k (f(t_{k+1})-f(t_k))^2\le L^2\,\lvert I\rvert\cdot\max_k\abs{t_{k+1}-t_k}\to 0$. D'o\`u~:
+\begin{center}
+\itshape presque s\^urement, $B$ n'est lipschitzien --- ni monotone, ni \`a variation born\'ee --- sur aucun sous-intervalle.
+\end{center}
+Cela n'atteint pas encore la non-d\'erivabilit\'e \emph{ponctuelle}~: un unique point de d\'erivabilit\'e ne cr\'ee pas de lipschitzianit\'e sur un intervalle entier. C'est le th\'eor\`eme suivant qui franchit ce dernier pas.
+
+\section{Le th\'eor\`eme de Paley--Wiener--Zygmund}
+
+\begin{theoreme}[Paley--Wiener--Zygmund]\label{th:pwz}
+Presque s\^urement, $t\mapsto B_t$ n'est d\'erivable en aucun $t\ge 0$.
+\end{theoreme}
+
+On donne l'argument de Dvoretzky--Erd\H{o}s--Kakutani, remarquablement \'econome~: il n'utilise que l'ind\'ependance des accroissements sur des intervalles disjoints et la majoration \'el\'ementaire de la densit\'e gaussienne. On travaille sur $[0,1]$, en supposant $B$ prolong\'e \`a $[0,2]$ pour \'eviter les effets de bord~; le recollement des intervalles entiers, r\'eunion d\'enombrable de n\'egligeables, ach\`eve le passage \`a $[0,\infty)$.
+
+\begin{proof}
+\textbf{R\'eduction.} Si $B$ est d\'erivable en un point $s\in[0,1)$, alors $B'(s)$ est fini, donc il existe des entiers $M\in\N$ et $n_0$ tels que
+\[
+\abs{B_t-B_s}\le M\,\abs{t-s}\qquad\text{pour tout }\abs{t-s}\le \tfrac{4}{n_0}.
+\]
+Il suffit d\`es lors de montrer $\Prob(A_M)=0$ pour chaque $M$, o\`u $A_M$ d\'esigne l'\'ev\'enement \og il existe $s\in[0,1)$ satisfaisant une telle borne pour un certain $n_0$\fg.
+
+\textbf{Contr\^ole de trois accroissements cons\'ecutifs.} Fixons $n\ge n_0$ et soit $k=k(s)\in\{1,\dots,n\}$ l'indice tel que $s\in\bigl[\tfrac{k-1}{n},\tfrac{k}{n}\bigr)$. Pour $j\in\{k,k+1,k+2\}$, les deux points $\tfrac{j}{n}$ et $\tfrac{j+1}{n}$ sont \`a distance au plus $\tfrac{4}{n}$ de $s$. L'in\'egalit\'e triangulaire donne, pour chacun de ces \emph{trois} accroissements,
+\[
+Y_{n,j}:=\Bigl\lvert B_{\frac{j+1}{n}}-B_{\frac{j}{n}}\Bigr\rvert
+\le \Bigl\lvert B_{\frac{j+1}{n}}-B_s\Bigr\rvert+\Bigl\lvert B_s-B_{\frac{j}{n}}\Bigr\rvert
+\le M\!\left(\tfrac{4}{n}+\tfrac{4}{n}\right)\!\cdot\!\tfrac12\cdot 2=\frac{8M}{n}.
+\]
+Ainsi $A_M\subseteq\bigcup_{n_0}\bigcap_{n\ge n_0}\Omega_{n,M}$, o\`u
+\[
+\Omega_{n,M}=\bigcup_{k=1}^{n}\Bigl\{\,Y_{n,k}\le\tfrac{8M}{n},\ Y_{n,k+1}\le\tfrac{8M}{n},\ Y_{n,k+2}\le\tfrac{8M}{n}\Bigr\}.
+\]
+
+\textbf{Estimation probabiliste.} Les trois accroissements portent sur des intervalles disjoints~: ils sont \textbf{ind\'ependants}, chacun de loi $\tfrac{1}{\sqrt n}\,\Loi(0,1)$. Avec $Z\sim\Loi(0,1)$ et la densit\'e gaussienne major\'ee par $\tfrac{1}{\sqrt{2\pi}}\le\tfrac12$,
+\[
+\Prob\!\left(Y_{n,j}\le\tfrac{8M}{n}\right)
+=\Prob\!\left(\abs{Z}\le\tfrac{8M}{\sqrt n}\right)
+\le 2\cdot\tfrac{1}{\sqrt{2\pi}}\cdot\tfrac{8M}{\sqrt n}
+\le \frac{8M}{\sqrt n}.
+\]
+Par ind\'ependance des trois \'ev\'enements, puis borne d'union sur les $n$ valeurs de $k$~:
+\[
+\Prob(\Omega_{n,M})\;\le\; n\cdot\Bigl(\frac{8M}{\sqrt n}\Bigr)^{3}
+\;=\;(8M)^3\,n^{-1/2}\;\xrightarrow[n\to\infty]{}\;0.
+\]
+
+\textbf{Conclusion.} Comme $\bigcap_{n\ge n_0}\Omega_{n,M}\subseteq\Omega_{m,M}$ pour tout $m\ge n_0$, on a
+$\Prob\bigl(\bigcap_{n\ge n_0}\Omega_{n,M}\bigr)\le\inf_{m\ge n_0}\Prob(\Omega_{m,M})=0$,
+puis $\Prob(A_M)\le\sum_{n_0}0=0$. En r\'eunissant sur $M\in\N$, puis sur les intervalles entiers, $B$ n'est \ps{} d\'erivable en aucun point.
+\end{proof}
+
+\begin{remarque}[Force r\'eelle de l'argument]
+Le contr\^ole porte sur $Y_{n,j}\le 8M/n$ \emph{sans supposer la d\'eriv\'ee finie}, seulement born\'ee par $M$~: la preuve montre en fait qu'\ps, en tout point $s$, la d\'eriv\'ee de Dini sup\'erieure vaut $+\infty$ \emph{ou} l'inf\'erieure vaut $-\infty$. Les taux d'accroissement n'oscillent pas seulement~: ils explosent.
+\end{remarque}
+
+\section{Compl\'ements}
+
+\begin{itemize}[leftmargin=1.4em,itemsep=4pt]
+\item \textbf{Coh\'erence avec le module h\"old\'erien.} Une d\'erivabilit\'e en $s$ entra\^inerait un comportement lipschitzien local (exposant $1$), ce qu'interdit le module de L\'evy $\sqrt{2h\log(1/h)}$, dont l'exposant critique est $\tfrac12$. H\"old\'erien $<\tfrac12$ partout \emph{et} nulle part d\'erivable~: c'est exactement le bon degr\'e de rugosit\'e, ni plus ni moins.
+\item \textbf{Points rapides / lents} (Kahane~; Orey--Taylor). Bien que non d\'erivable partout, la trajectoire admet des \emph{points exceptionnels al\'eatoires} o\`u le module d'accroissement est anormalement grand (points \og rapides\fg, de dimension de Hausdorff explicitement calculable) ou anormalement petit (points \og lents\fg) --- sans jamais atteindre la d\'erivabilit\'e.
+\item \textbf{Port\'ee historique.} L'existence m\^eme d'une fonction continue nulle part d\'erivable (Weierstrass, 1872) fut d'abord per\c cue comme une pathologie~; Paley--Wiener--Zygmund montre qu'au contraire c'est la \emph{norme} dans le monde brownien --- la trajectoire \og g\'en\'erique\fg{} du d\'esordre thermique de Wiener.
+\end{itemize}
+
+% =====================================================================
+\part*{Partie II. — Continuit\'e (Kolmogorov--Chentsov)}
+\addcontentsline{toc}{section}{Partie II. — Continuit\'e (Kolmogorov--Chentsov)}
+% =====================================================================
+
+\section{Remarque pr\'eliminaire~: que veut-on prouver~?}
+
+Un processus est caract\'eris\'e par ses lois fini-dimensionnelles, mais celles-ci ne \og voient\fg{} pas la r\'egularit\'e des trajectoires~: l'ensemble $C([0,\infty))$ n'est \textbf{pas} mesurable pour la tribu produit $\B(\R)^{\otimes[0,\infty)}$. L'\'enonc\'e \og le brownien est continu\fg{} signifie donc pr\'ecis\'ement~:
+
+\begin{center}
+\itshape le processus $(B_t)$ d\'efini par ses accroissements gaussiens admet une \textbf{modification} \`a trajectoires continues.
+\end{center}
+
+C'est exactement ce que fournit le crit\`ere de continuit\'e de Kolmogorov--Chentsov.
+
+\section{Le crit\`ere de Kolmogorov--Chentsov}
+
+\begin{theoreme}[Kolmogorov--Chentsov]\label{th:kc}
+Soit $(X_t)_{t\in[0,T]}$ un processus r\'eel tel qu'il existe $\alpha,\beta,C>0$ avec
+\[
+\Esp\bigl[\,\abs{X_t-X_s}^{\alpha}\,\bigr]\;\le\;C\,\abs{t-s}^{\,1+\beta},\qquad\forall\,s,t\in[0,T].
+\]
+Alors $X$ admet une modification $\tilde X$ dont les trajectoires sont \textbf{localement h\"old\'eriennes d'exposant $\gamma$ pour tout $\gamma\in(0,\beta/\alpha)$}~; en particulier elles sont continues.
+\end{theoreme}
+
+\section{V\'erification de l'hypoth\`ese pour le brownien}
+
+Pour $s<t$, on a $B_t-B_s=\sqrt{t-s}\,Z$ avec $Z\sim\Loi(0,1)$. Les moments gaussiens pairs valent $\Esp[\abs{Z}^{2p}]=(2p-1)!!=\tfrac{(2p)!}{2^p\,p!}$, d'o\`u pour tout entier $p\ge1$~:
+\[
+\Esp\bigl[\,\abs{B_t-B_s}^{2p}\,\bigr]\;=\;(2p-1)!!\;\abs{t-s}^{\,p}.
+\]
+On applique le Th\'eor\`eme~\ref{th:kc} avec $\alpha=2p$, $C=(2p-1)!!$ et $1+\beta=p$, soit $\beta=p-1$. La condition $\beta>0$ impose $p\ge 2$, et l'exposant de H\"older obtenu est
+\[
+\gamma<\frac{\beta}{\alpha}=\frac{p-1}{2p}=\frac12-\frac{1}{2p}\;\xrightarrow[p\to\infty]{}\;\frac12 .
+\]
+
+\begin{resultat}
+Pour tout $\gamma<\tfrac12$, choisir $p>\tfrac{1}{1-2\gamma}$ assure $\gamma<\tfrac{p-1}{2p}$. Le brownien admet donc une modification \textbf{presque s\^urement localement h\"old\'erienne d'exposant $\gamma$, pour tout $\gamma\in(0,\tfrac12)$} --- a fortiori continue.
+\end{resultat}
+
+\section{D\'emonstration du crit\`ere}
+
+Sans perte de g\'en\'eralit\'e $T=1$ (on recolle ensuite les intervalles $[n,n+1]$). Fixons $\gamma\in(0,\beta/\alpha)$. On note $D_n=\{k2^{-n}:0\le k\le 2^n\}$, $D=\bigcup_n D_n$ l'ensemble des dyadiques de $[0,1]$, et
+\[
+K_n=\max_{1\le k\le 2^n}\bigl\lvert X_{k2^{-n}}-X_{(k-1)2^{-n}}\bigr\rvert.
+\]
+
+\subsection*{\'Etape 1 — Markov et Borel--Cantelli}
+
+Par l'in\'egalit\'e de Markov, pour chaque paire adjacente,
+\[
+\Prob\bigl(\abs{X_{k2^{-n}}-X_{(k-1)2^{-n}}}\ge 2^{-\gamma n}\bigr)
+\le \frac{\Esp[\abs{X_{k2^{-n}}-X_{(k-1)2^{-n}}}^{\alpha}]}{2^{-\gamma n\alpha}}
+\le C\,2^{-n(1+\beta-\gamma\alpha)}.
+\]
+Par borne d'union sur les $2^n$ paires adjacentes~:
+\[
+\Prob\bigl(K_n\ge 2^{-\gamma n}\bigr)\le 2^n\cdot C\,2^{-n(1+\beta-\gamma\alpha)}=C\,2^{-n(\beta-\gamma\alpha)}.
+\]
+Comme $\gamma<\beta/\alpha$, on a $\beta-\gamma\alpha>0$, donc $\sum_n\Prob(K_n\ge 2^{-\gamma n})<\infty$. Le lemme de Borel--Cantelli fournit un \'ev\'enement $\Omega^\ast$ de probabilit\'e $1$ et une variable finie $N(\omega)<\infty$ telle que
+\[
+K_n(\omega)<2^{-\gamma n},\qquad\forall\,n\ge N(\omega),\quad\omega\in\Omega^\ast.
+\]
+
+\subsection*{\'Etape 2 — Lemme de cha\^inage dyadique}
+
+\begin{lemme}
+Fixons $\omega\in\Omega^\ast$. Alors pour tous $s,t\in D$ avec $0<t-s<2^{-N(\omega)}$,
+\[
+\abs{X_t-X_s}\;\le\;\frac{2}{1-2^{-\gamma}}\,\abs{t-s}^{\gamma}.
+\]
+\end{lemme}
+
+\begin{proof}
+On \'etablit d'abord par r\'ecurrence sur $n$, pour $m\ge N$ fix\'e~:
+\[
+(\star_n):\quad\forall\,s,t\in D_n,\ 0<t-s<2^{-m}\ \Longrightarrow\ \abs{X_t-X_s}\le 2\sum_{j=m+1}^{n}2^{-\gamma j}.
+\]
+
+\emph{Initialisation ($n=m$).} Deux points distincts de $D_m$ diff\`erent d'au moins $2^{-m}$~: aucune paire ne v\'erifie $0<t-s<2^{-m}$, l'\'enonc\'e est vide (la somme aussi, \'egale \`a $0$).
+
+\emph{H\'er\'edit\'e ($n\to n+1$).} Soient $s<t$ dans $D_{n+1}$ avec $t-s<2^{-m}$. Posons
+\[
+s'=\min\{u\in D_n:u\ge s\},\qquad t'=\max\{u\in D_n:u\le t\}.
+\]
+Alors $s\le s'\le t'\le t$, et $s',s$ (resp. $t,t'$) sont \'egaux ou adjacents dans $D_{n+1}$, d'o\`u $\abs{X_{s'}-X_s}\le K_{n+1}\le 2^{-\gamma(n+1)}$ et de m\^eme $\abs{X_t-X_{t'}}\le 2^{-\gamma(n+1)}$. Comme $s',t'\in D_n$ avec $t'-s'\le t-s<2^{-m}$, l'hypoth\`ese de r\'ecurrence donne $\abs{X_{t'}-X_{s'}}\le 2\sum_{j=m+1}^{n}2^{-\gamma j}$. L'in\'egalit\'e triangulaire fournit
+\[
+\abs{X_t-X_s}\le 2\cdot 2^{-\gamma(n+1)}+2\sum_{j=m+1}^{n}2^{-\gamma j}=2\sum_{j=m+1}^{n+1}2^{-\gamma j}.
+\]
+
+\emph{Conclusion.} Soient $s,t\in D$ avec $0<t-s<2^{-N}$. Choisissons $m\ge N$ tel que $2^{-(m+1)}\le t-s<2^{-m}$. Comme $s,t\in D_n$ pour $n$ assez grand, on passe \`a la limite dans $(\star_n)$~:
+\[
+\abs{X_t-X_s}\le 2\sum_{j=m+1}^{\infty}2^{-\gamma j}=\frac{2}{1-2^{-\gamma}}\,2^{-\gamma(m+1)}\le\frac{2}{1-2^{-\gamma}}\,(t-s)^{\gamma},
+\]
+la derni\`ere in\'egalit\'e r\'esultant de $2^{-(m+1)}\le t-s$.
+\end{proof}
+
+Ainsi, sur $\Omega^\ast$, l'application $t\mapsto X_t(\omega)$ est \emph{uniform\'ement continue sur $D$} (m\^eme h\"old\'erienne aux petites \'echelles).
+
+\subsection*{\'Etape 3 — Construction de la modification}
+
+Sur $\Omega^\ast$, $D$ \'etant dense dans $[0,1]$ et $t\mapsto X_t(\omega)$ uniform\'ement continue sur $D$, elle se prolonge de mani\`ere unique en une fonction \textbf{continue} $\tilde X_\cdot(\omega)$ sur $[0,1]$~:
+\[
+\tilde X_t(\omega)=\lim_{\substack{s\to t\\ s\in D}}X_s(\omega).
+\]
+Le prolongement h\'erite de l'in\'egalit\'e du lemme~: les trajectoires de $\tilde X$ sont localement h\"old\'eriennes d'exposant $\gamma$. Sur $\Omega\setminus\Omega^\ast$ on pose $\tilde X_t\equiv 0$. La mesurabilit\'e de $\tilde X_t$ r\'esulte du passage \`a la limite ponctuel de variables mesurables.
+
+\subsection*{\'Etape 4 — $\tilde X$ est bien une modification}
+
+Il faut $\Prob(\tilde X_t=X_t)=1$ pour chaque $t\in[0,1]$ fix\'e.
+\begin{itemize}[leftmargin=1.4em,itemsep=3pt]
+\item \emph{Si $t\in D$}~: en prenant la suite constante, $\tilde X_t=X_t$ sur $\Omega^\ast$, donc \ps.
+\item \emph{Si $t\notin D$}~: prenons $t_k\in D$, $t_k\to t$. Alors $X_{t_k}\to\tilde X_t$ \ps{} (sur $\Omega^\ast$). Par ailleurs l'hypoth\`ese de moments donne $\Esp[\abs{X_{t_k}-X_t}^{\alpha}]\le C\abs{t_k-t}^{1+\beta}\to 0$, donc $X_{t_k}\to X_t$ dans $L^{\alpha}$, donc en probabilit\'e. Une limite \ps{} et une limite en probabilit\'e co\"incidant \ps, on obtient $\tilde X_t=X_t$ \ps.
+\end{itemize}
+Donc $\tilde X$ est une modification continue de $X$. En recollant les intervalles $[n,n+1]$ (les morceaux co\"incident \ps{} aux entiers), on prolonge \`a $[0,\infty)$. \hfill$\blacksquare$
+
+\section{Sur l'optimalit\'e}
+
+\begin{itemize}[leftmargin=1.4em,itemsep=4pt]
+\item \textbf{L'exposant $\tfrac12$ est critique, non atteint.} Le brownien n'est \ps{} h\"old\'erien d'aucun exposant $\gamma\ge\tfrac12$~; c'est le contenu du module de continuit\'e uniforme de L\'evy,
+\[
+\limsup_{h\to0^+}\ \sup_{0\le t\le 1-h}\ \frac{\abs{B_{t+h}-B_t}}{\sqrt{2h\log(1/h)}}=1\quad\ps
+\]
+\item \textbf{Non-d\'erivabilit\'e.} Les trajectoires sont \ps{} nulle part d\'erivables (Partie~I)~: la continuit\'e h\"old\'erienne $<\tfrac12$ est exactement le bon degr\'e de r\'egularit\'e.
+\item \textbf{Approche alternative} (L\'evy--Ciesielski). On peut \emph{construire} le brownien comme s\'erie uniform\'ement convergente $B_t=\sum_n\xi_n\int_0^t h_n(s)\,ds$ dans la base de Haar/Schauder ($\xi_n$ i.i.d. $\Loi(0,1)$)~; la continuit\'e y est alors imm\'ediate (limite uniforme de fonctions continues), la convergence uniforme \ps{} se contr\^olant par Borel--Cantelli sur $\max_n\abs{\xi_n}$. Kolmogorov reste la voie \og minimale\fg{} si l'on part des seules lois fini-dimensionnelles.
+\end{itemize}
+
+% =====================================================================
+\appendix
+\part*{Appendice}
+\addcontentsline{toc}{section}{Appendice A. — Loi du logarithme it\'er\'e locale}
+\section{Loi du logarithme it\'er\'e locale}\label{app:lil}
+% =====================================================================
+
+On d\'emontre l'\'enonc\'e utilis\'e au \S1. Par stationnarit\'e des accroissements, il suffit de traiter $t_0=0$.
+
+\begin{theoreme}[LIL locale de L\'evy]\label{th:lil}
+Posons $\psi(h)=\sqrt{2h\,\log\log(1/h)}$ pour $h\in(0,e^{-e})$. Alors
+\[
+\limsup_{h\downarrow 0}\frac{B_h}{\psi(h)}=1\qquad\ps
+\]
+(et, en rempla\c cant $B$ par $-B$, $\ \liminf_{h\downarrow 0} B_h/\psi(h)=-1$).
+\end{theoreme}
+
+On utilise deux ingr\'edients classiques, valables pour $Z\sim\Loi(0,1)$ et $y\ge 1$~:
+\begin{equation}\label{eq:gauss}
+\Prob(Z\ge y)\le e^{-y^2/2}
+\qquad\text{et}\qquad
+\Prob(Z\ge y)\ge \frac{1}{\sqrt{2\pi}}\,\frac{y}{1+y^2}\,e^{-y^2/2}\ \ge\ \frac{c_0}{y}\,e^{-y^2/2},
+\end{equation}
+ainsi que le \textbf{principe de r\'eflexion}~: pour tout $a>0$, $\ \Prob\bigl(\sup_{0\le s\le h}B_s\ge a\bigr)=2\,\Prob(B_h\ge a)$.
+
+\subsection*{A.1 — Borne sup\'erieure~: $\limsup\le 1$ \ps}
+
+Fixons $\theta>1$ et $\varepsilon>0$, et posons la suite g\'eom\'etrique $h_n=\theta^{-n}\downarrow 0$. Consid\'erons
+\[
+A_n=\Bigl\{\sup_{0\le s\le h_n}B_s\ \ge\ (1+\varepsilon)\,\psi(h_n)\Bigr\}.
+\]
+Par r\'eflexion puis \eqref{eq:gauss} avec $a=(1+\varepsilon)\psi(h_n)$ et $a^2/(2h_n)=(1+\varepsilon)^2\log\log(1/h_n)$~:
+\[
+\Prob(A_n)=2\,\Prob\!\bigl(B_{h_n}\ge a\bigr)\le 2\exp\!\bigl(-(1+\varepsilon)^2\log\log(1/h_n)\bigr)
+=2\,\bigl(\log(1/h_n)\bigr)^{-(1+\varepsilon)^2}.
+\]
+Or $\log(1/h_n)=n\log\theta$, donc $\Prob(A_n)\le 2(\log\theta)^{-(1+\varepsilon)^2}\,n^{-(1+\varepsilon)^2}$, terme g\'en\'eral d'une s\'erie convergente puisque $(1+\varepsilon)^2>1$. Par Borel--Cantelli, presque s\^urement, pour $n$ assez grand,
+\[
+\sup_{0\le s\le h_n}B_s<(1+\varepsilon)\,\psi(h_n).
+\]
+Pour $h\in[h_{n+1},h_n]$, on a $B_h\le\sup_{s\le h_n}B_s<(1+\varepsilon)\psi(h_n)$, et comme $\psi$ est croissante au voisinage de $0$,
+\[
+\frac{B_h}{\psi(h)}\le(1+\varepsilon)\,\frac{\psi(h_n)}{\psi(h_{n+1})}\xrightarrow[n\to\infty]{}(1+\varepsilon)\sqrt{\theta},
+\]
+car $\psi(h_n)/\psi(h_{n+1})=\sqrt{\theta}\,\sqrt{\tfrac{\log\log(1/h_n)}{\log\log(1/h_{n+1})}}\to\sqrt\theta$. Donc $\limsup_{h\downarrow0}B_h/\psi(h)\le(1+\varepsilon)\sqrt\theta$ \ps. En faisant tendre $\theta\downarrow 1$ et $\varepsilon\downarrow 0$ le long de suites d\'enombrables, $\limsup\le 1$ \ps.
+
+\subsection*{A.2 — Borne inf\'erieure~: $\limsup\ge 1$ \ps}
+
+Fixons $\theta>1$ (destin\'e \`a \^etre grand) et $h_n=\theta^{-n}$. Consid\'erons les accroissements sur intervalles disjoints
+\[
+D_n=B_{h_n}-B_{h_{n+1}},\qquad D_n\sim\Loi\!\bigl(0,\,h_n-h_{n+1}\bigr),\quad h_n-h_{n+1}=h_n\Bigl(1-\tfrac1\theta\Bigr),
+\]
+qui sont \textbf{ind\'ependants}. Fixons $\varepsilon\in(0,1)$ et posons
+\[
+E_n=\Bigl\{D_n\ \ge\ (1-\varepsilon)\,\psi(h_n)\Bigr\}.
+\]
+Avec $\sigma_n^2=h_n(1-1/\theta)$ et $y_n=(1-\varepsilon)\psi(h_n)/\sigma_n$, on a
+\[
+\frac{y_n^2}{2}=\frac{(1-\varepsilon)^2\,\psi(h_n)^2}{2\sigma_n^2}
+=\frac{(1-\varepsilon)^2}{1-1/\theta}\,\log\log(1/h_n).
+\]
+Choisissons $\theta$ assez grand pour que $\kappa:=\dfrac{(1-\varepsilon)^2}{1-1/\theta}<1$. La minoration \eqref{eq:gauss} donne alors, avec $y_n\sim c\sqrt{\log n}$,
+\[
+\Prob(E_n)\ge\frac{c_0}{y_n}\,e^{-y_n^2/2}
+=\frac{c_0}{y_n}\,\bigl(\log(1/h_n)\bigr)^{-\kappa}
+\ \ge\ \frac{c_1}{\sqrt{\log n}}\;n^{-\kappa}.
+\]
+Comme $\kappa<1$, la s\'erie $\sum_n\Prob(E_n)$ diverge. Les $E_n$ \'etant ind\'ependants, le second lemme de Borel--Cantelli assure que $E_n$ se r\'ealise pour une infinit\'e de $n$, \ps.
+
+Il reste \`a repasser de $D_n$ \`a $B_{h_n}$. On \'ecrit $B_{h_n}=D_n+B_{h_{n+1}}$. Par la borne sup\'erieure A.1 appliqu\'ee \`a $-B$, on a \ps, pour $n$ grand, $B_{h_{n+1}}\ge -2\,\psi(h_{n+1})$, et
+\[
+\frac{\psi(h_{n+1})}{\psi(h_n)}=\frac{1}{\sqrt\theta}\,\sqrt{\tfrac{\log\log(1/h_{n+1})}{\log\log(1/h_n)}}\xrightarrow[n\to\infty]{}\frac{1}{\sqrt\theta}.
+\]
+Donc, pour une infinit\'e de $n$,
+\[
+\frac{B_{h_n}}{\psi(h_n)}=\frac{D_n}{\psi(h_n)}+\frac{B_{h_{n+1}}}{\psi(h_n)}
+\ \ge\ (1-\varepsilon)-2\,\frac{\psi(h_{n+1})}{\psi(h_n)}
+\ \xrightarrow[]{}\ (1-\varepsilon)-\frac{2}{\sqrt\theta}.
+\]
+Ainsi $\limsup_{h\downarrow 0}B_h/\psi(h)\ge(1-\varepsilon)-2/\sqrt\theta$ \ps. En faisant tendre $\varepsilon\downarrow 0$ puis $\theta\to\infty$ (le long de suites d\'enombrables), on obtient $\limsup\ge 1$ \ps.
+
+\subsection*{Conclusion}
+
+Les parties A.1 et A.2 donnent $\limsup_{h\downarrow 0}B_h/\psi(h)=1$ presque s\^urement. Appliqu\'e \`a $-B$ (qui est aussi un brownien standard), l'\'enonc\'e sur le $\liminf$ suit. En particulier $B_h/h\to\pm\infty$ le long de sous-suites, ce qui \'etablit rigoureusement la divergence du taux d'accroissement invoqu\'ee au \S1. \hfill$\blacksquare$
+
+\bigskip
+\begin{center}\rule{0.42\textwidth}{0.4pt}\end{center}
+\small\noindent\textbf{Rep\`eres bibliographiques.} Kolmogorov--Chentsov et h\"old\'erianit\'e~: Revuz--Yor, \emph{Continuous Martingales and Brownian Motion}, ch.~I~; Karatzas--Shreve, \emph{Brownian Motion and Stochastic Calculus}, \S2.2--2.4. Non-d\'erivabilit\'e (argument DEK) et LIL~: M\"orters--Peres, \emph{Brownian Motion}, ch.~1 et~5. Construction L\'evy--Ciesielski~: Karatzas--Shreve, \S2.3.
+
+\end{document}

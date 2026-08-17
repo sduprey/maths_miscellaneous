@@ -1,0 +1,809 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french,provide=*]{babel}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{stmaryrd}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{enumitem}
+\usepackage[activate=false]{microtype}
+\providecommand{\og}{\guillemotleft\,}\providecommand{\fg}{\,\guillemotright}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue}
+
+\theoremstyle{plain}
+\newtheorem{theoreme}{Théorème}[section]
+\newtheorem{proposition}[theoreme]{Proposition}
+\newtheorem{lemme}[theoreme]{Lemme}
+\newtheorem{corollaire}[theoreme]{Corollaire}
+\theoremstyle{definition}
+\newtheorem{definition}[theoreme]{Définition}
+\newtheorem{remarque}[theoreme]{Remarque}
+\newtheorem{exemple}[theoreme]{Exemple}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\PP}{\mathbb{P}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Poi}{\operatorname{Poisson}}
+\newcommand{\Mp}{M_p}
+\newcommand{\one}{\mathbf{1}}
+\newcommand{\dd}{\,\mathrm{d}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\calE}{\mathcal{E}}
+\newcommand{\calM}{\mathcal{M}}
+\newcommand{\calB}{\mathcal{B}}
+\newcommand{\calF}{\mathcal{F}}
+\newcommand{\calL}{\mathcal{L}}
+\newcommand{\calP}{\mathcal{P}}
+\newcommand{\calS}{\mathcal{S}}
+\newcommand{\calD}{\mathcal{D}}
+\newcommand{\calT}{\mathcal{T}}
+\newcommand{\calC}{\mathcal{C}}
+\newcommand{\calA}{\mathcal{A}}
+\newcommand{\sdeveloppe}{\vphantom{X}}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\card}{card}
+
+\title{\bf La mesure ponctuelle de Poisson\\[2pt]
+\large Mesures de comptage, construction, et fonctionnelle de Laplace}
+\author{}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent On construit rigoureusement le processus de Poisson comme \emph{mesure aléatoire ponctuelle} sur un espace mesurable général. Le fil directeur est le suivant~: une configuration de points est un objet à double lecture --- multi-ensemble de points, ou fonction d'ensemble additive à valeurs entières ---, formalisée par la notion de \emph{mesure de comptage}. On munit l'espace de ces mesures d'une tribu naturelle, on construit la mesure de Poisson d'intensité $\mu$ (cas de masse finie par \og poissonisation \fg{}, puis cas $\sigma$-fini par superposition), et l'on établit la \emph{fonctionnelle de Laplace}, transformée injective qui caractérise la loi et d'où découlent presque sans effort les formules de Campbell et les théorèmes d'application, de marquage et de superposition. On démontre l'équation de Mecke, puis on énonce le théorème de représentation des mesures de comptage sur un espace polonais et le lien avec la topologie vague et le théorème de Prokhorov. Les résultats topologiques, dont les preuves sont longues, sont clairement signalés comme admis.
+\end{abstract}
+
+\tableofcontents
+
+\bigskip
+
+\section{Cadre et mesures de comptage}
+
+\subsection{Espace de base}
+
+On se donne un espace mesurable $(E,\calE)$ vérifiant l'hypothèse permanente, très faible, que \emph{les singletons sont mesurables}~:
+\begin{equation}\label{hyp:singletons}
+\{x\}\in\calE\qquad\text{pour tout } x\in E. \tag{$\ast$}
+\end{equation}
+Cette hypothèse est très faible. Dans tout espace métrisable --- en particulier dans tout espace \emph{polonais} --- un point s'écrit comme intersection dénombrable de boules fermées,
+\[
+\{x\}=\bigcap_{n\ge 1}\overline{B}(x,\tfrac1n),
+\]
+c'est donc un fermé, a fortiori un borélien~: l'hypothèse \eqref{hyp:singletons} y est \emph{automatiquement} vérifiée. Elle suffit à donner un sens à la multiplicité d'un point (Définition~\ref{def:atome}) et est en vigueur dans tout le texte. L'hypothèse plus forte que $E$ soit polonais (métrisable, séparable, complet, muni de $\calE=\calB(E)$) n'est requise qu'au théorème de représentation (\S\ref{sec:representation}), et le cadre localement compact à base dénombrable (lcscH) n'intervient qu'à la théorie de la convergence faible (\S\ref{sec:vague})~; à ces endroits, \eqref{hyp:singletons} n'est donc pas une hypothèse supplémentaire mais une conséquence de la structure. Hormis ces deux sections, $(E,\calE)$ mesurable vérifiant \eqref{hyp:singletons} suffit --- en particulier pour toute la construction et la fonctionnelle de Laplace. On fixe enfin une sous-classe
+\[
+\hat\calE \subseteq \calE
+\]
+d'ensembles dits \emph{bornés} (par exemple les boréliens relativement compacts lorsque $E$ est localement compact). On demande que $\hat\calE$ soit un \emph{anneau localisant}~:
+\begin{enumerate}[label=\textup{(\alph*)},nosep]
+\item \emph{anneau}~: $\hat\calE$ est stable par unions et différences finies (donc par intersections finies)~;
+\item \emph{héréditaire}~: $A\cap B\in\hat\calE$ dès que $A\in\calE$ et $B\in\hat\calE$~;
+\item \emph{exhaustif}~: il existe une suite croissante $B_1\subseteq B_2\subseteq\cdots$ dans $\hat\calE$ avec $\bigcup_n B_n=E$.
+\end{enumerate}
+Une mesure $\mu$ sur $(E,\calE)$ est dite \emph{localement finie} (ou \emph{bornément finie}) si $\mu(B)<\infty$ pour tout $B\in\hat\calE$~; par (c) une telle mesure est en particulier $\sigma$-finie.
+
+\subsection{Masse de Dirac et mesures ponctuelles}
+
+\begin{definition}[Masse de Dirac]
+Pour $x\in E$, la \emph{masse de Dirac} en $x$ est la mesure
+\[
+\delta_x(A) = \one_A(x) = \begin{cases} 1 & \text{si } x\in A,\\ 0 & \text{si } x\notin A, \end{cases}
+\qquad A\in\calE.
+\]
+C'est une mesure de probabilité, et pour toute $f:E\to[0,\infty]$ mesurable, $\int_E f\dd\delta_x = f(x)$.
+\end{definition}
+
+\begin{definition}[Mesure ponctuelle]\label{def:comptage}
+Une \emph{mesure ponctuelle} (ou \emph{mesure de comptage}) sur $(E,\calE)$ est une mesure $m$ à valeurs entières et localement finie, c'est-à-dire telle que
+\[
+m(B)\in\N_0\qquad\text{pour tout } B\in\hat\calE .
+\]
+On note $\Mp(E)$ l'ensemble de ces mesures. Cette définition est \emph{intrinsèque}~: elle porte sur $m$ seule et ne présuppose aucune écriture de $m$ comme somme de masses de Dirac.
+\end{definition}
+
+\begin{remarque}[Valeurs sur toute la tribu]\label{rem:valeurs}
+Soit $m\in\Mp(E)$ et $A\in\calE$. Avec une suite exhaustive $B_n\uparrow E$ de $\hat\calE$, l'hérédité donne $A\cap B_n\in\hat\calE$, et la continuité croissante de $m$ donne
+\[
+m(A)=\lim_{n}m(A\cap B_n)=\sup_n m(A\cap B_n)\ \in\ \overline\N_0:=\N_0\cup\{\infty\}.
+\]
+Une mesure ponctuelle est donc à valeurs dans $\overline\N_0$ sur \emph{toute} la tribu, finie sur les bornés~; la masse globale $m(E)$ peut valoir $\infty$ (un Poisson homogène sur $\R$) sans jamais l'être localement.
+\end{remarque}
+
+\begin{definition}[Atome, multiplicité, mesure simple]\label{def:atome}
+Grâce à l'hypothèse permanente \eqref{hyp:singletons}, $\{x\}\in\calE$ pour tout $x$. Pour $m\in\Mp(E)$ et $x\in E$, l'entier $m(\{x\})\in\overline\N_0$ est la \emph{multiplicité} de $x$~; le point $x$ est un \emph{atome} de $m$ si $m(\{x\})\ge 1$. La mesure $m$ est \emph{simple} si $m(\{x\})\le 1$ pour tout $x\in E$. L'ensemble des atomes est au plus dénombrable~: dans chaque borné $B_n$, le nombre d'atomes comptés avec multiplicité est majoré par $m(B_n)<\infty$, et $E=\bigcup_n B_n$~; la donnée intrinsèque et canonique d'une mesure ponctuelle est ainsi la famille de multiplicités $\big(m(\{x\})\big)_{x\in E}$, à support dénombrable.
+\end{definition}
+
+\begin{definition}[Atome, mesure diffuse]\label{def:diffuse}
+Plus généralement, pour une mesure quelconque $\eta$ sur $(E,\calE)$ (vérifiant \eqref{hyp:singletons}), un point $x\in E$ est un \emph{atome} de $\eta$ si $\eta(\{x\})>0$. La mesure $\eta$ est dite \emph{diffuse} (ou \emph{sans atome}, ou \emph{continue}) si
+\[
+\eta(\{x\})=0\qquad\text{pour tout }x\in E.
+\]
+\end{definition}
+
+\begin{remarque}[Décomposition et caractérisations de la diffusion]\label{rem:diffuse}
+Toute mesure $\sigma$-finie $\eta$ se scinde de manière unique en $\eta=\eta_a+\eta_c$, où $\eta_a=\sum_{x\in D}\eta(\{x\})\,\delta_x$ est \emph{purement atomique} --- l'ensemble $D=\{x:\eta(\{x\})>0\}$ des atomes étant au plus dénombrable, car $\#\{x:\eta(\{x\})\ge\eps\}\le\eta(E)/\eps$ (cf.\ la preuve du Théorème~\ref{thm:representation}) --- et où $\eta_c$ est \emph{diffuse}~; ainsi $\eta$ est diffuse si et seulement si $\eta_a=0$. Deux caractérisations éclairantes~:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item (cas $E=\R$, $\eta$ finie) $\eta$ est diffuse ssi sa fonction de répartition $t\mapsto\eta\big((-\infty,t]\big)$ est \emph{continue} --- un atome correspond exactement à un saut, d'où le synonyme \og continue \fg{}~;
+\item (espace borélien standard, $\eta$ finie) $\eta$ est diffuse ssi elle possède la \emph{propriété de la valeur intermédiaire}~: pour tout $A$ et tout $t\in[0,\eta(A)]$, il existe $B\subseteq A$ avec $\eta(B)=t$ (Lemme de Sierpiński, \S\ref{sec:representation}).
+\end{enumerate}
+Exemples~: $\lambda\,\dd t$, et plus généralement toute mesure à densité par rapport à Lebesgue, sont diffuses~; $\delta_{x_0}$ et $\sum_i\alpha_i\delta_{x_i}$ sont purement atomiques. Une réalisation $N(\omega,\cdot)=\sum_i\delta_{x_i}$ n'est \emph{jamais} diffuse (chaque point est un atome de masse entière $\ge1$), tandis que son intensité $\mu=\E[N]$ peut l'être~: c'est la diffusion de $\mu$ qui garantit qu'aucun site n'est privilégié, donc qu'un point donné ne reçoit p.s.\ qu'au plus une masse unité (cf.\ la caractérisation de Rényi, \S\ref{sec:renyi}).
+\end{remarque} Le sens facile --- une famille localement finie de points définit une mesure ponctuelle --- est élémentaire et fournit les formules de comptage et d'intégration ci-dessous. La réciproque --- toute $m\in\Mp(E)$ s'écrit ainsi --- est plus délicate, requiert une hypothèse topologique, et fait l'objet du théorème de représentation (\S\ref{sec:representation})~; c'est là, et non dans la définition, qu'intervient la structure de $E$.
+
+\begin{proposition}[Sens facile]\label{prop:sensfacile}
+Soit $(x_i)_{i\in I}$ une famille au plus dénombrable de points de $E$, \emph{localement finie} au sens où $\card\{i\in I:x_i\in B\}<\infty$ pour tout $B\in\hat\calE$. Alors
+\[
+m:=\sum_{i\in I}\delta_{x_i}
+\]
+est bien définie, appartient à $\Mp(E)$, et vérifie
+\begin{equation}\label{eq:compte}
+m(A)=\card\{i\in I:x_i\in A\}\qquad(A\in\calE),
+\end{equation}
+\begin{equation}\label{eq:integre}
+\int_E f\dd m=\sum_{i\in I} f(x_i)\qquad(f:E\to[0,\infty]\ \text{mesurable}).
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Une somme au plus dénombrable de mesures positives est une mesure. En effet, pour $A\in\calE$ on pose $m(A):=\sum_{i\in I}\delta_{x_i}(A)=\sum_{i\in I}\one_A(x_i)\in[0,\infty]$~; la $\sigma$-additivité résulte du théorème de Tonelli pour les séries doubles à termes positifs, qui autorise l'interversion
+\[
+m\Big(\bigsqcup_k A_k\Big)=\sum_{i\in I}\sum_k\one_{A_k}(x_i)=\sum_k\sum_{i\in I}\one_{A_k}(x_i)=\sum_k m(A_k).
+\]
+La valeur $m(A)=\card\{i:x_i\in A\}$ est entière, et finie pour $A=B\in\hat\calE$ par hypothèse de finitude locale~: ainsi $m\in\Mp(E)$, ce qui établit \eqref{eq:compte}. Enfin \eqref{eq:integre} vaut pour $f=\one_A$ (c'est \eqref{eq:compte}), s'étend aux fonctions étagées positives par linéarité, puis à toute $f\ge0$ mesurable par convergence monotone.
+\end{proof}
+
+\begin{remarque}[Non-unicité de la représentation]
+La famille $(x_i)$ n'est pas unique~: toute permutation, ou toute ré-indexation respectant les multiplicités, donne la même mesure $m$. Ce qui est canonique, ce n'est pas la famille mais la fonction de multiplicité $x\mapsto m(\{x\})$ de la Définition~\ref{def:atome}. C'est pourquoi la définition intrinsèque (Définition~\ref{def:comptage}) est préférable comme point de départ.
+\end{remarque}
+
+\begin{remarque}[Terminologie]
+La \og mesure de comptage \fg{} élémentaire $\#\colon A\mapsto \card A=\sum_{x\in E}\delta_x$ n'est ponctuelle au sens de la Définition~\ref{def:comptage} que si $E$ est dénombrable et discret (sinon elle n'est pas localement finie). En théorie des processus ponctuels, \og mesure de comptage \fg{} désigne l'objet générique de $\Mp(E)$, pas cet objet maximal.
+\end{remarque}
+
+\subsection{La tribu sur \texorpdfstring{$\Mp(E)$}{Mp(E)}}
+
+Pour parler de \emph{hasard} sur $\Mp(E)$, on munit cet espace d'une tribu. Le choix minimal est celui rendant mesurables toutes les \emph{évaluations}.
+
+\begin{definition}\label{def:tribu}
+On munit $\overline\N_0=\N_0\cup\{\infty\}$ de la tribu $\calP(\overline\N_0)$ de toutes ses parties (c'est un espace dénombrable). Pour $A\in\calE$, l'\emph{évaluation} en $A$ est $\pi_A:\Mp(E)\to\overline\N_0$, $\pi_A(m)=m(A)$ (bien définie par la Remarque~\ref{rem:valeurs}). On pose
+\[
+\calM_p := \sigma\big(\pi_A : A\in\calE\big),
+\]
+la plus petite tribu sur $\Mp(E)$ rendant mesurables toutes les évaluations.
+\end{definition}
+
+\begin{remarque}[Il suffit de l'anneau]\label{rem:anneau-engendre}
+On a $\calM_p=\sigma\big(\pi_B:B\in\hat\calE\big)$. En effet, pour $A\in\calE$ et $B_n\uparrow E$ dans $\hat\calE$, la Remarque~\ref{rem:valeurs} donne $\pi_A=\sup_n\pi_{A\cap B_n}$, limite croissante d'évaluations en des bornés~; chaque $\pi_A$ est donc déjà $\sigma(\pi_B:B\in\hat\calE)$-mesurable, d'où l'égalité des deux tribus. Il suffira ainsi partout de contrôler les comptages sur les bornés.
+\end{remarque}
+
+\begin{proposition}[Mesurabilité de l'intégration]\label{prop:integ-mes}
+Pour toute $f:E\to[0,\infty]$ mesurable, l'application $\Mp(E)\ni m\mapsto m(f)=\int f\dd m$ est $\calM_p$-mesurable.
+\end{proposition}
+
+\begin{proof}
+Si $f=\sum_{j=1}^k c_j\one_{A_j}$ est étagée ($c_j\ge 0$, $A_j\in\calE$), alors $m(f)=\sum_{j=1}^k c_j\,\pi_{A_j}(m)$ est mesurable comme combinaison linéaire finie d'évaluations. Pour $f\ge 0$ mesurable générale, on prend une suite croissante $(f_n)$ de fonctions étagées avec $f_n\uparrow f$~; par le théorème de convergence monotone appliqué à la mesure $m$, on a $m(f_n)\uparrow m(f)$ pour chaque $m\in\Mp(E)$, si bien que $m\mapsto m(f)$ est limite simple d'applications mesurables, donc mesurable.
+\end{proof}
+
+\begin{remarque}
+La famille des \emph{cylindres}
+$\{m : (m(A_1),\dots,m(A_k))\in C\}$, pour $k\ge 1$, $A_i\in\calE$ et $C\subseteq(\N\cup\{\infty\})^k$ mesurable, forme un $\pi$-système engendrant $\calM_p$. Deux mesures de probabilité sur $\big(\Mp(E),\calM_p\big)$ qui coïncident sur ce $\pi$-système sont donc égales (théorème $\pi$--$\lambda$ de Dynkin). C'est le mécanisme d'unicité utilisé partout dans la suite~: \emph{une loi sur $\Mp(E)$ est déterminée par ses lois fini-dimensionnelles} $\big(N(A_1),\dots,N(A_k)\big)$.
+\end{remarque}
+
+\section{Processus ponctuels}
+
+On rappelle d'abord le critère de mesurabilité vers une tribu engendrée par une famille d'applications, qui rend rigoureuse l'identification annoncée.
+
+\begin{lemme}[Mesurabilité vers une tribu engendrée]\label{lem:engendre}
+Soient $(\Omega,\calF)$ un espace mesurable, $(S,\calS)$ avec $\calS=\sigma(f_i:i\in I)$ pour des applications $f_i:S\to(T_i,\calT_i)$, et $N:\Omega\to S$. Alors $N$ est $\calF/\calS$-mesurable si et seulement si $f_i\circ N$ est $\calF/\calT_i$-mesurable pour tout $i\in I$.
+\end{lemme}
+
+\begin{proof}
+Si $N$ est mesurable, chaque $f_i\circ N$ l'est par composition. Réciproquement, supposons chaque $f_i\circ N$ mesurable. La classe $\calD:=\{B\in\calS:N^{-1}(B)\in\calF\}$ est une tribu (image réciproque commutant aux opérations ensemblistes) qui contient tous les $f_i^{-1}(\calT_i)$ (car $N^{-1}(f_i^{-1}(C))=(f_i\circ N)^{-1}(C)\in\calF$). Elle contient donc $\sigma(f_i:i\in I)=\calS$, d'où $\calD=\calS$~: $N$ est mesurable.
+\end{proof}
+
+\begin{definition}[Processus ponctuel]\label{def:pp}
+Soit $(\Omega,\calF,\PP)$ un espace probabilisé. Un \emph{processus ponctuel} sur $E$ est une application mesurable
+\[
+N:(\Omega,\calF)\longrightarrow \big(\Mp(E),\calM_p\big).
+\]
+Pour $A\in\calE$, on note $N(A):=\pi_A\circ N$, soit $N(\omega,A)=N(\omega)(A)$.
+\end{definition}
+
+\begin{proposition}[Description par les comptages]\label{prop:equiv-pp}
+Soit une famille $\{\widetilde N(A)\}_{A\in\calE}$ de fonctions $\widetilde N(\cdot,A):\Omega\to\overline\N_0$. Il existe un (unique) processus ponctuel $N$ tel que $N(\omega,A)=\widetilde N(\omega,A)$ pour tous $\omega,A$ si et seulement si~:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item pour chaque $\omega\in\Omega$, l'application $A\mapsto\widetilde N(\omega,A)$ est une mesure ponctuelle, c'est-à-dire un élément de $\Mp(E)$~;
+\item pour chaque $B\in\hat\calE$, la fonction $\omega\mapsto\widetilde N(\omega,B)$ est $\calF/\calP(\overline\N_0)$-mesurable.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+La condition (i) dit exactement que $\omega\mapsto N(\omega):=\widetilde N(\omega,\cdot)$ est une application $\Omega\to\Mp(E)$ bien définie. Par le Lemme~\ref{lem:engendre} appliqué à $S=\Mp(E)$, $\calS=\calM_p=\sigma(\pi_B:B\in\hat\calE)$ (Remarque~\ref{rem:anneau-engendre}), cette application est $\calF/\calM_p$-mesurable si et seulement si chaque $\pi_B\circ N=\widetilde N(\cdot,B)$ est mesurable, ce qui est (ii). L'unicité est claire puisque les $\pi_A$ séparent les points de $\Mp(E)$.
+\end{proof}
+
+\begin{remarque}
+C'est le contenu exact de l'\og équivalence \fg{}~: il ne suffit pas d'avoir des comptages aléatoires, il faut que, $\omega$ par $\omega$, ils se recollent en une vraie mesure ponctuelle (i). Le parallèle avec les processus usuels est net~: un processus ponctuel est à une mesure aléatoire ce qu'un processus $\{X_t\}$ est à une fonction aléatoire, et sa loi sur $\big(\Mp(E),\calM_p\big)$ est déterminée par ses lois fini-dimensionnelles $\big(N(A_1),\dots,N(A_k)\big)$ (Remarque après la Proposition~\ref{prop:integ-mes}).
+\end{remarque}
+
+\begin{definition}[Mesure d'intensité]\label{def:intensite}
+Pour un processus ponctuel $N$, chaque comptage $N(A):\Omega\to\overline\N_0$ est une variable aléatoire positive, d'espérance bien définie dans $[0,\infty]$. La \emph{mesure d'intensité} de $N$ est
+\[
+\mu(A) := \E\big[N(A)\big]\in[0,\infty],\qquad A\in\calE.
+\]
+C'est une mesure~: $\mu(\varnothing)=0$, et pour une réunion disjointe $A=\bigsqcup_k A_k$, la $\sigma$-additivité de $N(\omega,\cdot)$ donne $N(A)=\sum_k N(A_k)$ (série à termes positifs), d'où $\mu(A)=\E\big[\sum_k N(A_k)\big]=\sum_k\E[N(A_k)]=\sum_k\mu(A_k)$ par le théorème de Tonelli (interversion $\E$/série positive).
+\end{definition}
+
+\section{La mesure ponctuelle de Poisson}
+
+\subsection{Définition axiomatique}
+
+\begin{definition}[PRM]\label{def:prm}
+Soit $\mu$ une mesure localement finie sur $(E,\calE)$. Un processus ponctuel $N$ est une \emph{mesure ponctuelle de Poisson} d'intensité $\mu$ (en abrégé $N\sim\mathrm{PRM}(\mu)$) si~:
+\begin{enumerate}[label=\textup{(P\arabic*)}]
+\item\label{P1} pour tout $A\in\calE$, $N(A)\sim\Poi\big(\mu(A)\big)$~;
+\item\label{P2} pour tous $A_1,\dots,A_k\in\calE$ deux à deux disjoints, les variables $N(A_1),\dots,N(A_k)$ sont indépendantes.
+\end{enumerate}
+On adopte les conventions $\Poi(0)=\delta_0$ et $\Poi(\infty)=\delta_{+\infty}$~; ainsi $N(A)=\infty$ p.s. lorsque $\mu(A)=\infty$.
+\end{definition}
+
+\begin{proposition}[Unicité en loi]\label{prop:unicite}
+Les axiomes \ref{P1}--\ref{P2} déterminent entièrement la loi de $N$ sur $\big(\Mp(E),\calM_p\big)$.
+\end{proposition}
+
+\begin{proof}
+\emph{Réduction aux lois fini-dimensionnelles.} La classe des cylindres
+\[
+\calC:=\Big\{\{m:(m(A_1),\dots,m(A_k))\in C\}\ :\ k\ge1,\ A_i\in\calE,\ C\subseteq\overline\N_0^{\,k}\Big\}
+\]
+est un $\pi$-système~: l'intersection de deux cylindres, portant sur $(A_1,\dots,A_k)$ et $(A'_1,\dots,A'_{k'})$, est le cylindre sur la famille réunie $(A_1,\dots,A_k,A'_1,\dots,A'_{k'})$. De plus $\sigma(\calC)=\calM_p$, puisque $\pi_A^{-1}(C)\in\calC$ engendre $\calM_p=\sigma(\pi_A:A\in\calE)$. Deux lois de processus ponctuels coïncidant sur $\calC$ --- c'est-à-dire ayant mêmes lois fini-dimensionnelles $\big(N(A_1),\dots,N(A_k)\big)$ --- coïncident donc sur $\calM_p$ par le théorème $\pi$--$\lambda$ de Dynkin. Il suffit ainsi de montrer que \ref{P1}--\ref{P2} fixent ces lois.
+
+\emph{Détermination des lois fini-dimensionnelles.} Soient $A_1,\dots,A_k\in\calE$ quelconques. L'algèbre (finie) qu'ils engendrent a pour atomes une partition $B_1,\dots,B_m$ de $\bigcup_i A_i$ en ensembles deux à deux disjoints, et chaque $A_i=\bigsqcup_{\ell\in S_i}B_\ell$ pour un $S_i\subseteq\{1,\dots,m\}$. Les $B_\ell$ étant disjoints, \ref{P2} et \ref{P1} donnent que $\big(N(B_1),\dots,N(B_m)\big)$ a pour loi le produit $\bigotimes_{\ell=1}^m\Poi(\mu(B_\ell))$, entièrement déterminé par $\mu$. Le vecteur $\big(N(A_1),\dots,N(A_k)\big)$ en est l'image par l'application mesurable
+\[
+(b_1,\dots,b_m)\longmapsto\Big(\textstyle\sum_{\ell\in S_1}b_\ell,\dots,\sum_{\ell\in S_k}b_\ell\Big),
+\]
+donc sa loi est déterminée. Ceci fixe toutes les lois fini-dimensionnelles, donc la loi de $N$.
+\end{proof}
+
+\begin{remarque}[Pourquoi Poisson, et pas une autre loi ?]\label{rem:pourquoi-poisson}
+On peut se demander si le choix de la loi de Poisson dans \ref{P1} est conventionnel~: pourrait-on garder \ref{P2} (indépendance sur les disjoints) en imposant aux comptages une autre famille de lois ? La réponse est \emph{non}, et cette rigidité est un théorème. Dès que l'on exige simultanément que les comptages soient à valeurs entières, additifs ($N(A_1\sqcup A_2)=N(A_1)+N(A_2)$), indépendants sur les disjoints, et \emph{ordonnés} (au plus un point par site, ce que garantit une intensité diffuse), la loi de $N(A)$ ne \emph{peut} être que $\Poi(\mu(A))$. La loi de Poisson n'est donc pas postulée par commodité~: elle est \emph{forcée} par la structure. C'est le contenu de la caractérisation de Rényi, démontrée en \S\ref{sec:renyi}. Cette section est une motivation~: elle n'est pas utilisée dans la suite du fil logique, qui part des axiomes \ref{P1}--\ref{P2}.
+\end{remarque}
+
+Reste la question centrale~: \emph{un tel objet existe-t-il ?} On le construit explicitement.
+
+\subsection{Construction I~: masse totale finie}
+
+On suppose d'abord $c:=\mu(E)\in(0,\infty)$, et l'on pose la probabilité normalisée $\nu:=\mu/c$.
+
+\begin{theoreme}[Poissonisation]\label{thm:constrI}
+Soient, sur un même espace probabilisé, une variable $K\sim\Poi(c)$ et une suite $(X_i)_{i\ge 1}$ i.i.d.\ de loi $\nu$, le tout indépendant. Alors
+\[
+N := \sum_{i=1}^{K}\delta_{X_i}
+\]
+définit une $\mathrm{PRM}(\mu)$.
+\end{theoreme}
+
+\begin{proof}
+Pour $A\in\calE$, $N(\omega,A)=\sum_{i=1}^{K(\omega)}\one_A(X_i(\omega))$ est mesurable en $\omega$, et $A\mapsto N(\omega,A)$ est une mesure de comptage (finie, car $N(E)=K<\infty$ p.s.). Il reste à vérifier \ref{P1}--\ref{P2}.
+
+Soit $A_1,\dots,A_m$ une \emph{partition} mesurable de $E$, et $n_1,\dots,n_m\in\N_0$ de somme $n:=\sum_\ell n_\ell$. Conditionnellement à $\{K=n\}$, les variables $X_1,\dots,X_n$ sont i.i.d.\ de loi $\nu$ (et indépendantes de $K$). Posons, pour $x\in E$, son \emph{type} $\tau(x):=\ell$ lorsque $x\in A_\ell$ (bien défini, les $A_\ell$ partitionnant $E$)~; les types $\tau(X_1),\dots,\tau(X_n)$ sont alors i.i.d.\ à valeurs dans $\{1,\dots,m\}$, avec $\PP(\tau(X_1)=\ell)=\nu(A_\ell)=p_\ell$ où $p_\ell:=\mu(A_\ell)/c$. Comme $N(A_\ell)=\card\{i\le n:\tau(X_i)=\ell\}$ est le nombre de tirages de type $\ell$ parmi $n$ tirages catégoriels i.i.d., le vecteur $\big(N(A_1),\dots,N(A_m)\big)$ suit, conditionnellement à $\{K=n\}$, la loi multinomiale $\mathcal M(n;p_1,\dots,p_m)$. On dé-conditionne~:
+\[
+\PP\big(N(A_1)=n_1,\dots,N(A_m)=n_m\big)
+= \underbrace{e^{-c}\frac{c^{\,n}}{n!}}_{\PP(K=n)}
+\cdot
+\underbrace{\frac{n!}{\prod_\ell n_\ell!}\prod_\ell p_\ell^{\,n_\ell}}_{\mathcal M(n;p)\ \text{en }(n_1,\dots,n_m)}.
+\]
+Le facteur $n!$ se simplifie. Comme $c^{\,n}\prod_\ell p_\ell^{\,n_\ell}=\prod_\ell (c\,p_\ell)^{n_\ell}=\prod_\ell\mu(A_\ell)^{n_\ell}$ et $e^{-c}=\prod_\ell e^{-\mu(A_\ell)}$ (car $\sum_\ell\mu(A_\ell)=c$), on obtient la \emph{factorisation}
+\begin{equation}\label{eq:factorisation}
+\PP\big(N(A_1)=n_1,\dots,N(A_m)=n_m\big)
+= \prod_{\ell=1}^{m} e^{-\mu(A_\ell)}\,\frac{\mu(A_\ell)^{\,n_\ell}}{n_\ell!}.
+\end{equation}
+La loi jointe est un produit de lois de Poisson~: c'est simultanément \ref{P1} (chaque marge est $\Poi(\mu(A_\ell))$) et \ref{P2} (indépendance sur cette partition).
+
+Pour des ensembles disjoints $A_1,\dots,A_k$ \emph{quelconques} (non nécessairement une partition), on complète par $A_{k+1}:=E\setminus\bigcup_{i\le k}A_i$ en une partition et l'on marginalise \eqref{eq:factorisation} sur $N(A_{k+1})$~; l'indépendance et les lois marginales des $N(A_i)$, $i\le k$, sont préservées. D'où \ref{P1}--\ref{P2} en toute généralité.
+\end{proof}
+
+\begin{remarque}
+La factorisation \eqref{eq:factorisation} est le c\oe ur du phénomène~: mélanger un \emph{nombre poissonien} de tirages multinomiaux les rend exactement indépendants sur des blocs disjoints. C'est une propriété propre à la loi de Poisson pour le cardinal $K$~; aucune autre loi de $K$ ne produit cette décorrélation parfaite.
+\end{remarque}
+
+\subsection{Construction II~: cas \texorpdfstring{$\sigma$}{sigma}-fini}
+
+\begin{lemme}[Somme de variables de Poisson indépendantes]\label{lem:poissonsum}
+Soient $(X_n)_{n\ge1}$ indépendantes, $X_n\sim\Poi(\lambda_n)$ avec $\lambda_n\ge0$, et $\Lambda:=\sum_{n\ge1}\lambda_n\in[0,\infty]$. Alors $S:=\sum_{n\ge1}X_n$ (valeurs dans $\overline\N_0$) vérifie~: si $\Lambda<\infty$, $S\sim\Poi(\Lambda)$~; si $\Lambda=\infty$, $S=\infty$ presque sûrement.
+\end{lemme}
+
+\begin{proof}
+\emph{Deux termes.} Si $X\sim\Poi(a)$ et $Y\sim\Poi(b)$ sont indépendantes, la convolution donne, pour $k\in\N_0$,
+\[
+\PP(X+Y=k)=\sum_{j=0}^k e^{-a}\frac{a^j}{j!}\,e^{-b}\frac{b^{k-j}}{(k-j)!}
+=\frac{e^{-(a+b)}}{k!}\sum_{j=0}^k\binom kj a^j b^{k-j}
+=e^{-(a+b)}\frac{(a+b)^k}{k!},
+\]
+par la formule du binôme~: $X+Y\sim\Poi(a+b)$. Par récurrence, $S_N:=\sum_{n\le N}X_n\sim\Poi(\Lambda_N)$, $\Lambda_N:=\sum_{n\le N}\lambda_n$.
+
+\emph{Limite.} La suite $(S_N)$ est croissante à termes dans $\N_0$, donc converge p.s.\ vers $S=\sup_N S_N\in\overline\N_0$. Fixons $z\in(0,1)$~: la fonction génératrice vaut $\E[z^{S_N}]=e^{\Lambda_N(z-1)}$, et comme $0\le z^{S_N}\le1$ et $z^{S_N}\to z^{S}$ (avec $z^{\infty}:=0$), la convergence dominée donne $\E[z^{S_N}]\to\E[z^{S}]$.
+
+Si $\Lambda<\infty$, $\Lambda_N\uparrow\Lambda$ donne $\E[z^{S}]=e^{\Lambda(z-1)}$ pour tout $z\in(0,1)$~: c'est la fonction génératrice de $\Poi(\Lambda)$, et l'unicité du développement en série entière force $\PP(S=k)=e^{-\Lambda}\Lambda^k/k!$, donc $\PP(S=\infty)=0$. Si $\Lambda=\infty$, alors $\Lambda_N\to\infty$ et $z-1<0$ donnent $\E[z^{S}]=\lim_N e^{\Lambda_N(z-1)}=0$ pour tout $z\in(0,1)$~; or $\E[z^{S}]=\sum_{k\ge0}\PP(S=k)z^k$ (la masse en $\infty$ contribuant $z^\infty=0$), série entière identiquement nulle sur $(0,1)$, donc $\PP(S=k)=0$ pour tout $k\in\N_0$, c'est-à-dire $\PP(S=\infty)=1$.
+\end{proof}
+
+\begin{theoreme}[Existence générale]\label{thm:constrII}
+Pour toute mesure localement finie (donc $\sigma$-finie) $\mu$ sur $(E,\calE)$, il existe une $\mathrm{PRM}(\mu)$.
+\end{theoreme}
+
+\begin{proof}
+Par $\sigma$-finitude, on partitionne $E=\bigsqcup_{n\ge 1}E_n$ avec $\mu(E_n)<\infty$. Sur des composantes indépendantes de l'espace probabilisé, on construit (Théorème~\ref{thm:constrI}) des processus \emph{indépendants} $N_n\sim\mathrm{PRM}\big(\mu(\cdot\cap E_n)\big)$, chacun porté par $E_n$. On pose $N := \sum_{n\ge 1} N_n$.
+
+\emph{Loi des comptages et \ref{P1}.} Pour $A\in\calE$, $N(A)=\sum_n N_n(A\cap E_n)$ est une somme de variables \emph{indépendantes} (les $N_n$ vivent sur des composantes indépendantes), avec $N_n(A\cap E_n)\sim\Poi\big(\mu(A\cap E_n)\big)$. Le Lemme~\ref{lem:poissonsum} donne
+\[
+N(A)\sim\Poi\Big(\sum_n\mu(A\cap E_n)\Big)=\Poi\big(\mu(A)\big),
+\]
+la dernière égalité par $\sigma$-additivité de $\mu$ sur $A=\bigsqcup_n(A\cap E_n)$. Ceci est \ref{P1}.
+
+\emph{$N$ est un processus ponctuel.} Pour chaque $\omega$, $N(\omega,\cdot)=\sum_n N_n(\omega,\cdot)$ est une somme dénombrable de mesures, donc une mesure à valeurs dans $\overline\N_0$. Pour $B\in\hat\calE$, $\mu(B)<\infty$ donne $N(B)\sim\Poi(\mu(B))$, donc $N(B)<\infty$ p.s. En prenant l'exhaustion $B_p\uparrow E$, l'événement $\Omega_0:=\bigcap_p\{N(B_p)<\infty\}$ est de probabilité $1$~; sur $\Omega_0$, $N(\omega,\cdot)$ est finie sur tous les bornés, donc $N(\omega,\cdot)\in\Mp(E)$. Quitte à poser $N:=0$ sur $\Omega_0^c$ (négligeable), $N$ est à valeurs dans $\Mp(E)$~; chaque $N(B)$ étant une variable aléatoire, la Proposition~\ref{prop:equiv-pp} assure que $N$ est un processus ponctuel.
+
+\emph{Indépendance \ref{P2}.} Soient $A_1,\dots,A_k$ disjoints. La famille double $\big(N_n(A_i\cap E_n)\big)_{n\ge1,\,1\le i\le k}$ est constituée de variables globalement indépendantes~: à $n$ fixé, $N_n(A_1\cap E_n),\dots,N_n(A_k\cap E_n)$ sont indépendantes par \ref{P2} pour $N_n$ (ensembles disjoints), et les paquets d'indices $n$ distincts sont indépendants car les $N_n$ le sont. Or $N(A_i)=\sum_n N_n(A_i\cap E_n)$ est fonction mesurable du seul paquet $\{(n,i):n\ge1\}$, et ces paquets sont disjoints pour $i$ distincts~; par le lemme de regroupement (des fonctions de blocs disjoints de variables indépendantes sont indépendantes), $N(A_1),\dots,N(A_k)$ sont indépendantes.
+\end{proof}
+
+\begin{corollaire}
+Par les Théorèmes~\ref{thm:constrII} et~\ref{prop:unicite}, pour toute intensité localement finie $\mu$ il existe une $\mathrm{PRM}(\mu)$, unique en loi.
+\end{corollaire}
+
+\section{La fonctionnelle de Laplace}\label{sec:laplace}
+
+\subsection{Définition et formule fondamentale}
+
+\begin{definition}
+La \emph{fonctionnelle de Laplace} d'un processus ponctuel $N$ est, pour $f:E\to[0,\infty]$ mesurable,
+\[
+\calL_N(f) := \E\Big[\exp\big(-N(f)\big)\Big]
+= \E\Big[\exp\Big(-\int_E f\dd N\Big)\Big]\in[0,1].
+\]
+\end{definition}
+
+\begin{theoreme}[Formule de Laplace]\label{thm:laplace}
+Si $N\sim\mathrm{PRM}(\mu)$, alors pour toute $f:E\to[0,\infty]$ mesurable,
+\begin{equation}\label{eq:laplace}
+\boxed{\;\calL_N(f)=\exp\!\Big(-\int_E\big(1-e^{-f}\big)\dd\mu\Big).\;}
+\end{equation}
+\end{theoreme}
+
+\begin{proof}
+\emph{Cas fini $\mu(E)=c<\infty$.} On utilise la Construction~\ref{thm:constrI}. Par \eqref{eq:integre}, $N(f)=\sum_{i=1}^{K}f(X_i)$. Conditionnellement à $\{K=n\}$, les $X_1,\dots,X_n$ sont i.i.d.\ de loi $\nu$ et indépendantes de $K$, donc
+\[
+\E\big[e^{-N(f)}\mid K=n\big]=\E\Big[\prod_{i=1}^n e^{-f(X_i)}\Big]=\prod_{i=1}^n\E\big[e^{-f(X_i)}\big]=\varphi^{\,n},
+\qquad
+\varphi := \int_E e^{-f}\dd\nu\in[0,1].
+\]
+En prenant l'espérance en $K$, $\calL_N(f)=\E[\varphi^{K}]$. Or la fonction génératrice de $K\sim\Poi(c)$ est $\E[z^{K}]=\sum_{n\ge0}e^{-c}\frac{c^n}{n!}z^n=e^{c(z-1)}$ ($z\in[0,1]$). Avec $z=\varphi=\frac1c\int e^{-f}\dd\mu$,
+\[
+\calL_N(f)=e^{c(\varphi-1)}
+=\exp\Big(\int_E e^{-f}\dd\mu-c\Big)
+=\exp\Big(-\int_E\big(1-e^{-f}\big)\dd\mu\Big),
+\]
+puisque $c=\mu(E)=\int_E 1\dd\mu$. C'est \eqref{eq:laplace}.
+
+\emph{Cas $\sigma$-fini.} Avec la Construction~\ref{thm:constrII}, $E=\bigsqcup_n E_n$ et $N=\sum_n N_n$ où les $N_n\sim\mathrm{PRM}(\mu(\cdot\cap E_n))$ sont indépendants. Comme $N(f)=\sum_n N_n(f\one_{E_n})$ est une somme de termes positifs, on a p.s.\ $e^{-N(f)}=\prod_{n\ge1}Y_n$ avec $Y_n:=e^{-N_n(f\one_{E_n})}\in[0,1]$, variables \emph{indépendantes}. Les produits partiels $P_m:=\prod_{n\le m}Y_n$ décroissent (facteurs dans $[0,1]$) vers $\prod_n Y_n$ et sont dominés par $1$~; la convergence dominée puis l'indépendance (produit \emph{fini}) donnent
+\[
+\calL_N(f)=\E\Big[\prod_{n\ge1} Y_n\Big]
+=\lim_{m\to\infty}\E[P_m]
+=\lim_{m\to\infty}\prod_{n\le m}\E[Y_n]
+=\prod_{n\ge1}\calL_{N_n}(f\one_{E_n}).
+\]
+Le cas fini appliqué à chaque $N_n$ donne $\calL_{N_n}(f\one_{E_n})=\exp\big(-\int_{E_n}(1-e^{-f})\dd\mu\big)$. Le produit se transforme en somme dans l'exponentielle, et $\sum_n\int_{E_n}(1-e^{-f})\dd\mu=\int_E(1-e^{-f})\dd\mu$ par convergence monotone (intégrande $\ge0$, $E=\bigsqcup_n E_n$). D'où \eqref{eq:laplace}.
+\end{proof}
+
+\begin{lemme}[Transformée de Laplace des vecteurs de $\overline\N_0^{\,k}$]\label{lem:laplace-inj}
+Soit $Z=(Z_1,\dots,Z_k)$ à valeurs dans $\overline\N_0^{\,k}$, et $\Psi(z):=\E\big[\prod_{j=1}^k z_j^{Z_j}\big]$ pour $z\in(0,1)^k$ (convention $z_j^{\infty}:=0$).
+\begin{enumerate}[label=\textup{(\alph*)}]
+\item $\Psi$ détermine la loi de $Z$ sur $\overline\N_0^{\,k}$.
+\item $Z_1,\dots,Z_k$ sont indépendantes si et seulement si $\Psi(z)=\prod_{j=1}^k\E[z_j^{Z_j}]$ pour tout $z\in(0,1)^k$.
+\end{enumerate}
+\end{lemme}
+
+\begin{proof}
+Sur $(0,1)^k$, $\Psi(z)=\sum_{n\in\N_0^{\,k}}\PP(Z=n)\,z^{n}$ (série entière multiple, absolument convergente, les configurations à coordonnée infinie contribuant $0$). L'unicité du développement en série entière montre que $\Psi$ détermine tous les $\PP(Z=n)$, $n\in\N_0^{\,k}$. Pour $a\in\N_0^{\,k}$, en sommant sur le pavé $\{n:n_j\le a_j\ \forall j\}$,
+\[
+\PP\big(Z_1\le a_1,\dots,Z_k\le a_k\big)=\sum_{n:\,n_j\le a_j}\PP(Z=n)
+\]
+est déterminé. Les pavés $\prod_j\{\cdot\le a_j\}$ forment un $\pi$-système, et les classes $\{\{Z_j\le a_j\}:a_j\in\N_0\}$ engendrent $\calP(\overline\N_0)$ par coordonnée (car $\{Z_j=\infty\}=\bigcap_{a}\{Z_j>a\}$)~; deux lois coïncidant sur ces pavés coïncident sur $\calP(\overline\N_0)^{\otimes k}$ (Dynkin). D'où (a).
+
+Pour (b), le sens direct est immédiat. Réciproquement, si $\Psi$ se factorise, l'identification des coefficients des séries entières donne $\PP(Z=n)=\prod_j\PP(Z_j=n_j)$ pour tout $n\in\N_0^{\,k}$~; en sommant sur les pavés, $\PP\big(\bigcap_j\{Z_j\le a_j\}\big)=\prod_j\PP(Z_j\le a_j)$ pour tout $a\in\N_0^{\,k}$. Les classes $\{\{Z_j\le a_j\}:a_j\in\N_0\}\cup\{\Omega\}$ sont des $\pi$-systèmes engendrant les tribus $\sigma(Z_j)$~; l'indépendance en résulte par le critère usuel d'indépendance sur des $\pi$-systèmes générateurs.
+\end{proof}
+
+\begin{theoreme}[Caractérisation]\label{thm:carac-laplace}
+Un processus ponctuel $N$ est une $\mathrm{PRM}(\mu)$ si et seulement si sa fonctionnelle de Laplace vérifie \eqref{eq:laplace} pour toute $f\ge0$ mesurable. Plus généralement, la fonctionnelle de Laplace $f\mapsto\calL_N(f)$ détermine la loi de $N$.
+\end{theoreme}
+
+\begin{proof}
+Le sens direct est le Théorème~\ref{thm:laplace}.
+
+\emph{$\calL_N$ détermine la loi.} Soient $A_1,\dots,A_k\in\calE$ et $s\in[0,\infty)^k$. Avec $f=\sum_j s_j\one_{A_j}$, on a $N(f)=\sum_j s_j N(A_j)$, d'où, en posant $z_j=e^{-s_j}\in(0,1]$,
+\[
+\E\Big[\prod_{j=1}^k z_j^{N(A_j)}\Big]=\E\big[e^{-N(f)}\big]=\calL_N(f).
+\]
+Ainsi $\calL_N$ détermine la fonction $\Psi$ du Lemme~\ref{lem:laplace-inj} pour toute famille finie $(A_j)$, donc (partie (a)) la loi de chaque vecteur $\big(N(A_1),\dots,N(A_k)\big)$~: toutes les lois fini-dimensionnelles sont fixées, donc la loi de $N$ (Proposition~\ref{prop:unicite}). Ceci établit la dernière assertion.
+
+\emph{\eqref{eq:laplace} $\Rightarrow$ \ref{P1}--\ref{P2}.} Pour un seul $A$ et $s\ge0$, \eqref{eq:laplace} avec $f=s\one_A$ (et $\int(1-e^{-s\one_A})\dd\mu=(1-e^{-s})\mu(A)$) donne
+\[
+\E\big[e^{-sN(A)}\big]=\exp\!\big(-(1-e^{-s})\,\mu(A)\big),
+\]
+qui est la transformée de Laplace de $\Poi(\mu(A))$~; ceci vaut aussi si $\mu(A)=\infty$ (les deux membres valent $0$ pour $s>0$, forçant $N(A)=\infty$ p.s.). Le Lemme~\ref{lem:laplace-inj}(a) en dimension $1$ donne $N(A)\sim\Poi(\mu(A))$~: c'est \ref{P1}. Pour $A_1,\dots,A_k$ disjoints, \eqref{eq:laplace} avec $f=\sum_j s_j\one_{A_j}$ (et $\int(1-e^{-f})\dd\mu=\sum_j(1-e^{-s_j})\mu(A_j)$, les $A_j$ étant disjoints) donne
+\[
+\E\Big[e^{-\sum_j s_j N(A_j)}\Big]
+=\prod_{j=1}^k\exp\!\big(-(1-e^{-s_j})\mu(A_j)\big)
+=\prod_{j=1}^k\E\big[e^{-s_j N(A_j)}\big],
+\]
+soit la factorisation du Lemme~\ref{lem:laplace-inj}(b)~: les $N(A_j)$ sont indépendantes, c'est \ref{P2}. Donc $N\sim\mathrm{PRM}(\mu)$.
+\end{proof}
+
+\subsection{Formules de Campbell}
+
+\begin{proposition}[Campbell~: moyenne et variance]\label{prop:campbell}
+Soit $N\sim\mathrm{PRM}(\mu)$ et $f\in L^1(\mu)$ (resp.\ $f\in L^1(\mu)\cap L^2(\mu)$). Alors $N(f)=\int f\dd N$ est intégrable (resp.\ de carré intégrable) et
+\[
+\E\big[N(f)\big]=\int_E f\dd\mu,
+\qquad
+\Var\big[N(f)\big]=\int_E f^2\dd\mu.
+\]
+\end{proposition}
+
+\begin{proof}
+\emph{Moyenne.} Pour $f=\sum_{j=1}^m c_j\one_{A_j}$ étagée positive avec $A_j$ disjoints,
+$\E[N(f)]=\sum_j c_j\,\E[N(A_j)]=\sum_j c_j\,\mu(A_j)=\int f\dd\mu$. Par convergence monotone (approximation $f_n\uparrow f$), l'égalité s'étend à $f\ge0$ mesurable, puis à $f\in L^1(\mu)$ par différence des parties positive et négative.
+
+\emph{Variance.} Supposons $f\ge0$, $f\in L^1(\mu)\cap L^2(\mu)$. Pour $f=\sum_{j=1}^m c_j\one_{A_j}$ étagée à supports $A_j$ \emph{disjoints} (de $\mu$-mesure finie, car $f\in L^1$), les $N(A_j)$ sont indépendantes par \ref{P2}, de variance $\Var N(A_j)=\mu(A_j)$ (variance d'une loi de Poisson). Donc
+\[
+\Var\big[N(f)\big]=\Var\Big[\sum_j c_j N(A_j)\Big]=\sum_j c_j^2\,\Var N(A_j)=\sum_j c_j^2\,\mu(A_j)=\int_E f^2\dd\mu.
+\]
+Pour $f\ge0$ générale, prenons $(f_n)$ étagées à supports disjoints avec $f_n\uparrow f$. Par convergence monotone, $N(f_n)\uparrow N(f)$ p.s., $N(f_n)^2\uparrow N(f)^2$, donc $\E[N(f_n)^2]\uparrow\E[N(f)^2]$~; or
+\[
+\E[N(f_n)^2]=\Var N(f_n)+\E[N(f_n)]^2=\int f_n^2\dd\mu+\Big(\int f_n\dd\mu\Big)^2
+\xrightarrow[n\to\infty]{}\int f^2\dd\mu+\Big(\int f\dd\mu\Big)^2
+\]
+par convergence monotone ($f\in L^2$ et $f\in L^1$). Ainsi $\E[N(f)^2]=\int f^2\dd\mu+(\int f\dd\mu)^2<\infty$, d'où $N(f)\in L^2$ et, en retranchant $\E[N(f)]^2=(\int f\dd\mu)^2$, $\Var[N(f)]=\int f^2\dd\mu$.
+\end{proof}
+
+\begin{corollaire}[Covariance de Campbell]\label{cor:cov}
+Pour $f,g\in L^1(\mu)\cap L^2(\mu)$, on a $N(f),N(g)\in L^2$ et
+\[
+\Cov\big(N(f),N(g)\big)=\int_E fg\dd\mu.
+\]
+En particulier, l'application $f\mapsto N(f)-\int f\dd\mu$ est une isométrie de $L^2(\mu)$ dans $L^2(\Omega)$.
+\end{corollaire}
+
+\begin{proof}
+Pour $f,g\ge0$ étagées subordonnées à une même partition finie $(A_j)$ de mesures finies, $f=\sum_j c_j\one_{A_j}$, $g=\sum_j d_j\one_{A_j}$, l'indépendance des $N(A_j)$ donne
+\[
+\Cov\big(N(f),N(g)\big)=\sum_j c_j d_j\,\Var N(A_j)=\sum_j c_j d_j\,\mu(A_j)=\int_E fg\dd\mu.
+\]
+Le cas $f,g\ge0$ quelconques suit par polarisation, $\Cov(N(f),N(g))=\tfrac12\big(\Var N(f+g)-\Var N(f)-\Var N(g)\big)$, et la Proposition~\ref{prop:campbell} appliquée à $f,g,f+g$~; le cas de signe quelconque s'obtient par bilinéarité en décomposant $f=f^+-f^-$, $g=g^+-g^-$. L'assertion d'isométrie est le cas $g=f$~: $\E\big[(N(f)-\int f\dd\mu)^2\big]=\Var N(f)=\int f^2\dd\mu=\|f\|_{L^2(\mu)}^2$.
+\end{proof}
+
+\begin{remarque}[Équidispersion]
+En prenant $f=\one_A$~: $\E[N(A)]=\Var[N(A)]=\mu(A)$. L'égalité moyenne $=$ variance est la signature de Poisson, immédiatement diagnostique sur des données réelles.
+\end{remarque}
+
+\section{Opérations sur les PRM}
+
+Les trois théorèmes suivants deviennent de simples manipulations de la fonctionnelle de Laplace \eqref{eq:laplace}, via la caractérisation (Théorème~\ref{thm:carac-laplace}).
+
+\begin{theoreme}[Superposition]\label{thm:superpo}
+Si $N_1\sim\mathrm{PRM}(\mu_1)$ et $N_2\sim\mathrm{PRM}(\mu_2)$ sont indépendants, alors $N_1+N_2\sim\mathrm{PRM}(\mu_1+\mu_2)$.
+\end{theoreme}
+
+\begin{proof}
+Par indépendance, $\calL_{N_1+N_2}(f)=\calL_{N_1}(f)\,\calL_{N_2}(f)=\exp\big(-\int(1-e^{-f})\dd\mu_1\big)\exp\big(-\int(1-e^{-f})\dd\mu_2\big)=\exp\big(-\int(1-e^{-f})\dd(\mu_1+\mu_2)\big)$. On conclut par le Théorème~\ref{thm:carac-laplace}.
+\end{proof}
+
+\begin{theoreme}[Application / \emph{mapping}]\label{thm:mapping}
+Soit $N\sim\mathrm{PRM}(\mu)$ sur $E$ et $T:(E,\calE)\to(E',\calE')$ mesurable telle que la mesure image $T_*\mu:=\mu\circ T^{-1}$ soit localement finie. Alors la mesure image $T_*N$, définie par $(T_*N)(A')=N\big(T^{-1}(A')\big)$, est une $\mathrm{PRM}(T_*\mu)$ sur $E'$.
+\end{theoreme}
+
+\begin{proof}
+Si $N=\sum_i\delta_{x_i}$ alors $T_*N=\sum_i\delta_{T(x_i)}$, mesure de comptage (localement finie car $T_*\mu$ l'est). Rappelons la formule de transport~: pour $h:E'\to[0,\infty]$ mesurable, $\int_{E'}h\dd(T_*\lambda)=\int_E h\circ T\dd\lambda$ pour toute mesure $\lambda$ sur $E$ --- vraie pour $h=\one_{A'}$ (par définition $T_*\lambda(A')=\lambda(T^{-1}A')$), donc pour les étagées par linéarité, puis pour $h\ge0$ par convergence monotone. Appliquée à $\lambda=N(\omega,\cdot)$, elle donne $(T_*N)(g)=\int_{E'}g\dd(T_*N)=\int_E (g\circ T)\dd N=N(g\circ T)$ pour $g:E'\to[0,\infty]$ mesurable. Ainsi
+\[
+\calL_{T_*N}(g)=\E\big[e^{-N(g\circ T)}\big]
+\overset{\eqref{eq:laplace}}{=}\exp\Big(-\int_E\big(1-e^{-g\circ T}\big)\dd\mu\Big)
+=\exp\Big(-\int_{E'}\big(1-e^{-g}\big)\dd(T_*\mu)\Big),
+\]
+la dernière égalité étant la formule de transport avec $\lambda=\mu$ et $h=1-e^{-g}\ge0$. On conclut par le Théorème~\ref{thm:carac-laplace}.
+\end{proof}
+
+\begin{theoreme}[Marquage indépendant]\label{thm:marquage}
+Soit $N=\sum_i\delta_{x_i}\sim\mathrm{PRM}(\mu)$ sur $E$. On attache à chaque point $x_i$ une \emph{marque} $Y_i$ tirée, conditionnellement à $N$, de façon indépendante selon un noyau de probabilité $K(x_i,\dd y)$ sur un espace mesurable $(F,\calF_F)$. Alors le processus marqué
+\[
+\widehat N := \sum_i \delta_{(x_i,Y_i)}
+\]
+est une $\mathrm{PRM}$ sur $E\times F$ d'intensité $\hat\mu(\dd x,\dd y)=\mu(\dd x)\,K(x,\dd y)$. En particulier, pour des marques i.i.d.\ de loi $\rho$, $\hat\mu=\mu\otimes\rho$.
+\end{theoreme}
+
+\begin{proof}
+\emph{Cas $\mu(E)=c\in(0,\infty)$.} Écrivons $N=\sum_{i=1}^K\delta_{X_i}$ avec $K\sim\Poi(c)$ et $X_i\sim\nu=\mu/c$ i.i.d.\ (Construction~\ref{thm:constrI}). Conditionnellement à $\{K=n\}$, les $X_1,\dots,X_n$ sont i.i.d.\ $\nu$~; puis, conditionnellement à $(K,X_1,\dots,X_n)$, les marques $Y_1,\dots,Y_n$ sont indépendantes avec $Y_i\sim K(X_i,\cdot)$. Par conséquent, conditionnellement à $\{K=n\}$, les couples $(X_1,Y_1),\dots,(X_n,Y_n)$ sont i.i.d.\ de loi
+\[
+\hat\nu(\dd x,\dd y):=\nu(\dd x)\,K(x,\dd y)\qquad\text{sur } E\times F,
+\]
+qui est bien une probabilité~: $\hat\nu(E\times F)=\int_E K(x,F)\,\nu(\dd x)=\int_E 1\,\nu(\dd x)=1$. En effet, pour un rectangle $A\times C$,
+\[
+\PP\big((X_1,Y_1)\in A\times C\mid K=n\big)=\E\big[\one_A(X_1)K(X_1,C)\big]=\int_A K(x,C)\,\nu(\dd x)=\hat\nu(A\times C),
+\]
+et les rectangles engendrent $\calE\otimes\calF_F$. Le processus $\widehat N=\sum_{i=1}^K\delta_{(X_i,Y_i)}$ a donc exactement la structure de la Construction~\ref{thm:constrI} sur $E\times F$, avec cardinal $K\sim\Poi(c)$ et loi de position $\hat\nu$~; c'est donc une $\mathrm{PRM}$ d'intensité $c\,\hat\nu(\dd x,\dd y)=\mu(\dd x)K(x,\dd y)=\hat\mu$.
+
+\emph{Cas $\sigma$-fini.} On partitionne $E=\bigsqcup_n E_n$ avec $\mu(E_n)<\infty$. Le processus $N$ se décompose en $N=\sum_n N_n$, $N_n:=N(\cdot\cap E_n)\sim\mathrm{PRM}(\mu(\cdot\cap E_n))$ indépendants, et le marquage de $N_n$ produit, par le cas fini, $\widehat N_n\sim\mathrm{PRM}\big(\mu(\dd x\cap E_n)K(x,\dd y)\big)$, ces processus restant indépendants (marques tirées indépendamment). Par superposition (Théorème~\ref{thm:superpo}, dénombrable via le Lemme~\ref{lem:poissonsum} et l'argument de la Construction~\ref{thm:constrII}), $\widehat N=\sum_n\widehat N_n\sim\mathrm{PRM}\big(\sum_n \mu(\cdot\cap E_n)K\big)=\mathrm{PRM}(\hat\mu)$.
+\end{proof}
+
+\begin{corollaire}[Amincissement / \emph{thinning}]
+Si l'on conserve indépendamment chaque point de $N\sim\mathrm{PRM}(\mu)$ avec probabilité $p(x)\in[0,1]$ (marque de Bernoulli $F=\{0,1\}$, $K(x,\{1\})=p(x)$), le sous-processus des points conservés est une $\mathrm{PRM}$ d'intensité $p(x)\mu(\dd x)$, indépendante du sous-processus des points rejetés, d'intensité $(1-p(x))\mu(\dd x)$.
+\end{corollaire}
+
+\begin{proof}
+Application du Théorème~\ref{thm:marquage} sur $E\times\{0,1\}$, puis du Théorème~\ref{thm:mapping} par les projections $x\mapsto x$ restreintes aux deux couches~; l'indépendance des deux couches résulte de \ref{P2} appliqué aux boréliens disjoints $E\times\{1\}$ et $E\times\{0\}$.
+\end{proof}
+
+\section{L'équation de Mecke}
+
+L'équation de Mecke est la caractérisation la plus fine de la $\mathrm{PRM}$~; elle fonde le calcul stochastique sur l'espace de Poisson.
+
+\begin{theoreme}[Mecke]\label{thm:mecke}
+Soit $\mu$ localement finie. Un processus ponctuel $N$ est une $\mathrm{PRM}(\mu)$ si et seulement si, pour toute fonction mesurable $g:E\times\Mp(E)\to[0,\infty]$,
+\begin{equation}\label{eq:mecke}
+\E\Big[\int_E g(x,N)\,N(\dd x)\Big]
+= \int_E \E\big[g(x,\,N+\delta_x)\big]\,\mu(\dd x).
+\end{equation}
+\end{theoreme}
+
+\begin{proof}
+\emph{Sens direct, cas fini $\mu(E)=c<\infty$} (preuve combinatoire). Avec $N=\sum_{i=1}^K\delta_{X_i}$ (Construction~\ref{thm:constrI}),
+\[
+\int_E g(x,N)\,N(\dd x)=\sum_{i=1}^K g\big(X_i,\,N\big),\qquad N=\sum_{j=1}^K\delta_{X_j}.
+\]
+Les termes étant positifs, Tonelli autorise l'interversion espérance/série. En conditionnant par $K$ et en utilisant l'échangeabilité de $(X_1,\dots,X_n)$ (i.i.d., donc les $n$ termes ont même espérance conditionnelle)~:
+\[
+\E\Big[\sum_{i=1}^K g(X_i,N)\Big]
+=\sum_{n\ge1}\PP(K=n)\,\E\Big[\sum_{i=1}^n g\big(X_i,\textstyle\sum_{j=1}^n\delta_{X_j}\big)\Big]
+=\sum_{n\ge1}\PP(K=n)\,n\,\E\Big[g\big(X_1,\textstyle\sum_{j=1}^n\delta_{X_j}\big)\Big].
+\]
+Isolons $X_1$, indépendant de $(X_2,\dots,X_n)$~: $\sum_{j=1}^n\delta_{X_j}=\delta_{X_1}+\sum_{j=2}^n\delta_{X_j}$. Avec $n\,\PP(K=n)=n\,e^{-c}\frac{c^n}{n!}=c\,\PP(K=n-1)$ et le changement d'indice $k=n-1$,
+\[
+\E\Big[\int_E g(x,N)N(\dd x)\Big]
+=c\sum_{k\ge0}\PP(K=k)\,\E\Big[g\big(X_1,\ \delta_{X_1}+\textstyle\sum_{j=1}^{k}\delta_{X'_j}\big)\Big],
+\]
+où $(X'_j)_{j\ge1}$ est i.i.d.\ $\nu$, indépendante de $X_1$. À $X_1$ fixé, la loi de $\sum_{j=1}^{k}\delta_{X'_j}$ pondérée par $\PP(K=k)=e^{-c}c^k/k!$ est celle d'une $N'\sim\mathrm{PRM}(\mu)$ indépendante de $X_1$ (même construction~: cardinal $\Poi(c)$, positions $\nu$). La somme en $k$ vaut donc $\E_{N'}\big[g(X_1,\delta_{X_1}+N')\big]$, et comme $X_1\sim\nu=\mu/c$,
+\[
+\E\Big[\int_E g(x,N)N(\dd x)\Big]
+= c\int_E \E\big[g(x,\delta_x+N')\big]\,\nu(\dd x)
+= \int_E \E\big[g(x,\delta_x+N)\big]\,\mu(\dd x).
+\]
+C'est \eqref{eq:mecke}.
+
+\emph{Sens direct, cas $\sigma$-fini} (via Laplace). Par classe monotone, il suffit d'établir \eqref{eq:mecke} pour $g(x,m)=f(x)\,e^{-m(v)}$, $f,v\ge0$ mesurables bornées à support borné. En effet, à $f$ fixée, la classe des $h:\Mp(E)\to[0,\infty]$ bornées pour lesquelles \eqref{eq:mecke} vaut avec $g(x,m)=f(x)h(m)$ est un espace vectoriel stable par limites monotones contenant la classe multiplicative $\{m\mapsto e^{-m(v)}:v\ge0\}$ (stable par produit, $e^{-m(v)}e^{-m(w)}=e^{-m(v+w)}$), laquelle engendre $\calM_p$~; le théorème de classe monotone fonctionnel donne alors toutes les $h$ mesurables bornées, puis toute $g\ge0$ par convergence monotone. Pour un tel $g$, en notant $(N+\delta_x)(v)=N(v)+v(x)$~:
+\begin{align*}
+\text{membre de gauche}&=\E\big[e^{-N(v)}N(f)\big],\\
+\text{membre de droite}&=\int_E f(x)e^{-v(x)}\,\calL_N(v)\,\mu(\dd x)=\calL_N(v)\!\int_E\! f e^{-v}\dd\mu.
+\end{align*}
+Pour le membre de gauche, on dérive en $\eps=0$ l'identité (Théorème~\ref{thm:laplace}) $\E\big[e^{-N(v)-\eps N(f)}\big]=\E\big[e^{-N(v+\eps f)}\big]=\exp\!\big(-\int(1-e^{-(v+\eps f)})\dd\mu\big)$~: à gauche la dérivée est $-\E[N(f)e^{-N(v)}]$ (domination $N(f)e^{-\eps N(f)}\le N(f)$, $\E[N(f)]=\int f\dd\mu<\infty$), à droite $-\big(\int f e^{-v}\dd\mu\big)\calL_N(v)$. Les deux membres de \eqref{eq:mecke} coïncident donc.
+
+\emph{Réciproque.} Supposons \eqref{eq:mecke}. Fixons $f\ge0$ mesurable bornée à support de $\mu$-mesure finie~; alors $\E[N(f)]=\int f\dd\mu<\infty$ (Proposition~\ref{prop:campbell}), donc $N(f)<\infty$ p.s. Posons $\Lambda(s):=\calL_N(sf)=\E[e^{-sN(f)}]>0$. Pour $s\ge s_0>0$, $\,N(f)e^{-sN(f)}\le \sup_{t\ge0}t\,e^{-s_0 t}=\tfrac1{e s_0}<\infty$~; le théorème de dérivation sous l'espérance (domination sur $[s_0,\infty)$, $s_0>0$ quelconque) donne $\Lambda\in C^1((0,\infty))$ avec
+\[
+\Lambda'(s)=-\E\big[N(f)e^{-sN(f)}\big]=-\E\Big[\int_E f(x)e^{-sN(f)}\,N(\dd x)\Big].
+\]
+On applique \eqref{eq:mecke} à $g(x,m)=f(x)e^{-s\,m(f)}$, avec $(N+\delta_x)(f)=N(f)+f(x)$~:
+\[
+\Lambda'(s)=-\int_E f(x)\,\E\big[e^{-s(N(f)+f(x))}\big]\,\mu(\dd x)
+=-\Big(\int_E f e^{-sf}\dd\mu\Big)\Lambda(s).
+\]
+Sur $(0,\infty)$, $\Lambda>0$, donc $\big(\log\Lambda\big)'(s)=-\int_E f e^{-sf}\dd\mu$. De plus $\Lambda$ est continue en $0$ avec $\Lambda(0)=1$ (convergence dominée, $e^{-sN(f)}\uparrow 1$ quand $s\downarrow0$). En intégrant sur $[\eps,1]$ puis $\eps\downarrow0$, et comme $\int_\eps^1\!\!\int_E f e^{-sf}\dd\mu\,\dd s=\int_E(e^{-\eps f}-e^{-f})\dd\mu\to\int_E(1-e^{-f})\dd\mu$ (convergence dominée, $0\le e^{-\eps f}-e^{-f}\le1$ sur le support de $\mu$-mesure finie),
+\[
+\log\Lambda(1)=-\int_E\big(1-e^{-f}\big)\dd\mu,
+\qquad\text{soit}\qquad
+\calL_N(f)=\exp\Big(-\int_E(1-e^{-f})\dd\mu\Big).
+\]
+Ceci vaut pour toute $f\ge0$ bornée à support borné~; on étend à toute $f\ge0$ mesurable par convergence monotone ($f_p:=\min(f,p)\one_{B_p}\uparrow f$). D'où \eqref{eq:laplace}, et $N\sim\mathrm{PRM}(\mu)$ par le Théorème~\ref{thm:carac-laplace}.
+\end{proof}
+
+\section{Théorème de représentation des mesures de comptage}\label{sec:representation}
+
+La Définition~\ref{def:comptage} est intrinsèque, et la Proposition~\ref{prop:sensfacile} en donne le \og sens facile \fg{}~: toute famille localement finie de points fournit un élément de $\Mp(E)$. On établit ici la \emph{réciproque} --- toute $m\in\Mp(E)$ est une somme de masses de Dirac ---, qui requiert une hypothèse topologique. C'est ce théorème qui légitime a posteriori l'image \og configuration de points \fg{}, et qui manquait pour fermer le cercle. On établit d'abord le lemme de Sierpiński, désormais démontré de façon autonome (la topologie n'y intervient qu'une fois, pour passer de \emph{diffuse} à \emph{non-atomique au sens de la mesure}).
+
+\begin{lemme}[Sierpiński]\label{lem:sierpinski}
+Soit $E$ polonais et $\eta$ une mesure borélienne finie \emph{diffuse} (sans atome) sur $E$. Alors pour tout $A\in\calB(E)$ et tout $t\in[0,\eta(A)]$, il existe $B\in\calB(E)$, $B\subseteq A$, tel que $\eta(B)=t$.
+\end{lemme}
+
+\begin{proof}
+Quitte à remplacer $\eta$ par sa restriction $\eta_A:=\eta(\cdot\cap A)$ (encore finie et diffuse, car $\eta_A(\{x\})\le\eta(\{x\})=0$) et à intersecter le résultat avec $A$, on peut supposer $A=E$~: il s'agit de montrer $\{\eta(B):B\in\calB(E)\}=[0,\eta(E)]$.
+
+\emph{Étape 1~: diffuse $\Rightarrow$ non-atomique au sens de la mesure} (seule étape utilisant la structure de $E$). Montrons que tout $P\in\calB(E)$ avec $\eta(P)>0$ possède un sous-ensemble $P'\subseteq P$ tel que $0<\eta(P')<\eta(P)$. Supposons le contraire~: $\eta(P')\in\{0,\eta(P)\}$ pour tout $P'\subseteq P$ (\og $P$ atome de mesure \fg{}). Comme $E$ est séparable, pour chaque $n\ge1$ on le recouvre par une famille dénombrable de boules de rayon $1/n$~; l'une au moins, notée $O_n$, vérifie $\eta(P\cap O_n)>0$, donc $\eta(P\cap O_n)=\eta(P)$ par hypothèse d'atome, soit $\eta(P\setminus O_n)=0$. Posons $P_n:=P\cap O_1\cap\cdots\cap O_n$~: chaque retrait étant négligeable, $\eta(P_n)=\eta(P)$, et $\mathrm{diam}(P_n)\le\mathrm{diam}(O_n)\le 2/n$. La suite $(P_n)$ décroît vers $P_\infty:=\bigcap_n P_n$, de mesure $\eta(P_\infty)=\lim_n\eta(P_n)=\eta(P)>0$ (continuité décroissante, $\eta$ finie)~; en particulier $P_\infty\neq\varnothing$. Or $\mathrm{diam}(P_\infty)\le\inf_n\mathrm{diam}(P_n)=0$, donc $P_\infty$ est réduit à un point $\{y\}$, d'où $\eta(\{y\})=\eta(P)>0$~: contradiction avec la diffusion. Ainsi $P$ n'est pas un atome de mesure.
+
+\emph{Étape 2~: sous-ensembles de mesure arbitrairement petite} (pur mesuré). Pour $P$ avec $\eta(P)>0$ et $\eps>0$, il existe $P'\subseteq P$ avec $0<\eta(P')\le\eps$. Par l'Étape 1, on trouve $P_1\subseteq P$ avec $0<\eta(P_1)<\eta(P)$~; alors $\eta(P_1)$ et $\eta(P\setminus P_1)$ sont tous deux $>0$ et de somme $\eta(P)$, donc l'un est $\le\eta(P)/2$~: notons-le $P^{(1)}$, $0<\eta(P^{(1)})\le\eta(P)/2$. En itérant dans $P^{(1)}$, on obtient $P^{(k)}$ avec $0<\eta(P^{(k)})\le\eta(P)/2^k$~; pour $k$ grand, $\eta(P^{(k)})\le\eps$.
+
+\emph{Étape 3~: valeur intermédiaire exacte} (pur mesuré). Soit $t\in[0,\eta(E)]$. On construit une suite croissante $(B_n)$ avec $\eta(B_n)\le t$ et $\eta(B_n)\uparrow t$. Posons $B_0:=\varnothing$. Ayant $B_n$ avec $\eta(B_n)\le t$, notons $r_n:=t-\eta(B_n)\ge0$ et $C_n:=E\setminus B_n$~; alors $\eta(C_n)=\eta(E)-\eta(B_n)\ge t-\eta(B_n)=r_n$. Si $r_n=0$, on pose $B:=B_n$ et c'est terminé. Sinon $\eta(C_n)\ge r_n>0$, et l'on pose
+\[
+s_n:=\sup\{\eta(D):D\subseteq C_n,\ \eta(D)\le r_n\}.
+\]
+L'Étape 2 fournit $D\subseteq C_n$ avec $0<\eta(D)\le r_n$, donc $s_n>0$~; choisissons $D_n\subseteq C_n$ avec $s_n/2<\eta(D_n)\le r_n$ et posons $B_{n+1}:=B_n\sqcup D_n$ (disjoints, $D_n\subseteq C_n$). Alors $\eta(B_{n+1})=\eta(B_n)+\eta(D_n)\le\eta(B_n)+r_n=t$. La suite $\eta(B_n)$ croît en restant $\le t$ vers une limite $L\le t$~; posons $B:=\bigcup_n B_n$, de mesure $\eta(B)=L$ (continuité croissante).
+
+Montrons $L=t$. Sinon $r:=t-L>0$ et $r_n\downarrow r>0$. Comme $\sum_n\eta(D_n)=L<\infty$, on a $\eta(D_n)\to0$, donc $s_n<2\eta(D_n)\to0$. Or $C:=E\setminus B\subseteq C_n$ pour tout $n$ (puisque $B_n\subseteq B$), et $\eta(C)=\eta(E)-L\ge t-L=r>0$~; l'Étape 2 donne $D\subseteq C$ avec $0<\eta(D)\le r$. Ce $D$ vérifie $D\subseteq C\subseteq C_n$ et $\eta(D)\le r\le r_n$, donc concourt au supremum définissant $s_n$~: $\eta(D)\le s_n$ pour tout $n$. Ainsi $0<\eta(D)\le\lim_n s_n=0$, absurde. Donc $L=t$, et $\eta(B)=t$ avec $B\subseteq E$. En revenant à $\eta_A$, le sous-ensemble $B\cap A\subseteq A$ vérifie $\eta(B\cap A)=t$.
+\end{proof}
+
+\begin{remarque}[Deux notions d'atome, et rôle exact de la topologie]\label{rem:deux-atomes}
+L'Étape 1 relie deux notions distinctes. Un \emph{point} $x$ est un \emph{atome ponctuel} de $\eta$ si $\eta(\{x\})>0$ (Définition~\ref{def:diffuse})~; un \emph{ensemble} $P$ est un \emph{atome au sens de la mesure} si $\eta(P)>0$ et $\eta(P')\in\{0,\eta(P)\}$ pour tout $P'\subseteq P$ (masse \emph{indivisible}, sans qu'un point soit nécessairement désigné). Un atome ponctuel est toujours un atome-mesure, donc \og non-atomique au sens de la mesure \fg{} $\Rightarrow$ \og diffuse \fg{}~; la réciproque \emph{peut échouer} sans hypothèse sur l'espace. Contre-exemple~: sur $\R$ muni de la tribu dénombrable--codénombrable $\calA=\{A:A\text{ ou }A^c\text{ dénombrable}\}$, posons $\eta(A)=0$ si $A$ est dénombrable, $\eta(A)=1$ sinon. Alors $\eta$ est diffuse ($\eta(\{x\})=0$ pour tout $x$), mais $\R$ est un atome au sens de la mesure ($\eta$ ne prend que les valeurs $0$ et $1$)~: la propriété de la valeur intermédiaire y est \emph{fausse}. L'Étape 1 montre que sur un espace \emph{métrique séparable} cette pathologie est exclue --- diffuse $\Leftrightarrow$ non-atomique au sens de la mesure. On notera que la preuve n'utilise que la \emph{séparabilité} (recouvrement par boules de rayon $1/n$) et la finitude de $\eta$ (continuité décroissante), \emph{non} la complétude~: l'implication \og $\mathrm{diam}(P_\infty)=0\Rightarrow P_\infty$ singleton \fg{} découle du seul axiome de séparation de la distance, et la non-vacuité de $\eta(P_\infty)>0$. L'hypothèse \og polonais \fg{} du Lemme~\ref{lem:sierpinski} peut donc s'affaiblir en \og métrique séparable \fg{}.
+\end{remarque}
+
+\begin{theoreme}[Représentation]\label{thm:representation}
+Soit $E$ polonais, $\calE=\calB(E)$, et $m$ une mesure sur $(E,\calE)$ telle que
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item $m(A)\in\N\cup\{\infty\}$ pour tout $A\in\calB(E)$ \textup{(mesure à valeurs entières)}~;
+\item $m$ est localement finie.
+\end{enumerate}
+Alors $m$ est purement atomique, à atomes de masse entière, et il existe une famille au plus dénombrable $(x_i)$, localement finie, telle que
+\[
+m=\sum_i \delta_{x_i}
+\qquad\text{(les points répétés selon leur multiplicité $m(\{x\})$).}
+\]
+\end{theoreme}
+
+\begin{proof}
+Par finitude locale, il suffit de traiter la restriction $m|_B$ à chaque borné $B\in\hat\calE$, sur lequel $m(B)=:M<\infty$ est un entier~; on recollera sur $E=\bigcup_n B_n$.
+
+\emph{Décomposition atomique/diffuse (élémentaire).} Soit $D:=\{x\in B:m(\{x\})>0\}$ l'ensemble des atomes de $m|_B$ (les singletons sont mesurables, hypothèse~\eqref{hyp:singletons}). Pour tout $\eps>0$, $\{x:m(\{x\})\ge\eps\}$ est \emph{fini}, de cardinal $\le M/\eps$~: sinon on trouverait $p>M/\eps$ points distincts de masse $\ge\eps$, dont la réunion aurait masse $>M$, absurde. Donc $D=\bigcup_{n\ge1}\{x:m(\{x\})\ge1/n\}$ est au plus dénombrable. Posons
+\[
+m_a:=\sum_{x\in D}m(\{x\})\,\delta_x,\qquad m_c:=m|_B-m_a.
+\]
+$m_a$ est une mesure (somme dénombrable de mesures positives, Proposition~\ref{prop:sensfacile}), et $m_a(A)=\sum_{x\in D\cap A}m(\{x\})=m(A\cap D)\le m(A)$ pour tout $A$ (car $A\cap D$ est dénombrable et $m$ $\sigma$-additive). Donc $m_c=m|_B-m_a\ge0$ est une mesure (finie). Pour tout $x\in B$~: si $x\in D$, $m_c(\{x\})=m(\{x\})-m(\{x\})=0$~; si $x\notin D$, $m_c(\{x\})\le m(\{x\})=0$. Ainsi $m_c$ est \emph{diffuse} (sans atome). Comme $m$ est à valeurs entières et les $m(\{x\})$ le sont, $m_a$ est à valeurs entières, donc $m_c=m|_B-m_a$ aussi.
+
+\emph{La partie diffuse est nulle.} Supposons $m_c\neq0$~; comme $m_c(B)$ est un entier $\ge1$, le Lemme~\ref{lem:sierpinski} (applicable~: $E$ polonais, $m_c$ finie diffuse) fournit $B'\subseteq B$ avec $m_c(B')=\tfrac12$, valeur \emph{non entière}, contredisant l'intégralité de $m_c$. Donc $m_c=0$ et $m|_B=m_a$ est purement atomique à masses entières.
+
+\emph{Finitude locale et recollement.} Le nombre d'atomes de $B$ comptés avec multiplicité vaut $\sum_{x\in D}m(\{x\})=m_a(B)=M<\infty$. En répétant chaque atome $x$ selon sa multiplicité entière $m(\{x\})$, on écrit $m|_B=\sum_i\delta_{x_i}$ (famille finie). Le recollement sur une exhaustion $B_n\uparrow E$ donne $m=\sum_i\delta_{x_i}$ avec une famille globale au plus dénombrable et localement finie (finie sur chaque borné).
+\end{proof}
+
+\begin{corollaire}
+Sur un espace polonais, \og mesure borélienne à valeurs entières et localement finie \fg{} et \og mesure de comptage \fg{} \textup{(Définition~\ref{def:comptage})} sont synonymes. La régularité topologique est ce qui permet d'\emph{isoler} les atomes~; sur un espace mesurable abstrait, la représentation peut échouer.
+\end{corollaire}
+
+\section{Caractérisation de Rényi}\label{sec:renyi}
+
+Cette section justifie la Remarque~\ref{rem:pourquoi-poisson}~: sous des hypothèses naturelles, l'\emph{indépendance sur les disjoints} force à elle seule la loi de Poisson. Elle est logiquement indépendante de la suite (motivation), et réutilise le Lemme de Sierpiński (\S\ref{sec:representation}) ainsi que le Lemme~\ref{lem:poissonsum}. On travaille sur un espace borélien standard $(E,\calE)$ ($E$ polonais, $\calE=\calB(E)$).
+
+\subsection{Deux lemmes}
+
+\begin{lemme}[Partition équimesurée]\label{lem:equipartition}
+Soit $\eta$ une mesure finie \emph{diffuse} sur $(E,\calE)$ et $A\in\calE$. Pour tout $k\ge1$, il existe une partition mesurable $A=\bigsqcup_{i=1}^{k}B_i$ avec $\eta(B_i)=\eta(A)/k$ pour chaque $i$.
+\end{lemme}
+
+\begin{proof}
+Le Lemme de Sierpiński (Lemme~\ref{lem:sierpinski}) fournit $B_1\subseteq A$ avec $\eta(B_1)=\eta(A)/k$. Supposons $B_1,\dots,B_j$ construits, disjoints, de mesure $\eta(A)/k$ chacun ($j<k$)~; alors $\eta\big(A\setminus\bigsqcup_{i\le j}B_i\big)=\frac{k-j}{k}\eta(A)\ge\eta(A)/k$, et Sierpiński appliqué à $A\setminus\bigsqcup_{i\le j}B_i$ donne $B_{j+1}$ de mesure $\eta(A)/k$. Après $k$ étapes, les $B_i$ épuisent $A$ (leur mesure totale est $\eta(A)$, égale à $\eta(A)$ restant). La diffusion est essentielle~: un atome $\eta(\{x_0\})=a>0$ empêcherait d'atteindre les valeurs de $(0,a)$.
+\end{proof}
+
+\begin{lemme}[Loi des petits nombres, tableaux triangulaires]\label{lem:petits-nombres}
+Pour chaque $n$, soient $X_{n,1},\dots,X_{n,k_n}$ des variables à valeurs dans $\N_0$, \emph{indépendantes} (à $n$ fixé). Posons $p_{n,i}:=\PP(X_{n,i}\ge1)$. Si
+\[
+\textup{(a)}\ \max_i p_{n,i}\xrightarrow[n]{}0,\qquad
+\textup{(b)}\ \sum_i p_{n,i}\xrightarrow[n]{}\lambda\in[0,\infty),\qquad
+\textup{(c)}\ \sum_i \PP(X_{n,i}\ge2)\xrightarrow[n]{}0,
+\]
+alors $S_n:=\sum_i X_{n,i}\xrightarrow{d}\Poi(\lambda)$.
+\end{lemme}
+
+\begin{proof}
+Fixons $z\in[0,1]$ et notons $g_{n,i}(z)=\E[z^{X_{n,i}}]$. En séparant les valeurs $0$, $1$ et $\ge2$, avec $\PP(X_{n,i}=1)=p_{n,i}-\PP(X_{n,i}\ge2)$,
+\[
+g_{n,i}(z)=1-p_{n,i}(1-z)+\rho_{n,i}(z),
+\qquad
+\rho_{n,i}(z):=\sum_{j\ge2}\PP(X_{n,i}=j)\,z^{j}-\PP(X_{n,i}\ge2)\,z .
+\]
+Pour $z\in[0,1]$, $|\rho_{n,i}(z)|\le 2\,\PP(X_{n,i}\ge2)$, donc $\sum_i|\rho_{n,i}(z)|\le 2\sum_i\PP(X_{n,i}\ge2)\to0$ par (c). Posons $u_{n,i}:=g_{n,i}(z)-1$, de sorte que $|u_{n,i}|\le 3p_{n,i}$ (car $\PP(X_{n,i}\ge2)\le p_{n,i}$)~; par (a), $\max_i|u_{n,i}|\to0$. Pour $n$ assez grand, $\max_i p_{n,i}\le\tfrac16$, d'où $\max_i|u_{n,i}|\le\tfrac12$ et $g_{n,i}(z)\ge 1-p_{n,i}\ge\tfrac12>0$. Le logarithme est alors défini, et l'inégalité élémentaire, obtenue en retranchant le terme linéaire du développement $\log(1+u)=\sum_{k\ge1}\frac{(-1)^{k-1}}{k}u^k$,
+\[
+\big|\log(1+u)-u\big|\le\sum_{k\ge2}\frac{|u|^k}{k}\le\frac12\sum_{k\ge2}|u|^k=\frac{|u|^2}{2(1-|u|)}\le |u|^2\qquad(|u|\le\tfrac12),
+\]
+donne $\big|\log(1+u_{n,i})-u_{n,i}\big|\le u_{n,i}^2$. Par indépendance, $\E[z^{S_n}]=\E\big[\prod_i z^{X_{n,i}}\big]=\prod_i g_{n,i}(z)$, et le logarithme d'un \emph{produit fini} à facteurs strictement positifs est la somme des logarithmes~:
+\[
+\log\E[z^{S_n}]=\sum_i\log g_{n,i}(z)=\sum_i u_{n,i}+\sum_i O(u_{n,i}^2).
+\]
+Or $\sum_i u_{n,i}=-(1-z)\sum_i p_{n,i}+\sum_i\rho_{n,i}(z)\to-\lambda(1-z)$ par (b), et $\sum_i u_{n,i}^2\le(\max_i|u_{n,i}|)\sum_i|u_{n,i}|\to0$ puisque $\sum_i|u_{n,i}|\le\sum_i p_{n,i}+2\sum_i\PP(X_{n,i}\ge2)$ reste borné. Donc $\E[z^{S_n}]\to e^{-\lambda(1-z)}=e^{\lambda(z-1)}$, fonction génératrice de $\Poi(\lambda)$. La limite valant $1$ en $z\to1^-$, aucune masse ne s'échappe vers $\infty$~; le théorème de continuité des fonctions génératrices donne $S_n\xrightarrow{d}\Poi(\lambda)$.
+\end{proof}
+
+\begin{remarque}[Terminologie et portée]\label{rem:petits-nombres}
+Le nom \emph{loi des petits nombres} (Bortkiewicz, 1898) renvoie au régime poissonien~: le comptage d'événements individuellement \emph{rares} --- condition (a) --- mais collectivement nombreux, d'espérance totale stable (b) et sans occurrences multiples (c). Le \og petit \fg{} qualifie la rareté de chaque événement, par opposition à la loi des \emph{grands} nombres. Le terme \emph{tableau triangulaire} désigne la structure d'indexation $\{X_{n,i}\}_{i\le k_n}$~: à chaque niveau $n$ on repart d'un jeu \emph{neuf} de variables (et non d'un prolongement de la ligne précédente), et l'on étudie la limite de la somme de ligne $S_n=\sum_{i\le k_n}X_{n,i}$. La croissance de $k_n$ n'est \emph{pas} une hypothèse~: seule compte l'infinitésimalité $\max_i p_{n,i}\to0$. De fait (a) et (b) \emph{forcent} $k_n\to\infty$ --- car $\lambda\leftarrow\sum_i p_{n,i}\le k_n\,\max_i p_{n,i}$ --- mais sans imposer de monotonie. Dans l'application au Théorème~\ref{thm:renyi}, on aura $k_n=n$ par commodité (équipartition en $n$ cellules)~; ce n'est qu'un choix de construction.
+\end{remarque}
+
+\subsection{Le théorème}
+
+\begin{theoreme}[Rényi]\label{thm:renyi}
+Soit $N$ un processus ponctuel sur un espace borélien standard $(E,\calE)$ vérifiant~:
+\begin{enumerate}[label=\textup{(R\arabic*)}]
+\item\label{R1} \emph{(indépendance complète)} pour tous $A_1,\dots,A_k\in\calE$ deux à deux disjoints, les $N(A_1),\dots,N(A_k)$ sont indépendants~;
+\item\label{R2} \emph{(intensité diffuse localement finie)} $\mu(A):=\E[N(A)]$ définit une mesure diffuse et localement finie~;
+\item\label{R3} \emph{(ordonnancement)} pour tout borné $A$ et toute suite de partitions $A=\bigsqcup_{i=1}^{n}B_{n,i}$ de maille $\max_i\mu(B_{n,i})\to0$, on a $\displaystyle\sum_{i=1}^{n}\PP\big(N(B_{n,i})\ge1\big)\xrightarrow[n]{}\mu(A)$.
+\end{enumerate}
+Alors $N\sim\mathrm{PRM}(\mu)$~; en particulier $N(A)\sim\Poi(\mu(A))$ pour tout $A\in\calE$.
+\end{theoreme}
+
+L'hypothèse \ref{R3} exprime que le nombre moyen de points $\mu(A)$ coïncide, à la limite, avec le nombre moyen de cellules \emph{occupées} $\sum_i\PP(N(B_{n,i})\ge1)$~: asymptotiquement, aucune cellule ne porte deux points. C'est le sens rigoureux de \og processus simple, au plus un point par site \fg{}.
+
+\begin{proof}
+\emph{Étape 1~: chaque comptage borné est de Poisson.} Fixons $A$ borné, $\lambda:=\mu(A)<\infty$. La mesure $\mu|_A$ étant finie et diffuse (\ref{R2}), le Lemme~\ref{lem:equipartition} fournit, pour chaque $n$, une partition $A=\bigsqcup_{i=1}^{n}B_{n,i}$ avec $\mu(B_{n,i})=\lambda/n$. Posons $X_{n,i}:=N(B_{n,i})$~; ces variables sont indépendantes par \ref{R1}, et $\sum_{i=1}^n X_{n,i}=N(A)$ pour \emph{tout} $n$. Vérifions les hypothèses du Lemme~\ref{lem:petits-nombres} avec $p_{n,i}=\PP(N(B_{n,i})\ge1)$~:
+\begin{itemize}
+\item (a) $p_{n,i}\le\E[N(B_{n,i})]=\mu(B_{n,i})=\lambda/n$, donc $\max_i p_{n,i}\le\lambda/n\to0$~;
+\item (b) c'est exactement \ref{R3} (maille $\lambda/n\to0$)~: $\sum_i p_{n,i}\to\mu(A)=\lambda$~;
+\item (c) de $\E[N(B_{n,i})]=\sum_{j\ge1}\PP(N(B_{n,i})\ge j)$ on tire $\sum_{j\ge2}\PP(N(B_{n,i})\ge j)=\mu(B_{n,i})-p_{n,i}$, donc en sommant sur $i$,
+\[
+\sum_i\PP(N(B_{n,i})\ge2)\le\sum_i\sum_{j\ge2}\PP(N(B_{n,i})\ge j)=\underbrace{\sum_i\mu(B_{n,i})}_{=\mu(A)=\lambda}-\sum_i p_{n,i}\xrightarrow[n]{}\lambda-\lambda=0 .
+\]
+\end{itemize}
+Le Lemme~\ref{lem:petits-nombres} donne $N(A)=\sum_i X_{n,i}\xrightarrow{d}\Poi(\lambda)$. Mais la loi de $N(A)$ ne dépend pas de $n$~: une suite \emph{constante} de lois qui converge vers $\Poi(\lambda)$ est $\Poi(\lambda)$. Donc $N(A)\sim\Poi(\mu(A))$.
+
+\emph{Étape 2~: extension à $A$ quelconque.} Pour $A\in\calE$ général, soit $B_p\uparrow E$ une exhaustion par des bornés~; alors $A=\bigsqcup_p(A\cap B_p)$, les $N(A\cap B_p)$ sont indépendants (\ref{R1}) et de loi $\Poi(\mu(A\cap B_p))$ (Étape 1). Le Lemme~\ref{lem:poissonsum} donne $N(A)=\sum_p N(A\cap B_p)\sim\Poi\big(\sum_p\mu(A\cap B_p)\big)=\Poi(\mu(A))$ (avec $\Poi(\infty)=\delta_\infty$ si $\mu(A)=\infty$). C'est \ref{P1} pour tout $A$.
+
+\emph{Étape 3~: conclusion.} On a établi \ref{P1} ($N(A)\sim\Poi(\mu(A))$ partout), et \ref{P2} est l'hypothèse \ref{R1}. Par la Définition~\ref{def:prm}, $N\sim\mathrm{PRM}(\mu)$.
+\end{proof}
+
+\begin{remarque}[Rôle de chaque hypothèse, et lien avec Raikov]\label{rem:renyi-hyp}
+Chaque hypothèse est nécessaire et son rôle est isolé par la preuve. L'\emph{indépendance} \ref{R1} permet la factorisation $\E[z^{N(A)}]=\prod_i\E[z^{N(B_{n,i})}]$, socle de la loi des petits nombres. La \emph{diffusion} de $\mu$ \ref{R2} annule le tableau ($\max_i p_{n,i}\le\lambda/n\to0$)~: un atome de $\mu$ créerait une cellule irréductible portant plusieurs points. L'\emph{ordonnancement} \ref{R3} est ce qui verrouille Poisson \emph{pur} plutôt que composé~: c'est la condition (c) --- sauts $\ge2$ négligeables --- qui écarte les lois de Poisson composées et la binomiale négative, elles aussi infiniment divisibles sur $\N_0$. Retirer \ref{R1} conduit aux processus ponctuels généraux (Cox, Gibbs, déterminantaux)~; garder \ref{R1}--\ref{R2} sans \ref{R3} conduit aux \emph{processus de Poisson composés} (grappes indépendantes de tailles aléatoires). Le \emph{théorème de Raikov} (si $X+Y\sim\Poi(\lambda)$ avec $X\perp Y$, alors $X,Y$ sont de Poisson) est le versant dual~: on réalise $X,Y$ comme comptages d'une $\mathrm{PRM}$ sur deux boréliens disjoints, et \ref{P1} force chacun à être poissonien. Références~: Daley--Vere-Jones~\cite{DVJ} \S2.4 (Rényi--Prékopa), Kallenberg~\cite{Kallenberg} ch.~3.
+\end{remarque}
+
+\section{Topologie vague et convergence en loi}\label{sec:vague}
+
+Cette dernière section relie $\Mp(E)$ à la théorie de la convergence faible (Helly, Prokhorov). Les énoncés y sont \textbf{admis}~; leurs preuves, de nature topologique, sont dans la littérature (Kallenberg~\cite{Kallenberg}, Resnick~\cite{Resnick}, Daley--Vere-Jones~\cite{DVJ}).
+
+On suppose $E$ localement compact, à base dénombrable, séparé (lcscH), et l'on note $C_c^+(E)$ les fonctions continues positives à support compact.
+
+\begin{definition}[Topologie vague]
+Sur $\Mp(E)$, la \emph{topologie vague} est la plus grossière rendant continues toutes les applications $m\mapsto m(f)=\int f\dd m$, $f\in C_c^+(E)$. On dit que $m_n\to m$ vaguement si $m_n(f)\to m(f)$ pour toute $f\in C_c^+(E)$.
+\end{definition}
+
+\begin{theoreme}[Structure de $\Mp(E)$~; \emph{admis}]\label{thm:polish}
+Muni de la topologie vague, $\Mp(E)$ est un espace polonais, et la tribu borélienne associée coïncide avec la tribu des évaluations~:
+\[
+\calB\big(\Mp(E),\ \text{vague}\big)=\calM_p=\sigma\big(\pi_A:A\in\calE\big).
+\]
+\end{theoreme}
+
+Ainsi un processus ponctuel est \emph{exactement} un élément aléatoire de l'espace polonais $\Mp(E)$ vague~; la machinerie de la convergence en loi sur les espaces polonais (Prokhorov, portmanteau, tension) s'applique alors sans réserve.
+
+\begin{theoreme}[Continuité de la fonctionnelle de Laplace~; \emph{admis}]\label{thm:cv-laplace}
+Soient $N,N_1,N_2,\dots$ des processus ponctuels sur $E$ lcscH. Il y a équivalence entre~:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item $N_n\Rightarrow N$ \textup{(convergence en loi pour la topologie vague)}~;
+\item $\calL_{N_n}(f)\longrightarrow \calL_{N}(f)$ pour toute $f\in C_c^+(E)$.
+\end{enumerate}
+\end{theoreme}
+
+\begin{remarque}[Analogie avec Lévy]
+Le Théorème~\ref{thm:cv-laplace} est, pour les mesures aléatoires, l'exact analogue du théorème de continuité de Lévy pour les fonctions caractéristiques~: la fonctionnelle de Laplace joue le rôle de \emph{transformée injective et continue}, et la convergence des lois se lit sur elle. La compacité relative (tension) des familles de processus ponctuels s'obtient, elle, via Prokhorov sur l'espace polonais $\Mp(E)$, exactement dans l'esprit du critère de sélection de Helly.
+\end{remarque}
+
+\begin{corollaire}[Loi des petits nombres, convergence poissonienne]
+Pour chaque $n$, soit $N_n=\sum_{i=1}^{k_n}\delta_{x^{(n)}_i}\varepsilon^{(n)}_i$ une superposition de $k_n$ points indépendamment \og allumés \fg{} ($\varepsilon^{(n)}_i\sim$ Bernoulli$(p^{(n)}_i)$) aux positions déterministes $x^{(n)}_i$. Si $\max_i p^{(n)}_i\to0$ et $\sum_i p^{(n)}_i\,\delta_{x^{(n)}_i}\to\mu$ vaguement, alors $N_n\Rightarrow \mathrm{PRM}(\mu)$.
+\end{corollaire}
+
+\begin{proof}[Esquisse]
+Par indépendance, $\calL_{N_n}(f)=\prod_i\big(1-p^{(n)}_i(1-e^{-f(x^{(n)}_i)})\big)$. Le développement $\log(1-u)=-u+O(u^2)$ avec $u=p^{(n)}_i(1-e^{-f})\le p^{(n)}_i$, la condition $\max_i p^{(n)}_i\to0$ (contrôle du reste $O(u^2)$) et l'hypothèse de convergence vague donnent $\log\calL_{N_n}(f)\to-\int(1-e^{-f})\dd\mu$, soit la fonctionnelle de Laplace de $\mathrm{PRM}(\mu)$. On conclut par le Théorème~\ref{thm:cv-laplace}.
+\end{proof}
+
+\section{Le cas classique sur la droite}
+
+\begin{exemple}[Processus de Poisson homogène]
+Prenons $E=\R_+$, $\hat\calE=$ boréliens bornés, et $\mu=\lambda\,\mathrm{Leb}$ avec $\lambda>0$. Alors $N\sim\mathrm{PRM}(\lambda\,\mathrm{Leb})$ vérifie $N([0,t])\sim\Poi(\lambda t)$, à accroissements indépendants et stationnaires. En posant $S_n:=\inf\{t: N([0,t])\ge n\}$ (le $n$-ième instant d'arrivée), les inter-arrivées $T_n:=S_n-S_{n-1}$ sont i.i.d.\ de loi $\mathrm{Exp}(\lambda)$~: c'est la description duale par temps d'attente sans mémoire. La fonctionnelle de Laplace \eqref{eq:laplace} devient $\calL_N(f)=\exp\big(-\lambda\int_0^\infty(1-e^{-f(t)})\dd t\big)$.
+\end{exemple}
+
+\begin{exemple}[Processus inhomogène et changement de temps]
+Pour une intensité variable $\mu(\dd t)=\lambda(t)\dd t$ avec $\lambda\ge0$ localement intégrable, posons $\Lambda(t):=\int_0^t\lambda(s)\dd s$. Si $M\sim\mathrm{PRM}(\mathrm{Leb})$ est un Poisson standard et si $\Lambda$ est un homéomorphisme croissant de son domaine, alors, par le théorème d'application (Théorème~\ref{thm:mapping}) via $T=\Lambda^{-1}$,
+\[
+N:=\Lambda^{-1}_*M\sim\mathrm{PRM}(\lambda(t)\dd t).
+\]
+Autrement dit, le processus inhomogène s'obtient d'un Poisson standard par le \emph{changement de temps} $\Lambda$~: on \og dilate \fg{} l'axe temporel selon l'intensité cumulée. En particulier $N([0,t])\sim\Poi(\Lambda(t))$.
+\end{exemple}
+
+\begin{thebibliography}{9}
+\bibitem{Kallenberg} O.~Kallenberg, \emph{Random Measures, Theory and Applications}, Probability Theory and Stochastic Modelling~77, Springer, 2017.
+\bibitem{Resnick} S.~I.~Resnick, \emph{Extreme Values, Regular Variation and Point Processes}, Springer, 1987.
+\bibitem{DVJ} D.~J.~Daley, D.~Vere-Jones, \emph{An Introduction to the Theory of Point Processes}, vol.~I--II, 2\textsuperscript{e} éd., Springer, 2003--2008.
+\bibitem{LastPenrose} G.~Last, M.~Penrose, \emph{Lectures on the Poisson Process}, Cambridge University Press, 2017.
+\end{thebibliography}
+
+\end{document}

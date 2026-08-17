@@ -1,0 +1,355 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\PR}{\mathbb{P}}
+\newcommand{\dd}{\,\mathrm{d}}
+\newcommand{\weak}{\Rightarrow}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+
+\theoremstyle{plain}
+\newtheorem{theoreme}{Théorème}
+\newtheorem{lemme}[theoreme]{Lemme}
+\newtheorem{proposition}[theoreme]{Proposition}
+\newtheorem{corollaire}[theoreme]{Corollaire}
+\theoremstyle{definition}
+\newtheorem{definition}[theoreme]{Définition}
+\theoremstyle{remark}
+\newtheorem{remarque}[theoreme]{Remarque}
+
+\renewcommand{\qedsymbol}{$\blacksquare$}
+
+\title{\bfseries Sélection de Helly, théorème de Prokhorov\\ et continuité de Lévy des fonctions caractéristiques}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+\vspace{-2.5em}
+
+\begin{center}\small
+\emph{Architecture logique.} Helly (analyse réelle pure) $\longrightarrow$ Prokhorov sur $\R$
+$\longrightarrow$ Lévy (b), avec en appoint le \emph{lemme de queue} (borne de tension par la f.c.)
+et le \emph{lemme d'unicité} (inversion de Fourier).
+\end{center}
+\vspace{1em}
+
+\section*{0.\quad Préliminaires et conventions}
+
+On travaille sur $(\R,\mathcal B(\R))$. Une \emph{fonction de répartition} (FdR) est une fonction
+$F:\R\to[0,1]$ croissante, continue à droite, avec $F(-\infty)=0$ et $F(+\infty)=1$ ; toute
+probabilité $\mu$ sur $\R$ en admet une, $F(x)=\mu((-\infty,x])$, et réciproquement.
+
+\begin{definition}[Convergence étroite]
+Soit $(\mu_n)$, $\mu$ des probabilités sur $\R$. On dit que $\mu_n\weak\mu$ (converge étroitement) si
+$\int f\dd\mu_n\to\int f\dd\mu$ pour toute $f:\R\to\R$ continue bornée.
+\end{definition}
+
+On utilisera la caractérisation par les FdR (forme du théorème du \emph{portmanteau}).
+
+\begin{proposition}[Convergence étroite vs.\ convergence des FdR]\label{prop:port}
+Soient $\mu_n,\mu$ des probabilités de FdR $F_n,F$. Alors $\mu_n\weak\mu$ si et seulement si
+$F_n(x)\to F(x)$ en tout point $x$ de continuité de $F$.
+\end{proposition}
+
+\begin{proof}
+On démontre le sens $(\Leftarrow)$, seul utilisé plus bas ; le sens direct est analogue.
+Supposons $F_n\to F$ en tout point de continuité de $F$. Soit $f$ continue bornée, $\abs f\le M$, et
+$\varepsilon>0$. L'ensemble des discontinuités de $F$ est au plus dénombrable ; choisissons donc des
+points de continuité $a<b$ de $F$ tels que $F(a)<\varepsilon$ et $1-F(b)<\varepsilon$ (possible car
+$F(-\infty)=0$, $F(+\infty)=1$). Alors $\limsup_n\mu_n((a,b]^c)\le F(a)+(1-F(b))<2\varepsilon$.
+Sur $[a,b]$, $f$ est uniformément continue : subdivisons $a=x_0<\dots<x_m=b$ en points de continuité
+de $F$ avec $\abs{f(x)-f(x_{i-1})}<\varepsilon$ sur $(x_{i-1},x_i]$. Posons
+$g=\sum_{i=1}^m f(x_{i-1})\mathbf 1_{(x_{i-1},x_i]}$. Alors $\abs{\int g\dd\mu_n-\int g\dd\mu}
+=\big|\sum_i f(x_{i-1})\big[(F_n(x_i)-F_n(x_{i-1}))-(F(x_i)-F(x_{i-1}))\big]\big|\to0$,
+car tous les $x_i$ sont des points de continuité. Comme $\abs{f-g}\le\varepsilon$ sur $(a,b]$ et
+$\abs{f-g}\le 2M$ partout,
+$\abs{\int f\dd\mu_n-\int g\dd\mu_n}\le\varepsilon+2M\,\mu_n((a,b]^c)$, et de même pour $\mu$.
+En combinant, $\limsup_n\abs{\int f\dd\mu_n-\int f\dd\mu}\le 2\varepsilon+2M\cdot 2\varepsilon+0$.
+$\varepsilon$ étant arbitraire, $\int f\dd\mu_n\to\int f\dd\mu$.
+\end{proof}
+
+\section{Théorème de sélection de Helly}
+
+Le point clé : d'\emph{une suite quelconque} de FdR on extrait une sous-suite convergente, mais la
+limite peut être une \emph{sous-répartition} (de la masse peut fuir à l'infini).
+
+\begin{theoreme}[Helly]\label{th:helly}
+Soit $(F_n)$ une suite de fonctions croissantes à valeurs dans $[0,1]$. Il existe une sous-suite
+$(F_{n_k})$ et une fonction $F:\R\to[0,1]$ \emph{croissante et continue à droite} telle que
+\[
+F_{n_k}(x)\longrightarrow F(x)\qquad\text{en tout point $x$ de continuité de $F$.}
+\]
+\end{theoreme}
+
+\begin{proof}
+\textbf{Étape 1 (extraction diagonale sur $\Q$).}
+Énumérons $\Q=\{q_1,q_2,\dots\}$. La suite $(F_n(q_1))_n\subset[0,1]$ admet une sous-suite convergente,
+indexée par $N_1\subset\mathbb N$. De $N_1$ on extrait $N_2\subset N_1$ le long de laquelle
+$(F_n(q_2))$ converge, etc. Posons $n_k=$ le $k$-ième élément de $N_k$. Pour tout $j$ fixé, la suite
+$(n_k)_{k\ge j}$ est extraite de $N_j$, donc $F_{n_k}(q_j)$ converge vers une limite notée $G(q_j)$.
+On obtient ainsi $G:\Q\to[0,1]$ avec $F_{n_k}(q)\to G(q)$ pour tout $q\in\Q$. Comme chaque $F_n$ est
+croissante, $G$ est croissante sur $\Q$ (passage à la limite dans $F_{n_k}(q)\le F_{n_k}(q')$ pour
+$q\le q'$).
+
+\smallskip
+\textbf{Étape 2 (régularisation à droite).} Définissons
+\[
+F(x)\;:=\;\inf\{\,G(q):q\in\Q,\ q>x\,\}.
+\]
+$F$ est croissante (clair). Montrons qu'elle est \emph{continue à droite}. Par croissance,
+$F(x+)\ge F(x)$. Soit $\varepsilon>0$ : par définition de l'infimum, il existe $q_0\in\Q$, $q_0>x$,
+avec $G(q_0)<F(x)+\varepsilon$. Pour tout $y\in(x,q_0)$ on a $q_0>y$, donc
+$F(y)=\inf_{q>y}G(q)\le G(q_0)<F(x)+\varepsilon$. Ainsi $F(x+)\le F(x)+\varepsilon$ ; $\varepsilon$
+étant arbitraire, $F(x+)=F(x)$. Enfin $0\le F\le1$.
+
+Notons au passage l'inégalité, valable pour tout $q\in\Q$ et tout $y\in\R$,
+\begin{equation}\label{eq:GF}
+q>y\ \Longrightarrow\ G(q)\ \ge\ F(y),
+\end{equation}
+car $F(y)=\inf_{q'>y}G(q')\le G(q)$.
+
+\smallskip
+\textbf{Étape 3 (convergence aux points de continuité).}
+Soit $x$ un point de continuité de $F$.
+
+\emph{Majoration.} Pour tout rationnel $r>x$, $F_{n_k}(x)\le F_{n_k}(r)\to G(r)$, donc
+$\limsup_k F_{n_k}(x)\le G(r)$ ; en prenant l'infimum sur $r>x$ rationnel,
+\[
+\limsup_k F_{n_k}(x)\ \le\ \inf_{r>x,\ r\in\Q}G(r)\ =\ F(x).
+\]
+
+\emph{Minoration.} Pour tout rationnel $q<x$, $F_{n_k}(x)\ge F_{n_k}(q)\to G(q)$, donc
+$\liminf_k F_{n_k}(x)\ge G(q)$, d'où $\liminf_k F_{n_k}(x)\ge\sup_{q<x,\,q\in\Q}G(q)$.
+Or, pour tout $y<x$, en choisissant un rationnel $q\in(y,x)$, l'inégalité \eqref{eq:GF} donne
+$G(q)\ge F(y)$ ; donc $\sup_{q<x}G(q)\ge\sup_{y<x}F(y)=F(x^-)$. Finalement
+\[
+\liminf_k F_{n_k}(x)\ \ge\ F(x^-).
+\]
+
+En un point de continuité, $F(x^-)=F(x)$ ; les deux encadrements donnent
+$F_{n_k}(x)\to F(x)$.
+\end{proof}
+
+\begin{remarque}
+La limite $F$ n'est en général pas une FdR : on peut avoir $F(-\infty)>0$ ou $F(+\infty)<1$
+(fuite de masse à l'infini). C'est précisément la \emph{tension} qui l'empêchera.
+\end{remarque}
+
+\section{Fonctions caractéristiques : unicité et borne de queue}
+
+Pour $\mu$ probabilité (loi de $X$), $\varphi_\mu(t)=\int_\R e^{itx}\dd\mu(x)=\E[e^{itX}]$.
+On a $\varphi_\mu(0)=1$, $\abs{\varphi_\mu}\le1$, $\varphi_\mu$ uniformément continue, et
+$\varphi_\mu(-t)=\overline{\varphi_\mu(t)}$.
+
+\begin{lemme}[Unicité, par lissage gaussien]\label{lem:uniq}
+La fonction caractéristique détermine la loi : si $\varphi_\mu=\varphi_\nu$ alors $\mu=\nu$.
+\end{lemme}
+
+\begin{proof}
+Soit $X\sim\mu$ et $Z\sim\mathcal N(0,1)$ indépendante, $\sigma>0$. La densité de $\sigma Z$ est
+$g_\sigma(x)=\tfrac1{\sqrt{2\pi}\,\sigma}e^{-x^2/2\sigma^2}$, et la transformée de Fourier gaussienne
+donne l'\emph{identité d'inversion} $g_\sigma(x)=\tfrac1{2\pi}\int_\R e^{-itx}e^{-\sigma^2 t^2/2}\dd t$.
+Par convolution, $W_\sigma:=X+\sigma Z$ admet la densité
+\[
+p_\sigma(x)=\int_\R g_\sigma(x-u)\dd\mu(u)
+=\int_\R\Big(\tfrac1{2\pi}\int_\R e^{-it(x-u)}e^{-\sigma^2t^2/2}\dd t\Big)\dd\mu(u).
+\]
+L'intégrande est absolument intégrable pour la mesure produit $\dd t\otimes\dd\mu$
+(car $\int_\R e^{-\sigma^2t^2/2}\dd t<\infty$ et $\mu$ est finie) ; le théorème de Fubini donne
+\[
+p_\sigma(x)=\frac1{2\pi}\int_\R e^{-itx}e^{-\sigma^2t^2/2}
+\underbrace{\Big(\int_\R e^{itu}\dd\mu(u)\Big)}_{=\ \varphi_\mu(t)}\dd t
+=\frac1{2\pi}\int_\R e^{-itx}e^{-\sigma^2t^2/2}\varphi_\mu(t)\dd t.
+\]
+Ainsi $p_\sigma$ ne dépend que de $\varphi_\mu$. Si $\varphi_\mu=\varphi_\nu$, alors pour tout
+$\sigma>0$ les lois de $X+\sigma Z$ et $Y+\sigma Z$ (avec $Y\sim\nu$) coïncident. Quand
+$\sigma\downarrow0$, $\sigma Z\to0$ p.s., donc $X+\sigma Z\weak X$ et $Y+\sigma Z\weak Y$
+(convergence en loi, car $f$ continue bornée$\Rightarrow\E f(X+\sigma Z)\to\E f(X)$ par convergence
+dominée). L'unicité de la limite étroite donne $\mu=\nu$.
+\end{proof}
+
+Le résultat suivant est le c\oe ur analytique de Lévy : il contrôle la masse dans les queues par le
+comportement de $\varphi$ \emph{près de $0$}.
+
+\begin{lemme}[Borne de queue]\label{lem:tail}
+Pour toute probabilité $\mu$ de f.c.\ $\varphi$ et tout $\delta>0$,
+\[
+\mu\big(\{x:\abs x\ge 2/\delta\}\big)\ \le\ \frac1\delta\int_{-\delta}^{\delta}\big(1-\varphi(t)\big)\dd t.
+\]
+(Le membre de droite est réel : $\int_{-\delta}^{\delta}\varphi(t)\dd t=\int_{-\delta}^{\delta}\Re\varphi(t)\dd t$,
+la partie imaginaire étant impaire.)
+\end{lemme}
+
+\begin{proof}
+Par Fubini (intégrande borné par $2$, domaine de mesure finie),
+\[
+\frac1\delta\int_{-\delta}^{\delta}(1-\varphi(t))\dd t
+=\frac1\delta\int_{-\delta}^{\delta}\!\!\int_\R(1-e^{itx})\dd\mu(x)\dd t
+=\int_\R\Big(\frac1\delta\int_{-\delta}^{\delta}(1-e^{itx})\dd t\Big)\dd\mu(x).
+\]
+Pour $x\neq0$, $\int_{-\delta}^{\delta}e^{itx}\dd t=\dfrac{e^{i\delta x}-e^{-i\delta x}}{ix}
+=\dfrac{2\sin(\delta x)}{x}$, donc
+$\frac1\delta\int_{-\delta}^{\delta}(1-e^{itx})\dd t=2-\dfrac{2\sin(\delta x)}{\delta x}
+=2\Big(1-\dfrac{\sin(\delta x)}{\delta x}\Big)$ (valeur $0$ en $x=0$, par continuité). D'où
+\[
+\frac1\delta\int_{-\delta}^{\delta}(1-\varphi(t))\dd t
+=2\int_\R\Big(1-\frac{\sin(\delta x)}{\delta x}\Big)\dd\mu(x)\ \ge\ 0,
+\]
+puisque $\sin u/u\le1$. Enfin, si $\abs x\ge 2/\delta$, alors $\abs{\delta x}\ge2$ et
+$\big|\tfrac{\sin(\delta x)}{\delta x}\big|\le\tfrac1{\abs{\delta x}}\le\tfrac12$, donc
+$1-\tfrac{\sin(\delta x)}{\delta x}\ge\tfrac12$. En minorant l'intégrale par sa restriction à
+$\{\abs x\ge2/\delta\}$,
+\[
+2\int_\R\Big(1-\frac{\sin(\delta x)}{\delta x}\Big)\dd\mu(x)
+\ \ge\ 2\!\!\int_{\abs x\ge2/\delta}\!\!\tfrac12\dd\mu(x)=\mu\{\abs x\ge2/\delta\}.\qedhere
+\]
+\end{proof}
+
+\section{Théorème de Prokhorov (sur $\R$)}
+
+\begin{definition}[Tension]
+Une famille $\mathcal M$ de probabilités sur $\R$ est \emph{tendue} si
+\[
+\forall\varepsilon>0,\ \exists M>0,\ \forall\mu\in\mathcal M,\quad \mu([-M,M])>1-\varepsilon.
+\]
+\end{definition}
+
+\begin{definition}[Relative compacité]
+$\mathcal M$ est \emph{relativement compacte} (pour la convergence étroite) si de toute suite
+$(\mu_n)\subset\mathcal M$ on peut extraire une sous-suite convergeant étroitement vers une
+\emph{probabilité}.
+\end{definition}
+
+\begin{theoreme}[Prokhorov]\label{th:prok}
+Pour une famille $\mathcal M$ de probabilités sur $\R$ :
+\[
+\mathcal M\ \text{tendue}\quad\Longleftrightarrow\quad\mathcal M\ \text{relativement compacte.}
+\]
+\end{theoreme}
+
+\begin{proof}
+\textbf{($\Rightarrow$) Tension $\Rightarrow$ relative compacité.}
+Soit $(\mu_n)\subset\mathcal M$, de FdR $(F_n)$. Par Helly (Th.~\ref{th:helly}), il existe une sous-suite
+$(F_{n_k})$ et une fonction $F$ croissante continue à droite, $0\le F\le1$, avec $F_{n_k}\to F$ en tout
+point de continuité. Montrons que la tension force $F(-\infty)=0$ et $F(+\infty)=1$, i.e.\ $F$ est
+une vraie FdR.
+
+Soit $\varepsilon>0$ et $M$ donné par la tension : $\mu_n([-M,M])>1-\varepsilon$ pour tout $n$.
+L'ensemble des discontinuités de $F$ étant dénombrable, choisissons $M'>M$ tel que $\pm M'$ soient des
+points de continuité de $F$. Alors pour tout $n$,
+\[
+F_n(M')-F_n(-M')=\mu_n((-M',M'])\ \ge\ \mu_n([-M,M])>1-\varepsilon.
+\]
+En faisant $k\to\infty$ (points de continuité), $F(M')-F(-M')\ge1-\varepsilon$. Comme
+$F(+\infty)\ge F(M')$ et $F(-\infty)\le F(-M')$, il vient $F(+\infty)-F(-\infty)\ge1-\varepsilon$ pour
+tout $\varepsilon>0$, donc $F(+\infty)-F(-\infty)=1$ ; joint à $0\le F\le1$ cela impose
+$F(-\infty)=0$ et $F(+\infty)=1$. Ainsi $F$ est la FdR d'une probabilité $\mu$, et par la
+Proposition~\ref{prop:port}, $\mu_{n_k}\weak\mu$.
+
+\smallskip
+\textbf{($\Leftarrow$) Relative compacité $\Rightarrow$ tension.}
+Par contraposée. Si $\mathcal M$ n'est pas tendue, il existe $\varepsilon_0>0$ tel que, pour chaque
+entier $m$, on trouve $\mu_m\in\mathcal M$ avec $\mu_m([-m,m])\le1-\varepsilon_0$. Supposons qu'une
+sous-suite $\mu_{m_k}\weak\nu$ (probabilité). Pour tout point de continuité $a$ de la FdR de $\nu$ et
+tout $m_k\ge a$, on a $(-a,a]\subset[-m_k,m_k]$, donc
+$\mu_{m_k}((-a,a])\le\mu_{m_k}([-m_k,m_k])\le1-\varepsilon_0$. En passant à la limite,
+$\nu((-a,a])\le1-\varepsilon_0$. Faisant $a\to+\infty$ le long de points de continuité,
+$\nu(\R)\le1-\varepsilon_0<1$ : contradiction. Donc $\mathcal M$ est tendue.
+\end{proof}
+
+\section{Théorème de continuité de Lévy}
+
+\begin{theoreme}[Lévy]\label{th:levy}
+Soient $(\mu_n)$ des probabilités sur $\R$, de fonctions caractéristiques $\varphi_n$.
+\begin{enumerate}[label=\textup{(\alph*)},leftmargin=2.2em]
+\item Si $\mu_n\weak\mu$, alors $\varphi_n(t)\to\varphi_\mu(t)$ pour tout $t\in\R$
+(et uniformément sur tout compact).
+\item Réciproquement, si $\varphi_n(t)\to\varphi(t)$ pour tout $t\in\R$ et si $\varphi$ est
+\emph{continue en $0$}, alors $\varphi$ est la fonction caractéristique d'une probabilité $\mu$ et
+$\mu_n\weak\mu$.
+\end{enumerate}
+\end{theoreme}
+
+\begin{proof}
+\textbf{(a)} Pour $t$ fixé, $x\mapsto e^{itx}$ est continue bornée (parties réelle et imaginaire
+$\cos(tx),\sin(tx)$) ; la définition de la convergence étroite donne
+$\varphi_n(t)=\int e^{itx}\dd\mu_n\to\int e^{itx}\dd\mu=\varphi_\mu(t)$. Pour l'uniformité sur un
+compact : par (a) appliqué à la suite constante, $\{\mu_n\}\cup\{\mu\}$ est tendue, et pour tout
+$s,t$, $\abs{\varphi_n(t)-\varphi_n(s)}\le\int\abs{e^{i(t-s)x}-1}\dd\mu_n(x)$, quantité petite
+uniformément en $n$ dès que $\abs{t-s}$ est petit (grâce à la tension) ; l'équicontinuité plus la
+convergence simple donnent la convergence uniforme sur les compacts. \medskip
+
+\noindent\textbf{(b)} On note d'abord que $\varphi_n(0)=1$ pour tout $n$, donc $\varphi(0)=1$.
+
+\smallskip
+\emph{Étape 1 : tension de $(\mu_n)$.} Soit $\varepsilon>0$. La fonction $t\mapsto1-\varphi(t)$ est
+continue en $0$ et vaut $0$ en $0$ ; il existe donc $\delta>0$ tel que $\abs{1-\varphi(t)}<\varepsilon$
+pour $\abs t\le\delta$. Alors
+\[
+\Big|\frac1\delta\int_{-\delta}^{\delta}(1-\varphi(t))\dd t\Big|
+\ \le\ \frac1\delta\int_{-\delta}^{\delta}\abs{1-\varphi(t)}\dd t\ \le\ \frac1\delta\cdot2\delta\cdot\varepsilon
+=2\varepsilon.
+\]
+Appliquons le Lemme~\ref{lem:tail} à chaque $\mu_n$ :
+$\mu_n\{\abs x\ge2/\delta\}\le\frac1\delta\int_{-\delta}^{\delta}(1-\varphi_n(t))\dd t$. Comme
+$\abs{1-\varphi_n}\le2$ et $\varphi_n\to\varphi$ simplement, la convergence dominée sur le segment
+$[-\delta,\delta]$ (mesure finie, intégrandes bornés) donne
+\[
+\frac1\delta\int_{-\delta}^{\delta}(1-\varphi_n(t))\dd t\ \xrightarrow[n\to\infty]{}\
+\frac1\delta\int_{-\delta}^{\delta}(1-\varphi(t))\dd t\ =:\ L,\qquad 0\le L\le2\varepsilon,
+\]
+($L$ est réel $\ge0$ comme limite de réels $\ge0$, cf.\ Lemme~\ref{lem:tail}). Il existe donc $N$ tel
+que, pour $n\ge N$, $\mu_n\{\abs x\ge2/\delta\}\le3\varepsilon$. Pour les indices $n<N$ (en nombre
+fini), chaque $\mu_n$ étant une probabilité, on choisit $M_n$ avec
+$\mu_n\{\abs x>M_n\}\le3\varepsilon$. En posant $M=\max(2/\delta,M_1,\dots,M_{N-1})$, on obtient
+$\mu_n\{\abs x> M\}\le3\varepsilon$ pour \emph{tout} $n$. Donc $(\mu_n)$ est tendue.
+
+\smallskip
+\emph{Étape 2 : compacité (Prokhorov).} Par le Théorème~\ref{th:prok}, $(\mu_n)$ est relativement
+compacte : toute sous-suite admet une sous-sous-suite convergeant étroitement vers une probabilité.
+
+\smallskip
+\emph{Étape 3 : identification de la limite (unicité).} Soit $(\mu_{n_k})$ une sous-suite telle que
+$\mu_{n_k}\weak\nu$ (probabilité). Par (a), $\varphi_{n_k}\to\varphi_\nu$ simplement. Mais par
+hypothèse $\varphi_{n_k}\to\varphi$. Donc $\varphi_\nu=\varphi$. Le Lemme~\ref{lem:uniq} (unicité)
+montre que \emph{toute} valeur d'adhérence $\nu$ a la même f.c.\ $\varphi$, donc est une seule et même
+probabilité, notée $\mu$, avec $\varphi_\mu=\varphi$.
+
+\smallskip
+\emph{Étape 4 : conclusion.} Toutes les valeurs d'adhérence de $(\mu_n)$ (pour la convergence étroite)
+sont égales à $\mu$, et la suite est relativement compacte : par un argument classique de
+sous-suites\footnote{Si une suite dans un espace où la convergence est induite par une topologie
+métrisable (ce qui est le cas de la convergence étroite sur $\R$, via la métrique de Lévy--Prokhorov)
+est relativement compacte et n'a qu'une seule valeur d'adhérence $\mu$, alors elle converge vers
+$\mu$ : sinon un voisinage de $\mu$ serait évité par une sous-suite, elle-même admettant une valeur
+d'adhérence $\neq\mu$, absurde.}, la suite entière converge : $\mu_n\weak\mu$. En particulier
+$\varphi=\varphi_\mu$ est bien une fonction caractéristique.
+\end{proof}
+
+\begin{corollaire}[Forme usuelle]
+Si $\varphi_n\to\varphi$ simplement et si $\varphi$ est continue en $0$, alors $\mu_n$ converge
+étroitement vers la loi de fonction caractéristique $\varphi$. L'hypothèse « $\varphi$ continue en
+$0$ » n'est pas superflue : sans elle, la masse peut fuir à l'infini
+(p.\,ex.\ $\mu_n=\mathcal N(0,n)$ donne $\varphi_n(t)=e^{-nt^2/2}\to\mathbf 1_{\{t=0\}}$, limite
+discontinue en $0$, et il n'y a pas de limite étroite).
+\end{corollaire}
+
+\begin{remarque}[Passage à $\R^d$]
+Tout se transpose à $\R^d$ : Helly par extraction diagonale sur $\Q^d$ ; la borne de queue
+s'applique coordonnée par coordonnée (contrôler chaque $\mu_n\{\abs{x_j}\ge2/\delta\}$ via
+$t\mapsto\varphi_n(t e_j)$) ce qui donne la tension ; l'unicité par lissage gaussien et Prokhorov
+restent valables. Prokhorov vaut plus généralement sur tout espace polonais ; sur $\R$ les deux sens
+sont élémentaires comme ci-dessus.
+\end{remarque}
+
+\end{document}

@@ -1,0 +1,924 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french,provide=*]{babel}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{stmaryrd}
+\usepackage{enumitem}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage[expansion=false]{microtype}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue!55!black,citecolor=blue!55!black,urlcolor=blue!55!black}
+
+% ------------------------------------------------------------------
+% Environnements
+% ------------------------------------------------------------------
+\theoremstyle{plain}
+\newtheorem{theorem}{Théorème}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemme}
+\newtheorem{corollary}[theorem]{Corollaire}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Définition}
+\newtheorem{remark}[theorem]{Remarque}
+\newtheorem{example}[theorem]{Exemple}
+
+% ------------------------------------------------------------------
+% Macros
+% ------------------------------------------------------------------
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Rp}{\mathbb{R}_+}
+\newcommand{\Rpb}{\overline{\mathbb{R}}_+}
+\newcommand{\Rb}{\overline{\mathbb{R}}}
+\newcommand{\B}{\mathcal{B}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\Bo}{\mathcal{B}}
+\newcommand{\sig}{\sigma}
+\newcommand{\ind}{\mathbf{1}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\ra}{\rightarrow}
+\newcommand{\limsupn}{\limsup_{n\to\infty}}
+\newcommand{\liminfn}{\liminf_{n\to\infty}}
+\DeclareMathOperator{\Vois}{\mathcal{V}}
+\newcommand{\restr}[2]{{#1}\big|_{#2}}
+
+\title{\textbf{Extension de la mesurabilité à $\Rpb=[0,+\infty]$}\\[4pt]
+\large Compactifications, topologie de l'ordre et tribu borélienne}
+\author{}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+On construit rigoureusement la droite positive achevée $\Rpb=[0,+\infty]$ comme
+espace topologique compact métrisable, en montrant la coïncidence de trois
+compactifications naturelles (topologie de l'ordre, compactifié d'Alexandroff,
+plongement métrique dans $[0,1]$). On en déduit la structure de la tribu
+borélienne $\B(\Rpb)$, ses familles génératrices, la caractérisation par trace,
+puis on développe la théorie de la mesurabilité des fonctions à valeurs dans
+$\Rpb$. On démontre en détail la stabilité par $\sup$, $\inf$, $\limsup$,
+$\liminf$, la mesurabilité des opérations arithmétiques étendues (addition,
+multiplication avec la convention $0\cdot\infty=0$), ainsi que le principe de
+transfert par homéomorphisme. Toutes les propriétés topologiques et
+ensemblistes utilisées sont énoncées et prouvées.
+\end{abstract}
+
+\tableofcontents
+
+% ==================================================================
+\section{Motivation : pourquoi ajouter le point $+\infty$}
+% ==================================================================
+
+En théorie de la mesure et des probabilités, les grandeurs fondamentales
+(mesures d'ensembles, intégrales de fonctions positives, sommes de séries à
+termes positifs) prennent naturellement leurs valeurs dans $[0,+\infty]$ et non
+dans $[0,+\infty)$. Deux raisons structurelles imposent l'adjonction du point
+$+\infty$.
+
+\paragraph{(i) Complétude du treillis ordonné.}
+On rappelle qu'un ensemble totalement ordonné $(L,\le)$ est un \emph{treillis
+complet} si toute partie $A\subseteq L$ admet une borne supérieure $\sup A$ et
+une borne inférieure $\inf A$ dans $L$. L'ensemble $\Rp=[0,+\infty)$ n'est
+\emph{pas} un treillis complet : la partie $A=\N$ n'y possède pas de borne
+supérieure. En revanche $\Rpb=[0,+\infty]$, muni de l'ordre prolongé par
+$x\le+\infty$ pour tout $x$, est un treillis complet (Proposition~\ref{prop:treillis}).
+C'est cette complétude qui garantit l'existence de $\sup_n f_n$ et
+$\inf_n f_n$ pour une suite quelconque de fonctions, donc celle de
+$\limsup$ et $\liminf$.
+
+\paragraph{(ii) Compacité.}
+Le point $+\infty$ n'est pas un simple symbole formel : c'est un point d'un
+espace topologique \emph{compact métrisable} homéomorphe au segment $[0,1]$.
+Cette compacité fournit l'existence de valeurs d'adhérence pour toute suite,
+la régularité des mesures boréliennes finies, et le cadre d'espace borélien
+standard dans lequel les variables aléatoires se comportent le mieux.
+
+L'objet de ce texte est de rendre ces deux points parfaitement explicites et
+d'en déduire toute la théorie de la mesurabilité étendue.
+
+% ==================================================================
+\section{Rappels d'ordre et structure de treillis complet}
+% ==================================================================
+
+\begin{definition}[Droite positive achevée]
+On pose $\Rpb=\Rp\cup\{+\infty\}=[0,+\infty]$, où $+\infty$ est un élément
+n'appartenant pas à $\Rp$. On prolonge l'ordre total $\le$ de $\Rp$ en posant
+$x\le+\infty$ pour tout $x\in\Rpb$. Alors $(\Rpb,\le)$ est un ensemble
+totalement ordonné admettant un plus petit élément $0$ et un plus grand
+élément $+\infty$.
+\end{definition}
+
+\begin{proposition}[$\Rpb$ est un treillis complet]\label{prop:treillis}
+Toute partie $A\subseteq\Rpb$ admet une borne supérieure et une borne
+inférieure dans $\Rpb$. Avec les conventions $\sup\varnothing=0$ et
+$\inf\varnothing=+\infty$.
+\end{proposition}
+
+\begin{proof}
+Traitons la borne supérieure ; le cas de la borne inférieure est symétrique
+(ou s'obtient via $\inf A=\sup\{m\in\Rpb: \forall a\in A,\ m\le a\}$).
+
+Soit $A\subseteq\Rpb$. Distinguons trois cas.
+
+\emph{Cas 1 : $A=\varnothing$.} Tout élément de $\Rpb$ est un majorant (vide de
+condition) ; le plus petit majorant est le plus petit élément $0$. Donc
+$\sup\varnothing=0$.
+
+\emph{Cas 2 : $+\infty\in A$, ou $A\cap\Rp$ n'est pas majorée dans $\Rp$.}
+Alors $+\infty$ est un majorant de $A$, et c'est le plus grand élément de
+$\Rpb$, donc le plus petit majorant possible dès qu'aucun réel ne majore $A$.
+Si $+\infty\in A$, aucun élément $<+\infty$ ne majore $A$ ; si $A\cap\Rp$ est
+non bornée, aucun réel ne la majore. Dans les deux cas $\sup A=+\infty$.
+
+\emph{Cas 3 : $A\subseteq\Rp$ et $A$ est majorée dans $\Rp$ (i.e. $\exists
+M\in\Rp,\ \forall a\in A,\ a\le M$).} Si $A=\varnothing$ on est dans le Cas~1 ;
+sinon $A$ est une partie non vide majorée de $\R$, donc par la propriété de la
+borne supérieure de $\R$ (axiome de complétude de l'ordre de $\R$), $\sup A$
+existe dans $\R$ et est $\ge0$, donc appartient à $\Rp\subseteq\Rpb$.
+
+Dans tous les cas $\sup A$ existe dans $\Rpb$.
+\end{proof}
+
+\begin{remark}
+La Proposition~\ref{prop:treillis} est le socle \emph{algébrique} de toute la
+suite : elle assure que les opérations $\sup$ et $\inf$ ne « sortent » jamais de
+$\Rpb$. La compacité topologique établie plus bas en est la contrepartie
+\emph{analytique}.
+\end{remark}
+
+% ==================================================================
+\section{Les trois compactifications de $\Rp$}
+% ==================================================================
+
+On munit $\Rpb$ d'une topologie et l'on montre que trois constructions
+naturelles donnent la même topologie. On note $\Vois(x)$ le filtre des
+voisinages d'un point $x$.
+
+% ------------------------------------------------------------------
+\subsection{Topologie de l'ordre}
+% ------------------------------------------------------------------
+
+\begin{definition}[Topologie de l'ordre]\label{def:ordre}
+Sur un ensemble totalement ordonné $(L,\le)$, la \emph{topologie de l'ordre}
+$\tau_{\le}$ est la topologie engendrée par la prébase des rayons ouverts
+\[
+\{x\in L: x<a\}\quad(a\in L),\qquad \{x\in L: x>a\}\quad(a\in L).
+\]
+\end{definition}
+
+Pour $L=\Rpb$, décrivons une base explicite. Les rayons sont
+$[0,a)=\{x<a\}$ pour $a\in\Rpb$ et $(a,+\infty]=\{x>a\}$ pour $a\in\Rpb$
+(en convenant $[0,0)=\varnothing$, $(+\infty,+\infty]=\varnothing$). Les
+intersections finies de tels rayons donnent la base
+\begin{equation}\label{eq:base-ordre}
+\mathcal{B}_{\le}=\big\{[0,b): b\in\Rpb\big\}\;\cup\;
+\big\{(a,b): 0\le a<b\le+\infty\big\}\;\cup\;
+\big\{(a,+\infty]: a\in\Rp\big\}.
+\end{equation}
+
+\begin{proposition}[Voisinages de $+\infty$ et de $0$]\label{prop:vois}
+Dans $(\Rpb,\tau_{\le})$ :
+\begin{enumerate}[label=(\alph*)]
+\item les ensembles $(a,+\infty]$, $a\in\Rp$, forment une base de voisinages
+de $+\infty$ ;
+\item les ensembles $[0,b)$, $b\in\Rp^*$, forment une base de voisinages
+de $0$ ;
+\item la topologie induite par $\tau_{\le}$ sur $\Rp$ coïncide avec la
+topologie usuelle de $\Rp$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(a) Un élément de base contenant $+\infty$ doit être de la forme $(a,+\infty]$
+d'après~\eqref{eq:base-ordre} (les $[0,b)$ et $(a,b)$ ne contiennent pas
+$+\infty$). Réciproquement chaque $(a,+\infty]$ est ouvert et contient
+$+\infty$. D'où le résultat. (b) Symétrique. (c) Pour $a,b\in\Rp$ les traces
+sur $\Rp$ des éléments de base sont $[0,b)$, $(a,b)$ et $(a,+\infty)$, qui
+engendrent exactement la topologie usuelle de $[0,+\infty)$.
+\end{proof}
+
+% ------------------------------------------------------------------
+\subsection{Plongement métrique dans $[0,1]$}
+% ------------------------------------------------------------------
+
+\begin{definition}[Homéomorphisme de compactification]\label{def:phi}
+On définit $\varphi:\Rpb\to[0,1]$ par
+\[
+\varphi(x)=\frac{x}{1+x}\quad(x\in\Rp),\qquad \varphi(+\infty)=1.
+\]
+\end{definition}
+
+\begin{proposition}[$\varphi$ est une bijection croissante]\label{prop:phi-bij}
+L'application $\varphi$ est une bijection strictement croissante de $\Rpb$ sur
+$[0,1]$, de réciproque
+\[
+\varphi^{-1}(y)=\frac{y}{1-y}\quad(y\in[0,1)),\qquad \varphi^{-1}(1)=+\infty.
+\]
+\end{proposition}
+
+\begin{proof}
+Sur $\Rp$, $\varphi(x)=1-\frac{1}{1+x}$ est dérivable de dérivée
+$\varphi'(x)=(1+x)^{-2}>0$, donc strictement croissante ; elle réalise une
+bijection de $[0,+\infty)$ sur $[0,1)$ (limites $\varphi(0)=0$,
+$\varphi(x)\to1^-$). En posant $\varphi(+\infty)=1$ on prolonge en une
+bijection croissante $\Rpb\to[0,1]$ car $x<+\infty\Rightarrow\varphi(x)<1$.
+L'expression de $\varphi^{-1}$ se vérifie par calcul direct : si
+$y=\frac{x}{1+x}$ alors $x=\frac{y}{1-y}$.
+\end{proof}
+
+\begin{definition}[Métrique de $\Rpb$]\label{def:metrique}
+On pose, pour $x,y\in\Rpb$,
+\[
+d(x,y)=\big|\varphi(x)-\varphi(y)\big|.
+\]
+C'est une distance sur $\Rpb$ (image réciproque de la distance usuelle de
+$[0,1]$ par l'injection $\varphi$).
+\end{definition}
+
+\begin{proposition}[La topologie métrique coïncide avec $\tau_\le$]\label{prop:coinc-metrique}
+La topologie $\tau_d$ induite par $d$ sur $\Rpb$ est égale à la topologie de
+l'ordre $\tau_\le$. De plus $\varphi:(\Rpb,\tau_\le)\to([0,1],|\cdot|)$ est un
+homéomorphisme.
+\end{proposition}
+
+\begin{proof}
+Par construction $\varphi$ est une isométrie de $(\Rpb,d)$ sur
+$([0,1],|\cdot|)$, donc un homéomorphisme pour $\tau_d$. Il reste à voir que
+$\varphi$ est aussi un homéomorphisme pour $\tau_\le$, ce qui entraînera
+$\tau_d=\tau_\le$ (deux topologies rendant la même bijection homéomorphe vers
+le même espace coïncident).
+
+Comme $\varphi$ est une bijection croissante entre ensembles totalement
+ordonnés, elle transporte les rayons sur les rayons :
+$\varphi(\{x<a\})=\{y<\varphi(a)\}\cap[0,1]$ et de même pour $>$. Elle
+transforme donc la prébase de la topologie de l'ordre de $\Rpb$ en la prébase
+de la topologie de l'ordre de $[0,1]$. Or sur $[0,1]$ la topologie de l'ordre
+est la topologie usuelle. Donc $\varphi$ est un homéomorphisme
+$(\Rpb,\tau_\le)\to[0,1]$.
+\end{proof}
+
+\begin{corollary}[Compacité et métrisabilité]\label{cor:compact}
+$(\Rpb,\tau_\le)$ est un espace \emph{compact}, \emph{métrisable}, à base
+dénombrable, séparable et complet. En particulier c'est un espace
+\emph{polonais compact}.
+\end{corollary}
+
+\begin{proof}
+$[0,1]$ est compact (Heine--Borel), métrique complet, séparable. Ces
+propriétés sont invariantes par homéomorphisme (la métrisabilité, la
+séparabilité, la base dénombrable et la compacité le sont ; la complétude est
+transportée par l'isométrie $\varphi$). Le résultat suit de
+Proposition~\ref{prop:coinc-metrique}.
+\end{proof}
+
+% ------------------------------------------------------------------
+\subsection{Compactifié d'Alexandroff}
+% ------------------------------------------------------------------
+
+\begin{definition}[Compactifié d'Alexandroff]\label{def:alex}
+Soit $X$ un espace topologique localement compact séparé non compact. Le
+\emph{compactifié d'Alexandroff} (ou compactifié en un point) est
+$X^*=X\cup\{\infty\}$ muni de la topologie
+\[
+\tau^*=\tau_X\;\cup\;\big\{\{\infty\}\cup(X\setminus K): K\subseteq X\text{ compact}\big\},
+\]
+où $\tau_X$ est la topologie de $X$. Les ouverts de $X^*$ sont donc les ouverts
+de $X$ et les complémentaires (dans $X^*$) des compacts de $X$.
+\end{definition}
+
+On rappelle sans démonstration le résultat classique : si $X$ est localement
+compact séparé non compact, alors $X^*$ est compact séparé et $X$ en est un
+sous-espace ouvert dense.
+
+\begin{proposition}[Alexandroff $=$ ordre pour $\Rp$]\label{prop:alex-ordre}
+$\Rp=[0,+\infty)$ est localement compact, séparé, non compact. Son compactifié
+d'Alexandroff $\Rp^*=\Rp\cup\{\infty\}$ est homéomorphe à $(\Rpb,\tau_\le)$ via
+l'identification $\infty\leftrightarrow+\infty$.
+\end{proposition}
+
+\begin{proof}
+$\Rp$ est un sous-espace de $\R$, séparé ; il est localement compact car tout
+point $x$ possède le voisinage compact $[\max(0,x-1),x+1]$ ; il n'est pas
+compact car non borné (ou : le recouvrement $\{[0,n)\}_n$ n'a pas de
+sous-recouvrement fini). Le compactifié d'Alexandroff est donc bien défini.
+
+Identifions $\infty$ avec $+\infty$, de sorte que $\Rp^*=\Rpb$ en tant
+qu'ensembles. Il reste à comparer les topologies. Sur $\Rp$, $\tau^*$ et
+$\tau_\le$ induisent toutes deux la topologie usuelle (Def.~\ref{def:alex}
+pour $\tau^*$ ; Proposition~\ref{prop:vois}(c) pour $\tau_\le$). Il suffit donc
+de comparer les voisinages du point ajouté.
+
+Par le théorème de Heine--Borel dans $\Rp$, les parties compactes de $\Rp$ sont
+exactement les fermés bornés. Un voisinage de base de $\infty$ dans $\tau^*$ est
+$\{\infty\}\cup(\Rp\setminus K)$ avec $K$ compact. Comme $K$ est borné, il
+existe $M$ tel que $K\subseteq[0,M]$, d'où
+$\{\infty\}\cup(\Rp\setminus K)\supseteq\{\infty\}\cup(M,+\infty)=(M,+\infty]$.
+Réciproquement $(M,+\infty]=\{\infty\}\cup(\Rp\setminus[0,M])$ est un tel
+voisinage (avec $K=[0,M]$ compact). Les voisinages de $\infty$ dans $\tau^*$ ont
+donc pour base les $(M,+\infty]$, $M\in\Rp$, qui sont exactement les voisinages
+de base de $+\infty$ dans $\tau_\le$ (Proposition~\ref{prop:vois}(a)). Les deux
+topologies coïncident.
+\end{proof}
+
+% ------------------------------------------------------------------
+\subsection{Interprétation par les bouts et comparaison avec $\R$}
+% ------------------------------------------------------------------
+
+\begin{remark}[Nombre de bouts]
+Intuitivement, le nombre de points à ajouter pour compactifier « correctement »
+(en préservant l'ordre) est le nombre de \emph{bouts} de l'espace au sens de
+Freudenthal.
+\begin{itemize}[nosep]
+\item $\Rp=[0,+\infty)$ possède un \emph{unique bout} (à l'infini ; le bord $0$
+est déjà présent). Une seule extension raisonnable existe : le point $+\infty$.
+Les trois compactifications coïncident, et l'on tombe sur le segment $[0,1]$.
+\item $\R$ possède \emph{deux bouts} ($-\infty$ et $+\infty$). La droite achevée
+$\Rb=[-\infty,+\infty]$ des probabilistes est la compactification à
+\emph{deux points}, homéomorphe à $[-1,1]$ ; ce n'est pas le compactifié
+d'Alexandroff de $\R$.
+\item Le compactifié d'Alexandroff de $\R$ (un seul point recollant $\pm\infty$)
+est homéomorphe au cercle $S^1$ ; il détruit l'ordre et est donc inadapté à
+l'intégration.
+\end{itemize}
+Ainsi la situation de $\Rp$ est plus simple que celle de $\R$ : coïncidence
+totale des compactifications.
+\end{remark}
+
+% ==================================================================
+\section{Base dénombrable et structure topologique fine}
+% ==================================================================
+
+\begin{proposition}[Base dénombrable explicite]\label{prop:base-denombrable}
+La famille dénombrable
+\[
+\mathcal{B}_0=\big\{[0,q): q\in\Q_+^*\big\}\;\cup\;
+\big\{(p,q): p,q\in\Q_+,\ p<q\big\}\;\cup\;
+\big\{(p,+\infty]: p\in\Q_+\big\}
+\]
+est une base de la topologie de $\Rpb$.
+\end{proposition}
+
+\begin{proof}
+Chaque élément de $\mathcal{B}_0$ est ouvert. Montrons que tout ouvert est
+réunion d'éléments de $\mathcal{B}_0$, i.e. que pour tout ouvert $U$ et tout
+$x\in U$ il existe $B\in\mathcal{B}_0$ avec $x\in B\subseteq U$.
+
+Comme $\mathcal{B}_\le$ de~\eqref{eq:base-ordre} est une base, il suffit de
+raffiner chaque type d'élément par des bornes rationnelles.
+\begin{itemize}[nosep]
+\item Si $x\in(a,b)$ avec $a,b\in\Rp$ : par densité de $\Q$ dans $\R$ on choisit
+$p,q\in\Q_+$ avec $a<p<x<q<b$, d'où $x\in(p,q)\subseteq(a,b)$.
+\item Si $x\in[0,b)$ : on choisit $q\in\Q_+^*$ avec $x<q<b$ (si $x=0$) ou
+$p,q\in\Q$ avec $\ldots$ ; plus simplement $x\in[0,q)\subseteq[0,b)$ pour
+$q\in(x,b)\cap\Q$ si $x=0$, et sinon on se ramène au cas $(p,q)$.
+\item Si $x\in(a,+\infty]$ : on choisit $p\in\Q_+$ avec $a<p<x$ (possible car
+$x>a\ge0$, en prenant $p<x$ fini si $x<\infty$, et n'importe quel $p>a$ si
+$x=+\infty$), d'où $x\in(p,+\infty]\subseteq(a,+\infty]$.
+\end{itemize}
+Dans tous les cas on a intercalé un élément de $\mathcal{B}_0$. Donc
+$\mathcal{B}_0$ est une base.
+\end{proof}
+
+\begin{corollary}[Espace borélien standard]\label{cor:standard}
+$(\Rpb,\B(\Rpb))$ est un \emph{espace borélien standard} : il existe un
+isomorphisme borélien entre $(\Rpb,\B(\Rpb))$ et $([0,1],\B([0,1]))$, et par le
+théorème d'isomorphisme de Kuratowski il est borélo-isomorphe à
+$(\R,\B(\R))$.
+\end{corollary}
+
+\begin{proof}
+$\Rpb$ est polonais compact (Corollaire~\ref{cor:compact}), donc son espace
+borélien est standard. L'homéomorphisme $\varphi$ (Def.~\ref{def:phi}) est en
+particulier un isomorphisme borélien $\Rpb\to[0,1]$. Le théorème d'isomorphisme
+de Kuratowski affirme que deux espaces boréliens standards de même cardinalité
+du continu sont borélo-isomorphes.
+\end{proof}
+
+% ==================================================================
+\section{La tribu borélienne $\B(\Rpb)$}
+% ==================================================================
+
+\begin{definition}
+$\B(\Rpb)=\sig(\tau_\le)$ est la tribu engendrée par les ouverts de $\Rpb$.
+\end{definition}
+
+% ------------------------------------------------------------------
+\subsection{Familles génératrices}
+% ------------------------------------------------------------------
+
+\begin{theorem}[Générateurs de $\B(\Rpb)$]\label{thm:generateurs}
+On a les égalités de tribus
+\[
+\B(\Rpb)
+=\sig\big(\{(a,+\infty]: a\in\Rp\}\big)
+=\sig\big(\{[0,a]: a\in\Rp\}\big)
+=\sig\big(\{[a,+\infty]: a\in\Rp\}\big)
+=\sig\big(\{[0,a): a\in\Rp\}\big).
+\]
+De plus on peut restreindre $a$ à $\Q_+$ dans chacune de ces familles.
+\end{theorem}
+
+\begin{proof}
+Notons $\mathcal{G}_1=\{(a,+\infty]:a\in\Rp\}$ et $\sig(\mathcal{G}_1)$ la tribu
+qu'elle engendre.
+
+\emph{$\sig(\mathcal{G}_1)\subseteq\B(\Rpb)$ :} chaque $(a,+\infty]$ est ouvert
+(Proposition~\ref{prop:vois}), donc borélien.
+
+\emph{$\B(\Rpb)\subseteq\sig(\mathcal{G}_1)$ :} il suffit de montrer que tout
+élément de la base dénombrable $\mathcal{B}_0$
+(Proposition~\ref{prop:base-denombrable}) appartient à $\sig(\mathcal{G}_1)$,
+car alors tout ouvert, réunion \emph{dénombrable} d'éléments de $\mathcal{B}_0$,
+y appartient aussi. Or, pour $p,q\in\Q_+$ :
+\begin{align*}
+[0,q]&=\Rpb\setminus(q,+\infty]\in\sig(\mathcal{G}_1),\\
+[0,q)&=\bigcup_{n\ge1}\Big[0,q-\tfrac1n\Big]\in\sig(\mathcal{G}_1)
+\quad(\text{réunion dénombrable}),\\
+(p,q)&=(p,+\infty]\cap[0,q)\in\sig(\mathcal{G}_1),\\
+(p,+\infty]&\in\mathcal{G}_1\subseteq\sig(\mathcal{G}_1).
+\end{align*}
+Donc $\mathcal{B}_0\subseteq\sig(\mathcal{G}_1)$, puis
+$\B(\Rpb)\subseteq\sig(\mathcal{G}_1)$. D'où l'égalité.
+
+\emph{Autres familles.} Chacune s'obtient de $\mathcal{G}_1$ par
+complémentation ou réunion/intersection dénombrable :
+\[
+[0,a]=\Rpb\setminus(a,+\infty],\qquad
+[a,+\infty]=\bigcap_{n\ge1}\Big(a-\tfrac1n,+\infty\Big],\qquad
+[0,a)=\bigcup_{n\ge1}\Big[0,a-\tfrac1n\Big],
+\]
+et réciproquement $(a,+\infty]=\Rpb\setminus[0,a]$, ce qui montre que les
+quatre tribus engendrées coïncident. Enfin la restriction à $a\in\Q_+$ est
+licite car tout $(a,+\infty]$ avec $a\in\Rp$ s'écrit
+$\bigcup_{q\in\Q,\,q>a}(q,+\infty]$ (réunion dénombrable), et de même pour les
+autres familles par densité de $\Q$.
+\end{proof}
+
+% ------------------------------------------------------------------
+\subsection{Le singleton $\{+\infty\}$ et la caractérisation par trace}
+% ------------------------------------------------------------------
+
+\begin{lemma}[$\{+\infty\}$ est un fermé $G_\delta$ borélien]\label{lem:infty-borel}
+Le singleton $\{+\infty\}$ est fermé dans $\Rpb$, s'écrit comme intersection
+dénombrable d'ouverts, et est borélien. De même $\Rp=[0,+\infty)$ est ouvert,
+$F_\sigma$, et borélien.
+\end{lemma}
+
+\begin{proof}
+On a
+\[
+\{+\infty\}=\bigcap_{n\ge1}(n,+\infty],
+\]
+intersection dénombrable d'ouverts : donc $\{+\infty\}$ est un $G_\delta$, en
+particulier borélien. Son complémentaire
+$\Rp=[0,+\infty)=\bigcup_{n\ge1}[0,n]=\bigcup_{n\ge1}[0,n)$ est une réunion
+dénombrable de fermés (resp.\ d'ouverts), donc un ouvert $F_\sigma$ borélien.
+(La fermeture de $\{+\infty\}$ résulte aussi de la séparation de $\Rpb$.)
+\end{proof}
+
+\begin{theorem}[Caractérisation par trace]\label{thm:trace}
+On a l'égalité
+\[
+\B(\Rpb)=\Big\{A\subseteq\Rpb:\ A\cap\Rp\in\B(\Rp)\Big\},
+\]
+et de façon équivalente
+\[
+\B(\Rpb)=\Big\{B:\ B\in\B(\Rp)\Big\}\;\cup\;\Big\{B\cup\{+\infty\}:\ B\in\B(\Rp)\Big\}.
+\]
+Autrement dit, un borélien de $[0,+\infty]$ est exactement un borélien de
+$[0,+\infty)$, auquel on adjoint éventuellement le point $+\infty$.
+Réciproquement, $\B(\Rp)$ est la tribu trace : $\B(\Rp)=\B(\Rpb)\cap\Rp
+:=\{A\cap\Rp:A\in\B(\Rpb)\}$.
+\end{theorem}
+
+\begin{proof}
+\emph{Trace.} Rappelons le fait général : si $(X,\tau)$ est un espace
+topologique et $Y\subseteq X$, alors $\B(Y)=\B(X)\cap Y$, où la topologie de $Y$
+est la topologie trace (la tribu borélienne de la trace est la trace de la
+tribu borélienne). Appliqué à $X=\Rpb$, $Y=\Rp$ (dont la topologie trace est
+l'usuelle par Proposition~\ref{prop:vois}(c)), cela donne
+$\B(\Rp)=\B(\Rpb)\cap\Rp$. Prouvons ce fait.
+
+Posons $\mathcal{T}=\{A\cap Y:A\in\B(X)\}$. C'est une tribu sur $Y$ (image
+réciproque d'une tribu par l'inclusion $Y\hookrightarrow X$, qui est
+$\{A\cap Y\}$). Elle contient les ouverts de $Y$ (traces des ouverts de $X$),
+donc $\B(Y)\subseteq\mathcal{T}$. Réciproquement, la famille
+$\mathcal{S}=\{A\subseteq X: A\cap Y\in\B(Y)\}$ est une tribu sur $X$ (car
+$A\mapsto A\cap Y$ commute au complémentaire et aux réunions dénombrables)
+contenant les ouverts de $X$, donc $\B(X)\subseteq\mathcal{S}$, ce qui signifie
+$A\cap Y\in\B(Y)$ pour tout $A\in\B(X)$, i.e.\ $\mathcal{T}\subseteq\B(Y)$. D'où
+$\mathcal{T}=\B(Y)$.
+
+\emph{Description explicite.} Soit $A\subseteq\Rpb$ tel que
+$B:=A\cap\Rp\in\B(\Rp)$. D'après ce qui précède, $\B(\Rp)=\B(\Rpb)\cap\Rp$, donc
+il existe $A'\in\B(\Rpb)$ avec $B=A'\cap\Rp$. Deux cas :
+\begin{itemize}[nosep]
+\item si $+\infty\notin A$, alors $A=B$. Or $B\in\B(\Rp)\subseteq\B(\Rpb)$ car
+$\B(\Rp)=\B(\Rpb)\cap\Rp\subseteq\B(\Rpb)$ (tout élément de la trace est de la
+forme $A'\cap\Rp$, et $\Rp\in\B(\Rpb)$ par Lemme~\ref{lem:infty-borel}, donc
+$A'\cap\Rp\in\B(\Rpb)$). Ainsi $A\in\B(\Rpb)$ ;
+\item si $+\infty\in A$, alors $A=B\cup\{+\infty\}$ avec $B\in\B(\Rpb)$ et
+$\{+\infty\}\in\B(\Rpb)$ (Lemme~\ref{lem:infty-borel}), donc
+$A\in\B(\Rpb)$.
+\end{itemize}
+Réciproquement, si $A\in\B(\Rpb)$, alors $A\cap\Rp\in\B(\Rpb)\cap\Rp=\B(\Rp)$.
+Ceci établit la double égalité annoncée.
+\end{proof}
+
+\begin{remark}
+La caractérisation par trace est la description la plus commode en pratique :
+pour vérifier qu'une partie de $[0,+\infty]$ est borélienne, il suffit de
+regarder sa trace sur $[0,+\infty)$ (calcul « fini ») et de traiter à part le
+point $+\infty$, qui est toujours borélien.
+\end{remark}
+
+% ==================================================================
+\section{Fonctions mesurables à valeurs dans $\Rpb$}
+% ==================================================================
+
+Dans toute cette section, $(\Omega,\F)$ désigne un espace mesurable.
+
+\begin{definition}[Mesurabilité]
+Une application $f:\Omega\to\Rpb$ est \emph{$(\F,\B(\Rpb))$-mesurable} (en abrégé
+\emph{mesurable}) si $f^{-1}(A)\in\F$ pour tout $A\in\B(\Rpb)$.
+\end{definition}
+
+% ------------------------------------------------------------------
+\subsection{Critères de mesurabilité}
+% ------------------------------------------------------------------
+
+\begin{proposition}[Réduction à une famille génératrice]\label{prop:crit-gen}
+Soit $\mathcal{G}$ une famille engendrant $\B(\Rpb)$, i.e.\
+$\sig(\mathcal{G})=\B(\Rpb)$. Alors $f:\Omega\to\Rpb$ est mesurable si et
+seulement si $f^{-1}(G)\in\F$ pour tout $G\in\mathcal{G}$.
+\end{proposition}
+
+\begin{proof}
+Le sens direct est clair. Réciproquement, supposons $f^{-1}(G)\in\F$ pour tout
+$G\in\mathcal{G}$. La famille $\mathcal{M}=\{A\subseteq\Rpb: f^{-1}(A)\in\F\}$
+est une tribu, car $f^{-1}$ commute au passage au complémentaire et aux
+réunions dénombrables :
+\[
+f^{-1}(A^c)=f^{-1}(A)^c,\qquad
+f^{-1}\Big(\bigcup_n A_n\Big)=\bigcup_n f^{-1}(A_n).
+\]
+Par hypothèse $\mathcal{G}\subseteq\mathcal{M}$, donc
+$\B(\Rpb)=\sig(\mathcal{G})\subseteq\mathcal{M}$, ce qui signifie que $f$ est
+mesurable.
+\end{proof}
+
+\begin{corollary}[Critères usuels]\label{cor:criteres}
+Pour $f:\Omega\to\Rpb$, les assertions suivantes sont équivalentes :
+\begin{enumerate}[label=(\roman*),nosep]
+\item $f$ est mesurable ;
+\item $\{f>a\}\in\F$ pour tout $a\in\Rp$ (resp.\ pour tout $a\in\Q_+$) ;
+\item $\{f\ge a\}\in\F$ pour tout $a\in\Rp$ ;
+\item $\{f\le a\}\in\F$ pour tout $a\in\Rp$ ;
+\item $\{f<a\}\in\F$ pour tout $a\in\Rp$.
+\end{enumerate}
+Ici $\{f>a\}:=f^{-1}((a,+\infty])$, etc.
+\end{corollary}
+
+\begin{proof}
+Application directe de la Proposition~\ref{prop:crit-gen} aux familles
+génératrices du Théorème~\ref{thm:generateurs} :
+$\{(a,+\infty]\}$, $\{[a,+\infty]\}$, $\{[0,a]\}$, $\{[0,a)\}$.
+\end{proof}
+
+\begin{proposition}[Gestion automatique de l'infini]\label{prop:infini-auto}
+Si $f:\Omega\to\Rpb$ est mesurable, alors
+\[
+\{f=+\infty\}=\bigcap_{n\ge1}\{f>n\}\in\F,\qquad
+\{f<+\infty\}=\bigcup_{n\ge1}\{f\le n\}\in\F.
+\]
+\end{proposition}
+
+\begin{proof}
+On a $f(\omega)=+\infty$ ssi $f(\omega)>n$ pour tout $n$, d'où la première
+égalité ensembliste ; les $\{f>n\}$ sont dans $\F$ par
+Corollaire~\ref{cor:criteres}, et $\F$ est stable par intersection
+dénombrable. La seconde égalité est le complémentaire.
+\end{proof}
+
+% ------------------------------------------------------------------
+\subsection{Stabilité par les opérations de treillis}
+% ------------------------------------------------------------------
+
+C'est le c\oe ur de l'intérêt de $\Rpb$ : la complétude du treillis
+(Proposition~\ref{prop:treillis}) se traduit en stabilité de la mesurabilité.
+
+\begin{theorem}[Sup et inf dénombrables]\label{thm:supinf}
+Soit $(f_n)_{n\ge1}$ une suite de fonctions mesurables $\Omega\to\Rpb$. Alors
+les fonctions
+\[
+\Big(\sup_n f_n\Big)(\omega)=\sup_n f_n(\omega),\qquad
+\Big(\inf_n f_n\Big)(\omega)=\inf_n f_n(\omega)
+\]
+sont bien définies (à valeurs dans $\Rpb$, par
+Proposition~\ref{prop:treillis}) et mesurables.
+\end{theorem}
+
+\begin{proof}
+Posons $g=\sup_n f_n$. Pour tout $a\in\Rp$, l'équivalence
+\[
+g(\omega)\le a\iff \forall n,\ f_n(\omega)\le a
+\]
+(caractérisation de la borne supérieure comme plus petit majorant) donne
+l'égalité ensembliste
+\[
+\{g\le a\}=\bigcap_{n\ge1}\{f_n\le a\}.
+\]
+Chaque $\{f_n\le a\}\in\F$ (Corollaire~\ref{cor:criteres}) et $\F$ est stable
+par intersection dénombrable, donc $\{g\le a\}\in\F$ pour tout $a\in\Rp$. Par
+Corollaire~\ref{cor:criteres}(iv), $g$ est mesurable.
+
+Symétriquement, pour $h=\inf_n f_n$ et tout $a\in\Rp$,
+\[
+h(\omega)\ge a\iff\forall n,\ f_n(\omega)\ge a
+\quad\Longrightarrow\quad
+\{h\ge a\}=\bigcap_{n\ge1}\{f_n\ge a\}\in\F,
+\]
+d'où la mesurabilité de $h$ par Corollaire~\ref{cor:criteres}(iii).
+\end{proof}
+
+\begin{theorem}[Limsup, liminf, limite]\label{thm:limsup}
+Soit $(f_n)$ une suite de fonctions mesurables $\Omega\to\Rpb$. Les fonctions
+\[
+\limsupn f_n=\inf_{n\ge1}\ \sup_{k\ge n} f_k,\qquad
+\liminfn f_n=\sup_{n\ge1}\ \inf_{k\ge n} f_k
+\]
+sont bien définies et mesurables, à valeurs dans $\Rpb$. En particulier
+l'ensemble de convergence
+\[
+C=\Big\{\omega:\ \lim_n f_n(\omega)\text{ existe dans }\Rpb\Big\}
+=\Big\{\limsupn f_n=\liminfn f_n\Big\}
+\]
+est mesurable, et sur $C$ la limite $\lim_n f_n$ est mesurable.
+\end{theorem}
+
+\begin{proof}
+Pour chaque $n$, $g_n:=\sup_{k\ge n} f_k$ est mesurable
+(Théorème~\ref{thm:supinf} appliqué à la sous-suite $(f_k)_{k\ge n}$). La suite
+$(g_n)$ est décroissante ; $\limsup_n f_n=\inf_n g_n$ est mesurable
+(Théorème~\ref{thm:supinf} à nouveau). De même
+$h_n:=\inf_{k\ge n}f_k$ est mesurable et $\liminf_n f_n=\sup_n h_n$ l'est.
+
+L'existence dans $\Rpb$ est garantie par la complétude du treillis
+(Proposition~\ref{prop:treillis}) : les bornes emboîtées existent toujours.
+Enfin, comme $\liminf\le\limsup$ toujours, l'ensemble de convergence est
+\[
+C=\{\limsup_n f_n=\liminf_n f_n\}
+=\{\limsup_n f_n\le\liminf_n f_n\},
+\]
+qui est mesurable car différence/égalité de deux fonctions mesurables à valeurs
+dans $\Rpb$ : plus précisément, pour deux fonctions mesurables $u,v:\Omega\to\Rpb$,
+\[
+\{u\le v\}=\bigcap_{q\in\Q_+}\big(\{u\le q\}\cup\{v> q\}\big)\ \cup\ \{v=+\infty\}
+\in\F,
+\]
+(voir Lemme~\ref{lem:comparaison} ci-dessous). Sur $C$, $\lim_n f_n$ coïncide
+avec $\limsup_n f_n$, donc est mesurable.
+\end{proof}
+
+\begin{lemma}[Mesurabilité des comparaisons]\label{lem:comparaison}
+Si $u,v:\Omega\to\Rpb$ sont mesurables, alors $\{u\le v\}$, $\{u<v\}$,
+$\{u=v\}$ appartiennent à $\F$.
+\end{lemma}
+
+\begin{proof}
+On utilise la densité de $\Q_+$ et la relation, valable dans le treillis
+totalement ordonné $\Rpb$ :
+\[
+u(\omega)<v(\omega)\iff \exists q\in\Q_+,\ u(\omega)<q<v(\omega)\ \text{ ou }\ 
+\big(u(\omega)<+\infty=v(\omega)\ \text{avec intercalation}\big).
+\]
+Plus proprement, pour $x,y\in\Rpb$ on a $x<y$ si et seulement s'il existe
+$q\in\Q_+$ tel que $x<q\le y$ lorsque $y<+\infty$, et $x<y=+\infty$ équivaut à
+$x<+\infty$. On écrit donc
+\[
+\{u<v\}=\Big(\bigcup_{q\in\Q_+}\{u<q\}\cap\{v>q\}\Big)\ \cup\ 
+\big(\{u<+\infty\}\cap\{v=+\infty\}\big).
+\]
+Chaque terme est dans $\F$ (Corollaire~\ref{cor:criteres} et
+Proposition~\ref{prop:infini-auto}), donc $\{u<v\}\in\F$. Alors
+$\{u\ge v\}=\{u<v\}^c\in\F$, $\{v<u\}\in\F$ par symétrie,
+$\{u=v\}=\{u<v\}^c\cap\{v<u\}^c\in\F$ et $\{u\le v\}=\{v<u\}^c\in\F$.
+\end{proof}
+
+% ------------------------------------------------------------------
+\subsection{Arithmétique étendue et sa mesurabilité}
+% ------------------------------------------------------------------
+
+\begin{definition}[Opérations sur $\Rpb$]\label{def:arith}
+On prolonge l'addition et la multiplication à $\Rpb$ par :
+\[
+a+(+\infty)=(+\infty)+a=+\infty\quad(a\in\Rpb),
+\]
+\[
+a\cdot(+\infty)=(+\infty)\cdot a=+\infty\ (a\in\,]0,+\infty]),\qquad
+\boxed{\,0\cdot(+\infty)=(+\infty)\cdot0=0\,.}
+\]
+La convention $0\cdot\infty=0$ est celle de la théorie de la mesure (elle rend
+l'intégrale $\int 0\,d\mu=0$ même sur un ensemble de mesure infinie).
+\end{definition}
+
+\begin{remark}[Absence de forme indéterminée additive]
+Sur $\Rpb$ \emph{il n'y a pas de forme $\infty-\infty$}, puisqu'on ne
+soustrait pas : l'addition est partout définie et l'on va voir qu'elle est même
+\emph{continue}. C'est un avantage propre à $\Rpb$ par rapport à la droite
+achevée $\Rb=[-\infty,+\infty]$, où $(+\infty)+(-\infty)$ n'est pas défini.
+\end{remark}
+
+\begin{proposition}[Continuité de l'addition]\label{prop:add-continue}
+L'addition $s:\Rpb\times\Rpb\to\Rpb$, $s(x,y)=x+y$, est continue (pour la
+topologie produit). En particulier elle est borélienne.
+\end{proposition}
+
+\begin{proof}
+On vérifie la continuité séquentielle, licite car $\Rpb\times\Rpb$ est
+métrisable (produit de deux métriques compacts). Soit $(x_n,y_n)\to(x,y)$.
+\begin{itemize}[nosep]
+\item Si $x,y<+\infty$ : au voisinage de $(x,y)$, $x_n,y_n$ sont finis et
+$x_n+y_n\to x+y$ par continuité de l'addition réelle (et $\varphi$ étant un
+homéomorphisme, la convergence dans $\Rpb$ des suites finies équivaut à la
+convergence usuelle).
+\item Si $x=+\infty$ (le cas $y=+\infty$ est symétrique) : alors $x_n\to+\infty$,
+i.e.\ pour tout $M$, $x_n>M$ à partir d'un certain rang. Comme $y_n\ge0$, on a
+$x_n+y_n\ge x_n>M$ à partir de ce rang, donc $x_n+y_n\to+\infty=x+y$.
+\end{itemize}
+Dans tous les cas $s(x_n,y_n)\to s(x,y)$. Continue $\Rightarrow$ borélienne
+(l'image réciproque d'un ouvert est un ouvert, donc un borélien).
+\end{proof}
+
+\begin{proposition}[Mesurabilité de la multiplication]\label{prop:mult-mesurable}
+La multiplication $m:\Rpb\times\Rpb\to\Rpb$, $m(x,y)=x\cdot y$ (avec
+$0\cdot\infty=0$), est \emph{borélienne}, mais \emph{discontinue} aux points
+$(0,+\infty)$ et $(+\infty,0)$.
+\end{proposition}
+
+\begin{proof}
+\emph{Discontinuité en $(0,+\infty)$.} Prenons $x_n=1/n\to0$ et
+$y_n=+\infty$ constant : $x_n y_n=+\infty\not\to0=m(0,+\infty)$. Donc $m$ n'est
+pas continue en $(0,+\infty)$ ; idem en $(+\infty,0)$ par symétrie.
+
+\emph{Borélianité.} Sur l'ouvert
+$U=\Rpb\times\Rpb\setminus\{(0,+\infty),(+\infty,0)\}$, la fonction $m$ est
+continue. En effet, sur $U$ on n'a jamais simultanément un facteur nul et un
+facteur infini ; la vérification par suites est identique à celle de
+l'addition (si un facteur tend vers $+\infty$ et l'autre reste minoré par un
+$\eps>0$, le produit tend vers $+\infty$ ; si les deux sont finis, produit
+réel usuel). Ainsi $m|_U$ est continue donc borélienne sur l'ouvert $U$.
+
+Il reste les deux points exceptionnels. L'ensemble
+$E=\{(0,+\infty),(+\infty,0)\}$ est fermé (donc borélien) et $m$ y vaut $0$.
+Pour tout borélien $B\subseteq\Rpb$,
+\[
+m^{-1}(B)=\big(m^{-1}(B)\cap U\big)\ \cup\ \big(m^{-1}(B)\cap E\big).
+\]
+Le premier terme est borélien car $m|_U$ est borélienne (continue sur l'ouvert
+$U$) et $U$ est borélien. Le second est $E\cap m^{-1}(B)$, qui vaut $E$ si
+$0\in B$ et $\varnothing$ sinon ; dans les deux cas c'est un borélien. Donc
+$m^{-1}(B)\in\B(\Rpb\times\Rpb)$ et $m$ est borélienne.
+\end{proof}
+
+\begin{theorem}[Somme et produit de fonctions mesurables]\label{thm:somme-produit}
+Soient $f,g:\Omega\to\Rpb$ mesurables. Alors $f+g$ et $f\cdot g$ (avec les
+conventions de la Définition~\ref{def:arith}) sont mesurables.
+\end{theorem}
+
+\begin{proof}
+L'application $\Phi:\Omega\to\Rpb\times\Rpb$, $\Phi(\omega)=(f(\omega),g(\omega))$,
+est mesurable pour la tribu produit $\B(\Rpb)\otimes\B(\Rpb)$, car ses
+composantes le sont. Or, $\Rpb$ étant à base dénombrable, on a l'égalité
+\[
+\B(\Rpb\times\Rpb)=\B(\Rpb)\otimes\B(\Rpb)
+\]
+(la tribu borélienne du produit d'espaces à base dénombrable est le produit
+des tribus boréliennes : voir Lemme~\ref{lem:borel-produit}). Donc $\Phi$ est
+$(\F,\B(\Rpb\times\Rpb))$-mesurable.
+
+Comme $s(x,y)=x+y$ est borélienne (Proposition~\ref{prop:add-continue}) et
+$m(x,y)=xy$ est borélienne (Proposition~\ref{prop:mult-mesurable}), les
+composées
+\[
+f+g=s\circ\Phi,\qquad f\cdot g=m\circ\Phi
+\]
+sont mesurables (composée d'une application mesurable et d'une application
+borélienne).
+\end{proof}
+
+\begin{lemma}[Borélien d'un produit à base dénombrable]\label{lem:borel-produit}
+Si $X,Y$ sont des espaces topologiques à base dénombrable, alors
+$\B(X\times Y)=\B(X)\otimes\B(Y)$.
+\end{lemma}
+
+\begin{proof}
+\emph{$\supseteq$ :} les projections $\pi_X,\pi_Y$ sont continues donc
+boréliennes, ce qui donne $\B(X)\otimes\B(Y)\subseteq\B(X\times Y)$ (la tribu
+produit est la plus petite rendant les projections mesurables).
+
+\emph{$\subseteq$ :} soient $\mathcal{U},\mathcal{V}$ des bases dénombrables de
+$X,Y$. Les pavés $U\times V$ ($U\in\mathcal{U}$, $V\in\mathcal{V}$) forment une
+base dénombrable de $X\times Y$. Tout ouvert $W\subseteq X\times Y$ est donc
+réunion \emph{dénombrable} de tels pavés :
+$W=\bigcup_k U_k\times V_k$. Or $U_k\times V_k\in\B(X)\otimes\B(Y)$, et une
+réunion dénombrable reste dans la tribu produit, donc
+$W\in\B(X)\otimes\B(Y)$. Comme les ouverts engendrent $\B(X\times Y)$, on
+conclut $\B(X\times Y)\subseteq\B(X)\otimes\B(Y)$.
+\end{proof}
+
+\begin{remark}
+L'hypothèse « base dénombrable » est essentielle : pour des espaces trop gros,
+$\B(X\times Y)$ peut être strictement plus grande que $\B(X)\otimes\B(Y)$. Ici
+$\Rpb$ est à base dénombrable (Proposition~\ref{prop:base-denombrable}), tout
+va bien.
+\end{remark}
+
+% ------------------------------------------------------------------
+\subsection{Principe de transfert par homéomorphisme}
+% ------------------------------------------------------------------
+
+\begin{theorem}[Transfert via $\varphi$]\label{thm:transfert}
+Soit $\varphi:\Rpb\to[0,1]$ l'homéomorphisme de la Définition~\ref{def:phi}.
+Pour toute application $g:\Omega\to\Rpb$,
+\[
+g\text{ est }(\F,\B(\Rpb))\text{-mesurable}
+\iff
+\varphi\circ g\text{ est }(\F,\B([0,1]))\text{-mesurable}.
+\]
+Ainsi toute question de mesurabilité à valeurs dans $\Rpb$ se ramène à une
+question de mesurabilité à valeurs réelles bornées dans $[0,1]$.
+\end{theorem}
+
+\begin{proof}
+$\varphi$ est un homéomorphisme (Proposition~\ref{prop:coinc-metrique}), donc
+un isomorphisme borélien : $\varphi$ et $\varphi^{-1}$ sont boréliennes.
+
+$(\Rightarrow)$ Si $g$ est mesurable, alors $\varphi\circ g$ est mesurable comme
+composée d'une application mesurable $g$ et d'une application borélienne
+$\varphi$.
+
+$(\Leftarrow)$ Si $\varphi\circ g$ est mesurable, alors
+$g=\varphi^{-1}\circ(\varphi\circ g)$ est mesurable comme composée de
+$\varphi\circ g$ (mesurable) et de $\varphi^{-1}$ (borélienne).
+\end{proof}
+
+\begin{corollary}
+Les Théorèmes~\ref{thm:supinf},~\ref{thm:limsup} et~\ref{thm:somme-produit}
+peuvent alternativement se déduire des énoncés analogues sur $[0,1]$ (voire sur
+$\R$) par transfert, à condition de traduire correctement l'arithmétique
+étendue via $\varphi$.
+\end{corollary}
+
+% ==================================================================
+\section{Synthèse}
+% ==================================================================
+
+Le tableau suivant récapitule la double structure de $\Rpb$ et ses
+conséquences.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{@{}p{5.2cm}p{9.2cm}@{}}
+\hline
+\textbf{Structure} & \textbf{Conséquence}\\
+\hline
+Treillis complet (Prop.~\ref{prop:treillis}) &
+$\sup,\inf$ d'une famille quelconque existent dans $\Rpb$ ;
+$\limsup,\liminf$ toujours définis.\\
+Topologie de l'ordre $=$ Alexandroff $=$ métrique via $\varphi$
+(Prop.~\ref{prop:coinc-metrique},~\ref{prop:alex-ordre}) &
+compactification canonique ; $\Rpb\cong[0,1]$ compact métrisable.\\
+Base dénombrable (Prop.~\ref{prop:base-denombrable}) &
+espace borélien standard ; $\B(\Rpb\times\Rpb)=\B(\Rpb)^{\otimes2}$.\\
+$\{+\infty\}$ fermé $G_\delta$ (Lem.~\ref{lem:infty-borel}) &
+caractérisation par trace : $B$ ou $B\cup\{+\infty\}$, $B\in\B(\Rp)$
+(Th.~\ref{thm:trace}).\\
+Générateurs $(a,+\infty]$ (Th.~\ref{thm:generateurs}) &
+critère $\{f>a\}\in\F$ pour la mesurabilité (Cor.~\ref{cor:criteres}).\\
+Addition continue, produit borélien
+(Prop.~\ref{prop:add-continue},~\ref{prop:mult-mesurable}) &
+$f+g$, $fg$ mesurables (Th.~\ref{thm:somme-produit}).\\
+Homéomorphisme $\varphi$ (Th.~\ref{thm:transfert}) &
+transfert de toute la mesurabilité vers $[0,1]$.\\
+\hline
+\end{tabular}
+\end{center}
+
+\medskip
+\noindent
+\textbf{En une phrase.} Le point $+\infty$ transforme $\Rp$ en un treillis
+complet \emph{et} en un compact métrisable (le segment) ; la topologie
+sous-jacente est canonique (ordre $=$ Alexandroff $=$ métrique) ; la tribu
+borélienne se lit comme la trace « $B$ ou $B\cup\{+\infty\}$ » ; et c'est cette
+double structure — ordre-complet d'un côté, compacte de l'autre — qui rend
+$\sup$, $\inf$, $\limsup$, $\liminf$, ainsi que $+$ et $\times$, mesurables et
+partout définis.
+
+\end{document}

@@ -1,0 +1,722 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage[margin=2.3cm]{geometry}
+\usepackage[protrusion=true,expansion=false]{microtype}
+\usepackage{enumitem}
+\usepackage[colorlinks=true,linkcolor=black,urlcolor=blue]{hyperref}
+
+\renewcommand{\abstractname}{Résumé}
+\renewcommand{\contentsname}{Table des matières}
+\renewcommand{\proofname}{Démonstration}
+
+\usepackage{titlesec}
+\titleformat{\section}{\normalfont\large\bfseries}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\normalfont\bfseries}{\thesubsection}{0.6em}{}
+\setlength{\parskip}{0.35em}
+\setlength{\parindent}{0pt}
+
+\theoremstyle{plain}
+\newtheorem{theoreme}{Théorème}[section]
+\newtheorem{lemme}[theoreme]{Lemme}
+\newtheorem{proposition}[theoreme]{Proposition}
+\newtheorem{corollaire}[theoreme]{Corollaire}
+\theoremstyle{definition}
+\newtheorem{definition}[theoreme]{Définition}
+\theoremstyle{remark}
+\newtheorem{remarque}[theoreme]{Remarque}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Expo}{\mathcal{E}}
+\newcommand{\barF}{\bar{F}}
+\newcommand{\eqd}{\overset{d}{=}}
+\newcommand{\cvloi}{\xrightarrow{\ d\ }}
+\newcommand{\Xord}[1]{X_{(#1)}}
+\newcommand{\dd}{\,\mathrm{d}}
+\newcommand{\Jac}{\mathrm{J}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\title{\bfseries Absence de mémoire, taux de panne\\
+et statistiques d'ordre exponentielles}
+\author{}
+\date{\today}
+
+\begin{document}
+\maketitle
+\vspace{-2.4em}
+\begin{center}\rule{0.5\textwidth}{0.4pt}\end{center}
+
+\begin{abstract}
+\noindent
+On établit d'abord que l'exponentielle est l'unique loi de durée à taux de panne
+constant, et que les trois énoncés « absence de mémoire », « survie
+multiplicative » et « taux constant » sont équivalents (l'équation de Cauchy
+étant résolue en détail). On en déduit ensuite la structure des statistiques
+d'ordre d'un échantillon i.i.d.\ exponentiel. Le théorème de Rényi est démontré
+deux fois : par changement de variables, avec preuve que l'application des
+espacements est un $C^\infty$-difféomorphisme et calcul explicite du jacobien ;
+puis par un argument probabiliste de compétition et de renouvellement, rendu
+rigoureux par un calcul de loi jointe qui évite tout conditionnement par un temps
+aléatoire. Suivent les moments et la convergence vers Gumbel, démontrée
+directement.
+\end{abstract}
+
+\tableofcontents
+\vspace{0.8em}
+
+\begin{center}\rule{0.35\textwidth}{0.4pt}\end{center}
+\part*{Partie I --- Survie, taux de panne, absence de mémoire}
+\addcontentsline{toc}{section}{\textbf{Partie I --- Survie, taux de panne, absence de mémoire}}
+
+%===================================================================
+\section{Fonction de survie}
+%===================================================================
+
+\begin{definition}
+Soit $X$ une variable aléatoire réelle positive p.s., de fonction de répartition
+$F(x)=\Prob(X\le x)$. Sa \emph{fonction de survie} (ou fiabilité) est
+\[
+\barF(x)\;=\;\Prob(X>x)\;=\;1-F(x),\qquad x\ge 0 .
+\]
+\end{definition}
+
+$\barF$ est décroissante, continue à droite, $\barF(x)\to 0$ quand
+$x\to+\infty$, et $\barF(0)=1$ dès que $\Prob(X=0)=0$. Si $X$ admet une densité
+$f$, alors $F$ est absolument continue et $\barF'=-f$ presque partout.
+
+\begin{proposition}[Espérance par la survie]
+Pour $X\ge 0$ p.s., $\ \E[X]=\displaystyle\int_0^{\infty}\barF(x)\dd x$, les deux
+membres étant simultanément finis ou infinis.
+\end{proposition}
+
+\begin{proof}
+La fonction $(x,\omega)\mapsto \mathbf 1_{\{x<X(\omega)\}}$ est mesurable positive
+sur $(0,\infty)\times\Omega$. Le théorème de Tonelli autorise l'échange :
+\[
+\int_0^\infty \barF(x)\dd x
+=\int_0^\infty \E\bigl[\mathbf 1_{\{X>x\}}\bigr]\dd x
+=\E\Bigl[\int_0^\infty \mathbf 1_{\{x<X\}}\dd x\Bigr]
+=\E[X].
+\]
+Aucune hypothèse d'intégrabilité n'est requise, la positivité suffit.
+\end{proof}
+
+%===================================================================
+\section{Taux de panne et hasard cumulé}
+%===================================================================
+
+Dans toute cette section, $X\ge0$ admet une densité $f$ ; on note
+$\tau=\sup\{x\ge0:\barF(x)>0\}\in(0,+\infty]$ le bout du support.
+
+\begin{definition}
+Pour $x\in[0,\tau)$, le \emph{taux de panne} (fonction de hasard) de $X$ est
+\[
+h(x)\;=\;\lim_{\varepsilon\downarrow 0}\frac1\varepsilon\,
+\Prob\bigl(x<X\le x+\varepsilon \,\bigm|\, X>x\bigr),
+\]
+lorsque cette limite existe.
+\end{definition}
+
+\begin{proposition}[Forme analytique]
+Si $f$ est continue en $x\in[0,\tau)$, la limite ci-dessus existe et vaut
+\[
+h(x)=\frac{f(x)}{\barF(x)}=-\frac{\barF'(x)}{\barF(x)}=-\frac{\dd}{\dd x}\log\barF(x).
+\]
+\end{proposition}
+
+\begin{proof}
+Comme $\barF(x)>0$, le conditionnement est licite et
+\[
+\frac1\varepsilon\Prob\bigl(x<X\le x+\varepsilon\mid X>x\bigr)
+=\frac{1}{\barF(x)}\cdot\frac{F(x+\varepsilon)-F(x)}{\varepsilon}
+=\frac{1}{\barF(x)}\cdot\frac1\varepsilon\int_x^{x+\varepsilon} f(u)\dd u .
+\]
+La continuité de $f$ en $x$ donne $\frac1\varepsilon\int_x^{x+\varepsilon}f\to f(x)$
+quand $\varepsilon\downarrow0$. Les deux dernières égalités de l'énoncé résultent
+de $\barF'=-f$ et de la dérivation de $\log$.
+\end{proof}
+
+\begin{remarque}
+$h$ n'est pas une densité : $f(x)$ est un risque rapporté à la population
+initiale, $h(x)$ un risque rapporté aux \emph{survivants} à l'instant $x$. En
+particulier $h$ n'est pas d'intégrale $1$, et n'est même pas nécessairement
+intégrable sur $[0,\tau)$.
+\end{remarque}
+
+\begin{theoreme}[Le taux détermine la loi]\label{th:reconstruction}
+Soit $X\ge0$ de survie $\barF$ absolument continue sur tout compact de
+$[0,\tau)$, avec $\barF(0)=1$. Posons le \emph{hasard cumulé}
+$H(x)=\int_0^x h(u)\dd u$. Alors
+\[
+\barF(x)=\exp\bigl(-H(x)\bigr),\qquad x\in[0,\tau),
+\qquad\text{et}\qquad f(x)=h(x)\,e^{-H(x)} .
+\]
+Réciproquement, toute fonction $h\ge0$ localement intégrable sur $[0,\infty)$
+telle que $\int_0^\infty h=+\infty$ définit par cette formule la survie d'une
+unique loi sur $[0,\infty)$.
+\end{theoreme}
+
+\begin{proof}
+Sur $[0,\tau)$ on a $\barF>0$, donc $x\mapsto\log\barF(x)$ est bien définie et
+absolument continue, de dérivée $\barF'/\barF=-h$ p.p. Le théorème fondamental
+de l'analyse pour les fonctions absolument continues donne
+\[
+\log\barF(x)-\log\barF(0)=\int_0^x\bigl(\log\barF\bigr)'(u)\dd u=-\int_0^x h(u)\dd u=-H(x),
+\]
+et $\log\barF(0)=0$, d'où $\barF=e^{-H}$. Puis $f=-\barF'=h\,e^{-H}$.
+
+Réciproquement, soit $h\ge0$ localement intégrable d'intégrale divergente. La
+fonction $G=e^{-H}$ est continue, décroissante (car $H$ est croissante),
+$G(0)=1$ et $G(x)\to0$ puisque $H(x)\to+\infty$. C'est donc bien une fonction de
+survie, et elle détermine $F=1-G$ de façon unique.
+\end{proof}
+
+%===================================================================
+\section{L'équation de Cauchy et la caractérisation de l'exponentielle}
+%===================================================================
+
+Le lemme suivant est le c\oe ur analytique de tout le reste. On ne suppose ni
+continuité ni densité : la seule monotonie suffit.
+
+\begin{lemme}[Cauchy multiplicatif, version monotone]\label{lem:cauchy}
+Soit $\barF:[0,\infty)\to[0,1]$ décroissante, continue à droite en $0$, telle que
+$\barF(0)=1$ et
+\[
+\barF(s+t)=\barF(s)\,\barF(t)\qquad\text{pour tous } s,t\ge0 .
+\tag{$\star$}
+\]
+Si $\barF$ n'est pas identiquement égale à $1$ sur $[0,\infty)$, alors il existe
+un unique $\lambda\in(0,\infty)$ tel que $\barF(t)=e^{-\lambda t}$ pour tout $t\ge0$.
+\end{lemme}
+
+\begin{proof}
+\emph{Étape 1 : $\barF>0$ partout.} Supposons $\barF(t_0)=0$ pour un $t_0>0$.
+Par ($\star$), $\barF(t_0)=\barF(t_0/2)^2$, donc $\barF(t_0/2)=0$, et par
+récurrence $\barF(t_0/2^m)=0$ pour tout $m\in\N$. En faisant $m\to\infty$, la
+continuité à droite en $0$ impose $1=\barF(0)=\lim_{m}\barF(t_0/2^m)=0$,
+absurde. Donc $\barF(t)>0$ pour tout $t\ge0$.
+
+\emph{Étape 2 : additivité de $\varphi=-\log\barF$.} L'étape 1 rend
+$\varphi(t)=-\log\barF(t)\in[0,\infty)$ bien définie et finie. Par ($\star$),
+$\varphi(s+t)=\varphi(s)+\varphi(t)$ ; de plus $\varphi$ est croissante (car
+$\barF$ décroît) et $\varphi(0)=0$.
+
+\emph{Étape 3 : $\varphi$ est linéaire sur $\Q_+$.} Posons $\lambda=\varphi(1)$.
+Une récurrence immédiate sur l'additivité donne $\varphi(m t)=m\varphi(t)$ pour
+tous $m\in\N$, $t\ge0$. Pour $p,q\in\N^*$ : d'une part
+$\varphi(q\cdot\tfrac1q)=q\,\varphi(\tfrac1q)$, c'est-à-dire
+$\varphi(\tfrac1q)=\tfrac\lambda q$ ; d'autre part
+$\varphi(\tfrac pq)=p\,\varphi(\tfrac1q)=\tfrac pq\lambda$. Donc
+$\varphi(r)=\lambda r$ pour tout $r\in\Q_+$.
+
+\emph{Étape 4 : passage aux réels par encadrement.} Soit $t\ge0$ et $(r_m),(s_m)$
+deux suites de rationnels positifs avec $r_m\le t\le s_m$, $r_m\uparrow t$ et
+$s_m\downarrow t$. La croissance de $\varphi$ donne
+$\lambda r_m=\varphi(r_m)\le\varphi(t)\le\varphi(s_m)=\lambda s_m$. En passant à
+la limite, $\varphi(t)=\lambda t$, soit $\barF(t)=e^{-\lambda t}$.
+
+\emph{Étape 5 : $\lambda\in(0,\infty)$ et unicité.} $\lambda=\varphi(1)\ge0$. Si
+$\lambda=0$ alors $\barF\equiv1$, exclu par hypothèse ; $\lambda<\infty$ par
+l'étape 1. L'unicité est claire puisque $\lambda=-\log\barF(1)$.
+\end{proof}
+
+\begin{theoreme}[Caractérisation de la loi exponentielle]\label{th:carac}
+Soit $X>0$ p.s.\ de survie $\barF$ décroissante continue à droite,
+$\barF(0)=1$, $X$ non p.s.\ infinie. Les assertions suivantes sont équivalentes.
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em,itemsep=0.15em]
+  \item \textbf{(Absence de mémoire)} $\Prob(X>s+t\mid X>s)=\Prob(X>t)$ pour tous
+  $s,t\ge0$ tels que $\barF(s)>0$.
+  \item \textbf{(Survie multiplicative)} $\barF(s+t)=\barF(s)\barF(t)$ pour tous $s,t\ge0$.
+  \item \textbf{(Loi)} Il existe $\lambda>0$ tel que $\barF(t)=e^{-\lambda t}$,
+  c'est-à-dire $X\sim\Expo(\lambda)$.
+  \item \textbf{(Taux constant)} $X$ admet une densité et son taux de panne
+  vérifie $h\equiv\lambda$ sur $[0,\infty)$, pour un $\lambda>0$.
+\end{enumerate}
+\end{theoreme}
+
+\begin{proof}
+\emph{(i) $\Rightarrow$ (ii).} Montrons d'abord que (i) force $\barF>0$ partout.
+Si $\barF(s_0)=0$ pour un $s_0$, soit $s^\ast=\inf\{s:\barF(s)=0\}$. Comme $X>0$
+p.s.\ et $\barF$ est continue à droite en $0$ avec $\barF(0)=1$, on a
+$s^\ast>0$. Pour $s<s^\ast$ on a $\barF(s)>0$ et (i) s'écrit
+$\barF(s+t)=\barF(s)\barF(t)$ ; en prenant $s<s^\ast$ et $t<s^\ast$ avec
+$s+t>s^\ast$ on obtient $0=\barF(s+t)=\barF(s)\barF(t)>0$, absurde (un tel
+couple existe : prendre $s=t$ légèrement supérieur à $s^\ast/2$). Donc
+$\barF>0$ partout, la restriction dans (i) est vide, et multiplier (i) par
+$\barF(s)$ donne exactement (ii).
+
+\emph{(ii) $\Rightarrow$ (iii).} C'est le lemme \ref{lem:cauchy} : $\barF$ n'est
+pas identiquement $1$, sans quoi $X=+\infty$ p.s., ce qui est exclu.
+
+\emph{(iii) $\Rightarrow$ (iv).} Si $\barF(t)=e^{-\lambda t}$, alors
+$f(t)=\lambda e^{-\lambda t}$ est bien une densité, et
+$h=f/\barF=\lambda e^{-\lambda t}/e^{-\lambda t}=\lambda$.
+
+\emph{(iv) $\Rightarrow$ (iii).} Si $h\equiv\lambda$ alors $H(x)=\lambda x$ et le
+théorème \ref{th:reconstruction} donne $\barF(x)=e^{-\lambda x}$.
+
+\emph{(iii) $\Rightarrow$ (i).} Immédiat :
+$\barF(s+t)/\barF(s)=e^{-\lambda(s+t)}/e^{-\lambda s}=e^{-\lambda t}=\barF(t)$.
+\end{proof}
+
+\begin{remarque}
+Les quatre énoncés ne sont pas quatre faits liés mais un seul fait lu de quatre
+façons : (ii) est (i) débarrassé du quotient, et (iv) est (ii) après passage au
+logarithme, l'additivité de $H=-\log\barF$ équivalant à la constance de $H'=h$.
+\end{remarque}
+
+\begin{proposition}[Compensateur : le pont vers le cas général]\label{prop:compensateur}
+Soit $X>0$ de hasard cumulé $H$ continu, strictement croissant sur $[0,\infty)$,
+avec $H(0)=0$ et $H(x)\to+\infty$. Alors $H(X)\sim\Expo(1)$.
+\end{proposition}
+
+\begin{proof}
+Sous ces hypothèses $H:[0,\infty)\to[0,\infty)$ est une bijection croissante
+continue, d'inverse $H^{-1}$ croissante. Pour $t\ge0$,
+\[
+\Prob\bigl(H(X)>t\bigr)=\Prob\bigl(X>H^{-1}(t)\bigr)=\barF\bigl(H^{-1}(t)\bigr)
+=e^{-H(H^{-1}(t))}=e^{-t},
+\]
+en utilisant le théorème \ref{th:reconstruction}. C'est la survie de $\Expo(1)$.
+\end{proof}
+
+Autrement dit : toute durée de vie devient sans mémoire une fois le temps
+reparamétré par son propre hasard cumulé. L'exponentielle est le cas où cette
+reparamétrisation est l'identité (à l'échelle $\lambda$ près).
+
+\begin{center}\rule{0.35\textwidth}{0.4pt}\end{center}
+\part*{Partie II --- Statistiques d'ordre}
+\addcontentsline{toc}{section}{\textbf{Partie II --- Statistiques d'ordre}}
+
+%===================================================================
+\section{Cadre et densité jointe du vecteur ordonné}
+%===================================================================
+
+Soient $X_1,\dots,X_n$ i.i.d.\ de densité $f$ sur $(0,\infty)$. On note
+$\Xord{1}\le\cdots\le\Xord{n}$ le réarrangement croissant et
+$D_i=\Xord{i}-\Xord{i-1}$ les \emph{espacements}, avec $\Xord0=0$. On pose
+\[
+\Delta_n=\{x\in\R^n:\ 0<x_1<x_2<\cdots<x_n\}\quad\text{(ouvert de }\R^n).
+\]
+
+\begin{lemme}[Absence d'ex \ae quo]\label{lem:ties}
+Si les $X_i$ sont i.i.d.\ de loi diffuse (sans atome), alors
+$\Prob(\exists\, i\ne j:\ X_i=X_j)=0$. En particulier le vecteur ordonné est
+p.s.\ à coordonnées deux à deux distinctes, et $(\Xord1,\dots,\Xord n)\in\Delta_n$ p.s.
+\end{lemme}
+
+\begin{proof}
+Pour $i\ne j$, l'indépendance et Tonelli donnent
+\[
+\Prob(X_i=X_j)=\int_\R\Prob(X_i=y)\,\Prob_{X_j}(\dd y)=0,
+\]
+chaque $\Prob(X_i=y)$ étant nul par diffusion. On conclut par sous-additivité
+sur les $\binom n2$ paires.
+\end{proof}
+
+\begin{theoreme}[Densité jointe des statistiques d'ordre]\label{th:densite-ordre}
+Le vecteur $(\Xord1,\dots,\Xord n)$ admet la densité
+\[
+f_{(\cdot)}(x_1,\dots,x_n)=n!\,\prod_{i=1}^n f(x_i)\ \mathbf 1_{\Delta_n}(x_1,\dots,x_n).
+\]
+\end{theoreme}
+
+\begin{proof}
+Notons $\mathbf X_{(\cdot)}=(\Xord1,\dots,\Xord n)$ et, pour $\sigma\in\mathfrak S_n$,
+\[
+A_\sigma=\{X_{\sigma(1)}<X_{\sigma(2)}<\cdots<X_{\sigma(n)}\}.
+\]
+Par le lemme \ref{lem:ties}, les $A_\sigma$ sont deux à deux disjoints et
+$\Prob\bigl(\bigcup_\sigma A_\sigma\bigr)=1$. Soit $B\subseteq\Delta_n$ borélien.
+Sur $A_\sigma$, on a par définition
+$\mathbf X_{(\cdot)}=(X_{\sigma(1)},\dots,X_{\sigma(n)})$, et de plus
+$A_\sigma=\{(X_{\sigma(1)},\dots,X_{\sigma(n)})\in\Delta_n\}$. Comme
+$B\subseteq\Delta_n$, l'inclusion $\{(X_{\sigma(1)},\dots,X_{\sigma(n)})\in B\}\subseteq A_\sigma$
+est automatique, d'où
+\[
+\Prob\bigl(\mathbf X_{(\cdot)}\in B,\ A_\sigma\bigr)
+=\Prob\bigl((X_{\sigma(1)},\dots,X_{\sigma(n)})\in B\bigr).
+\]
+Les $X_i$ étant i.i.d., elles sont échangeables : le vecteur
+$(X_{\sigma(1)},\dots,X_{\sigma(n)})$ a la même loi que $(X_1,\dots,X_n)$. Donc
+chacun des $n!$ termes vaut $\int_B\prod_{i}f(x_i)\dd x$. En sommant,
+\[
+\Prob\bigl(\mathbf X_{(\cdot)}\in B\bigr)
+=\sum_{\sigma\in\mathfrak S_n}\Prob\bigl(\mathbf X_{(\cdot)}\in B,A_\sigma\bigr)
+=n!\int_B\prod_{i=1}^n f(x_i)\dd x .
+\]
+Comme $\mathbf X_{(\cdot)}\in\Delta_n$ p.s., ceci caractérise la loi et identifie
+la densité annoncée.
+\end{proof}
+
+%===================================================================
+\section{L'application des espacements est un difféomorphisme}
+%===================================================================
+
+C'est l'ingrédient technique qui légitime le changement de variables. Soit
+\[
+\Phi:\R^n\to\R^n,\qquad
+\Phi(d_1,\dots,d_n)=\Bigl(d_1,\ d_1+d_2,\ \dots,\ \sum_{k=1}^n d_k\Bigr),
+\qquad\text{i.e.}\quad \Phi(d)_i=\sum_{k=1}^i d_k .
+\]
+
+\begin{lemme}[Difféomorphisme et jacobien]\label{lem:diffeo}
+L'application $\Phi$ est linéaire, de matrice
+$L=\bigl(\mathbf 1_{\{k\le i\}}\bigr)_{i,k}$, triangulaire inférieure à
+diagonale unité. Elle vérifie :
+\begin{enumerate}[label=(\alph*),leftmargin=2.2em,itemsep=0.15em]
+  \item $\det L=1$, donc $\Phi$ est un automorphisme linéaire de $\R^n$ ;
+  \item $\Phi$ réalise une bijection de $(0,\infty)^n$ sur $\Delta_n$, d'inverse
+  $\Psi(x)=(x_1,\ x_2-x_1,\ \dots,\ x_n-x_{n-1})$ ;
+  \item $\Phi|_{(0,\infty)^n}:(0,\infty)^n\to\Delta_n$ est un
+  $C^\infty$-difféomorphisme entre ouverts de $\R^n$, de jacobien constant
+  $\bigl|\det \Jac_\Phi(d)\bigr|=1$.
+\end{enumerate}
+\end{lemme}
+
+\begin{proof}
+\emph{(a)} $\Phi(d)_i=\sum_k L_{ik}d_k$ avec $L_{ik}=1$ si $k\le i$ et $0$
+sinon : $\Phi$ est linéaire de matrice $L$, triangulaire inférieure de
+coefficients diagonaux $L_{ii}=1$. Le déterminant d'une matrice triangulaire
+étant le produit des coefficients diagonaux, $\det L=1\ne0$ et $L\in GL_n(\R)$.
+
+\emph{(b)} Notons $\Psi$ l'application linéaire donnée par $\Psi(x)_1=x_1$ et
+$\Psi(x)_k=x_k-x_{k-1}$ pour $k\ge2$. Vérifions $\Psi\circ\Phi=\mathrm{id}$ :
+pour $k\ge2$,
+$\Psi(\Phi(d))_k=\Phi(d)_k-\Phi(d)_{k-1}=\sum_{j\le k}d_j-\sum_{j\le k-1}d_j=d_k$,
+et $\Psi(\Phi(d))_1=\Phi(d)_1=d_1$. De même $\Phi(\Psi(x))_i=\sum_{k\le i}\Psi(x)_k$
+est une somme télescopique égale à $x_i$. Donc $\Psi=\Phi^{-1}$ sur $\R^n$.
+
+Montrons maintenant les deux inclusions. Si $d\in(0,\infty)^n$, alors
+$\Phi(d)_1=d_1>0$ et $\Phi(d)_i-\Phi(d)_{i-1}=d_i>0$, donc les coordonnées de
+$\Phi(d)$ sont strictement croissantes et positives : $\Phi(d)\in\Delta_n$.
+Réciproquement si $x\in\Delta_n$, alors $\Psi(x)_1=x_1>0$ et
+$\Psi(x)_k=x_k-x_{k-1}>0$, donc $\Psi(x)\in(0,\infty)^n$. Ainsi
+$\Phi\bigl((0,\infty)^n\bigr)\subseteq\Delta_n$ et
+$\Psi(\Delta_n)\subseteq(0,\infty)^n$ ; comme $\Psi=\Phi^{-1}$, ces deux
+inclusions donnent la bijectivité de $\Phi$ de $(0,\infty)^n$ sur $\Delta_n$.
+
+\emph{(c)} $(0,\infty)^n$ et $\Delta_n$ sont ouverts dans $\R^n$ ($\Delta_n$ est
+l'intersection finie des demi-espaces ouverts $\{x_1>0\}$ et
+$\{x_i-x_{i-1}>0\}$). Une application linéaire est $C^\infty$, et $\Phi$ comme
+$\Psi=\Phi^{-1}$ sont linéaires : la bijection de (b) est donc $C^\infty$ ainsi
+que sa réciproque, c'est-à-dire un $C^\infty$-difféomorphisme. Enfin la
+différentielle d'une application linéaire est elle-même en tout point, donc
+$\Jac_\Phi(d)=L$ pour tout $d$ et $|\det \Jac_\Phi(d)|=|\det L|=1$.
+\end{proof}
+
+Nous utiliserons la forme suivante, standard, du transport de densité.
+
+\begin{lemme}[Changement de variables pour les densités]\label{lem:cdv}
+Soient $U,V\subseteq\R^n$ ouverts et $\Phi:U\to V$ un $C^1$-difféomorphisme. Si un
+vecteur aléatoire $Z$ à valeurs dans $V$ admet la densité $g$, alors
+$W=\Phi^{-1}(Z)$ admet sur $U$ la densité
+$\ w\mapsto g\bigl(\Phi(w)\bigr)\,\bigl|\det \Jac_\Phi(w)\bigr|$.
+\end{lemme}
+
+\begin{proof}
+Soit $B\subseteq U$ borélien. Alors $\{W\in B\}=\{Z\in\Phi(B)\}$ et $\Phi(B)$ est
+borélien (image par un homéomorphisme). La formule du changement de variables
+pour l'intégrale de Lebesgue, appliquée au difféomorphisme $\Phi$, donne
+\[
+\Prob(W\in B)=\int_{\Phi(B)}g(z)\dd z=\int_{B}g\bigl(\Phi(w)\bigr)\bigl|\det \Jac_\Phi(w)\bigr|\dd w .
+\]
+Ceci valant pour tout borélien $B\subseteq U$, l'intégrande est une densité de $W$.
+\end{proof}
+
+\begin{lemme}[Factorisation $\Rightarrow$ indépendance]\label{lem:factorisation}
+Soit $W=(W_1,\dots,W_n)$ de densité $g$ sur $\R^n$. Si
+$g(w)=\prod_{k=1}^n g_k(w_k)$ p.p., où chaque $g_k\ge0$ vérifie
+$\int_\R g_k=1$, alors les $W_k$ sont indépendantes et $W_k$ a pour densité $g_k$.
+\end{lemme}
+
+\begin{proof}
+Pour des boréliens $B_1,\dots,B_n$, Tonelli donne
+\[
+\Prob(W_1\in B_1,\dots,W_n\in B_n)=\int_{B_1\times\cdots\times B_n}\prod_k g_k(w_k)\dd w
+=\prod_{k=1}^n\int_{B_k}g_k(w_k)\dd w_k .
+\]
+En prenant $B_j=\R$ pour $j\ne k$ et en utilisant $\int g_j=1$, on obtient
+$\Prob(W_k\in B_k)=\int_{B_k}g_k$ : $g_k$ est la densité de $W_k$. L'égalité
+ci-dessus devient alors
+$\Prob(\bigcap_k\{W_k\in B_k\})=\prod_k\Prob(W_k\in B_k)$, qui est l'indépendance.
+\end{proof}
+
+%===================================================================
+\section{Le théorème de Rényi}
+%===================================================================
+
+\begin{theoreme}[Rényi, 1953]\label{th:renyi}
+Soient $X_1,\dots,X_n$ i.i.d.\ de loi $\Expo(\lambda)$, $\lambda>0$. Les
+espacements $D_1,\dots,D_n$, où $D_i=\Xord i-\Xord{i-1}$ et $\Xord0=0$, sont
+\emph{indépendants} et
+\[
+D_i\sim\Expo\bigl((n-i+1)\lambda\bigr),\qquad i=1,\dots,n .
+\]
+De façon équivalente, si $E_1,\dots,E_n$ sont i.i.d.\ de loi $\Expo(1)$, alors
+\[
+\bigl(\Xord1,\dots,\Xord n\bigr)\ \eqd\
+\Bigl(\frac1\lambda\sum_{k=1}^{i}\frac{E_k}{\,n-k+1\,}\Bigr)_{1\le i\le n}
+\qquad\text{(égalité en loi des vecteurs).}
+\]
+\end{theoreme}
+
+\begin{proof}
+\emph{Étape 1 : densité du vecteur ordonné.} Par le théorème
+\ref{th:densite-ordre} avec $f(x)=\lambda e^{-\lambda x}\mathbf 1_{\{x>0\}}$, le
+vecteur $\mathbf X_{(\cdot)}$ a pour densité sur $\Delta_n$
+\[
+f_{(\cdot)}(x)=n!\,\lambda^n\exp\Bigl(-\lambda\sum_{i=1}^n x_i\Bigr),\qquad x\in\Delta_n .
+\]
+
+\emph{Étape 2 : transport.} Le vecteur des espacements est exactement
+$D=\Psi(\mathbf X_{(\cdot)})=\Phi^{-1}(\mathbf X_{(\cdot)})$, avec $\Phi,\Psi$ du
+lemme \ref{lem:diffeo}. Ce lemme fournit un $C^\infty$-difféomorphisme
+$\Phi:(0,\infty)^n\to\Delta_n$ de jacobien $|\det \Jac_\Phi|\equiv1$. Le lemme
+\ref{lem:cdv} donne donc la densité de $D$ sur $(0,\infty)^n$ :
+\[
+g(d)=f_{(\cdot)}\bigl(\Phi(d)\bigr)\cdot\underbrace{\bigl|\det \Jac_\Phi(d)\bigr|}_{=1}
+=n!\,\lambda^n\exp\Bigl(-\lambda\sum_{i=1}^n \Phi(d)_i\Bigr).
+\]
+
+\emph{Étape 3 : l'identité de sommation triangulaire.} Il s'agit d'un simple
+échange de sommations finies (Fubini discret) :
+\[
+\sum_{i=1}^n\Phi(d)_i=\sum_{i=1}^n\sum_{k=1}^i d_k
+=\sum_{i=1}^n\sum_{k=1}^n d_k\,\mathbf 1_{\{k\le i\}}
+=\sum_{k=1}^n d_k\sum_{i=1}^n\mathbf 1_{\{i\ge k\}}
+=\sum_{k=1}^n (n-k+1)\,d_k ,
+\]
+puisque $\#\{i:\ k\le i\le n\}=n-k+1$.
+
+\emph{Étape 4 : factorisation.} En posant $\lambda_k=(n-k+1)\lambda$ et en
+utilisant $\prod_{k=1}^n(n-k+1)=n!$ :
+\[
+g(d)=n!\,\lambda^n\exp\Bigl(-\sum_{k=1}^n\lambda_k d_k\Bigr)
+=\prod_{k=1}^n\lambda_k\cdot\prod_{k=1}^n e^{-\lambda_k d_k}
+=\prod_{k=1}^n\Bigl[\lambda_k e^{-\lambda_k d_k}\Bigr],\qquad d\in(0,\infty)^n .
+\]
+Chaque facteur $g_k(u)=\lambda_k e^{-\lambda_k u}\mathbf 1_{\{u>0\}}$ est une
+densité de probabilité ($\int_0^\infty\lambda_k e^{-\lambda_k u}\dd u=1$). Le
+lemme \ref{lem:factorisation} conclut : les $D_k$ sont indépendantes de lois
+respectives $\Expo(\lambda_k)=\Expo((n-k+1)\lambda)$.
+
+\emph{Étape 5 : forme de Rényi.} Posons $E_k=\lambda_k D_k$. Pour $t\ge0$,
+$\Prob(E_k>t)=\Prob(D_k>t/\lambda_k)=e^{-\lambda_k\cdot t/\lambda_k}=e^{-t}$,
+donc $E_k\sim\Expo(1)$, et les $E_k$ restent indépendantes comme images
+mesurables de variables indépendantes. Enfin
+\[
+\Xord i=\sum_{k=1}^i D_k=\sum_{k=1}^i\frac{E_k}{\lambda_k}
+=\frac1\lambda\sum_{k=1}^i\frac{E_k}{n-k+1},
+\]
+cette fois comme identité \emph{presque sûre} sur l'espace de départ, ce qui
+entraîne l'égalité en loi des vecteurs annoncée. \qedhere
+\end{proof}
+
+\begin{remarque}
+Le point où l'exponentialité intervient est l'étape 2--4, et uniquement là : la
+densité jointe ne dépend de $x$ que par $\sum_i x_i$, forme linéaire que le
+changement de variables triangulaire transforme en une combinaison linéaire à
+coefficients \emph{séparés} $\sum_k(n-k+1)d_k$. C'est la traduction analytique de
+l'absence de mémoire (théorème \ref{th:carac}(ii)) : seule une survie
+multiplicative fait apparaître une exponentielle d'une somme, donc un produit.
+Pour une loi générale la densité jointe reste $n!\prod f(x_i)$, mais
+$\prod_i f(\Phi(d)_i)$ ne se factorise pas selon les $d_k$ et les espacements
+sont en général dépendants.
+\end{remarque}
+
+%===================================================================
+\section{La preuve probabiliste : compétition et renouvellement}
+%===================================================================
+
+La deuxième démonstration explique \emph{pourquoi} le résultat est vrai. Sa
+difficulté est qu'elle semble conditionner par le temps aléatoire $\Xord1$. On
+l'évite entièrement par le lemme suivant, dont le calcul livre d'un coup toutes
+les indépendances.
+
+\begin{lemme}[Compétition d'exponentielles et résidus]\label{lem:competition}
+Soient $Y_1,\dots,Y_m$ indépendantes, $Y_i\sim\Expo(\mu_i)$, et
+$\Lambda=\sum_{i=1}^m\mu_i$. Posons
+\[
+M=\min_{1\le i\le m}Y_i,\qquad I=\argmin_{1\le i\le m}Y_i\quad(\text{p.s.\ bien défini}),
+\qquad R_i=Y_i-M\ \ (i\ne I).
+\]
+Alors, pour tout $j$, tous $t\ge0$ et tous $r_i\ge0$ $(i\ne j)$ :
+\[
+\Prob\Bigl(I=j,\ M>t,\ \bigcap_{i\ne j}\{R_i>r_i\}\Bigr)
+=\frac{\mu_j}{\Lambda}\;\cdot\;e^{-\Lambda t}\;\cdot\;\prod_{i\ne j}e^{-\mu_i r_i}.
+\tag{$\dagger$}
+\]
+Par conséquent :
+$\Prob(I=j)=\mu_j/\Lambda$ ; $M\sim\Expo(\Lambda)$ ; conditionnellement à
+$\{I=j\}$, les $m$ variables $M$ et $(R_i)_{i\ne j}$ sont indépendantes, avec
+$R_i\sim\Expo(\mu_i)$ ; et le couple $(I,M)$ est indépendant de la famille des
+résidus.
+\end{lemme}
+
+\begin{proof}
+Le lemme \ref{lem:ties} garantit l'unicité p.s.\ du minimiseur, donc $I$ est
+p.s.\ bien défini. Fixons $j$, $t\ge0$ et $r_i\ge0$. Observons l'identité
+d'événements, à un ensemble négligeable près :
+\[
+\Bigl\{I=j,\ M>t,\ \bigcap_{i\ne j}\{Y_i-M>r_i\}\Bigr\}
+=\Bigl\{Y_j>t,\ \bigcap_{i\ne j}\{Y_i>Y_j+r_i\}\Bigr\}.
+\]
+En effet, sur le membre de droite on a $Y_i>Y_j+r_i\ge Y_j$ pour tout $i\ne j$,
+donc $M=Y_j$ et $I=j$, puis $Y_i-M>r_i$ ; réciproquement, sur le membre de gauche
+$M=Y_j$ et les inégalités se réécrivent. Par indépendance, en intégrant selon la
+loi de $Y_j$ (Tonelli, intégrande positive) :
+\[
+\Prob\Bigl(Y_j>t,\bigcap_{i\ne j}\{Y_i>Y_j+r_i\}\Bigr)
+=\int_t^{\infty}\mu_j e^{-\mu_j y}\prod_{i\ne j}\Prob\bigl(Y_i>y+r_i\bigr)\dd y .
+\]
+Or $\Prob(Y_i>y+r_i)=e^{-\mu_i(y+r_i)}=e^{-\mu_i y}e^{-\mu_i r_i}$ --- c'est ici,
+et seulement ici, qu'intervient l'absence de mémoire, sous sa forme
+multiplicative $\barF(y+r)=\barF(y)\barF(r)$ du théorème \ref{th:carac}(ii). En
+sortant les facteurs constants en $y$ :
+\[
+=\Bigl(\prod_{i\ne j}e^{-\mu_i r_i}\Bigr)\int_t^{\infty}\mu_j
+\exp\Bigl(-y\bigl(\mu_j+\textstyle\sum_{i\ne j}\mu_i\bigr)\Bigr)\dd y
+=\Bigl(\prod_{i\ne j}e^{-\mu_i r_i}\Bigr)\,\mu_j\int_t^\infty e^{-\Lambda y}\dd y ,
+\]
+et $\int_t^\infty e^{-\Lambda y}\dd y=e^{-\Lambda t}/\Lambda$, ce qui donne
+exactement ($\dagger$).
+
+Les conséquences se lisent sur ($\dagger$) en spécialisant. En prenant $t=0$ et
+tous les $r_i=0$ : $\Prob(I=j)=\mu_j/\Lambda$ (et ces quantités somment bien à
+$1$). En sommant ($\dagger$) sur $j$ avec $r_i\equiv0$ : $\Prob(M>t)=e^{-\Lambda t}$,
+soit $M\sim\Expo(\Lambda)$. Enfin ($\dagger$) divisé par $\Prob(I=j)$ s'écrit
+\[
+\Prob\Bigl(M>t,\bigcap_{i\ne j}\{R_i>r_i\}\ \Bigm|\ I=j\Bigr)
+=e^{-\Lambda t}\prod_{i\ne j}e^{-\mu_i r_i},
+\]
+produit de fonctions de survie : les queues jointes se factorisent sur le pavé
+$[0,\infty)^{m}$, ce qui caractérise l'indépendance de $M$ et des $(R_i)_{i\ne j}$
+sous $\Prob(\cdot\mid I=j)$, avec les marginales annoncées. Comme les lois
+conditionnelles des résidus ne dépendent pas de $j$ ni de $t$, la famille
+$(R_i)$ est indépendante de $(I,M)$.
+\end{proof}
+
+\begin{proof}[Seconde démonstration du théorème \ref{th:renyi}]
+Récurrence sur $n$. Pour $n=1$, $D_1=X_{(1)}=X_1\sim\Expo(\lambda)$ et l'énoncé
+est vrai.
+
+Supposons le résultat acquis au rang $n-1$. Appliquons le lemme
+\ref{lem:competition} à $m=n$ et $\mu_i=\lambda$, de sorte que $\Lambda=n\lambda$.
+Il donne : $D_1=\Xord1=M\sim\Expo(n\lambda)$ ; et, conditionnellement à
+$\{I=j\}$, les résidus $(R_i)_{i\ne j}$ sont i.i.d.\ $\Expo(\lambda)$ et
+indépendants de $M$. Comme cette loi conditionnelle ne dépend pas de $j$, on
+conclut inconditionnellement : la famille $R=(R_i)_{i\ne I}$ est composée de
+$n-1$ variables i.i.d.\ $\Expo(\lambda)$, indépendantes de $D_1$.
+
+Or les statistiques d'ordre des $R_i$ sont exactement les
+$\Xord{k+1}-\Xord1$ pour $k=1,\dots,n-1$ : le réarrangement croissant commute
+avec la translation par la constante $M$ et la suppression du minimum.
+Autrement dit, les espacements de l'échantillon $R$ sont $D_2,\dots,D_n$.
+L'hypothèse de récurrence appliquée à $R$ (échantillon i.i.d.\ $\Expo(\lambda)$
+de taille $n-1$) fournit alors : $D_2,\dots,D_n$ indépendantes avec
+\[
+D_{i}\sim\Expo\bigl(((n-1)-(i-1)+1)\lambda\bigr)=\Expo\bigl((n-i+1)\lambda\bigr),
+\qquad i=2,\dots,n .
+\]
+Enfin $(D_2,\dots,D_n)$ est fonction mesurable de $R$, donc indépendante de
+$D_1$. Les $n$ espacements sont donc globalement indépendants avec les lois
+voulues.
+\end{proof}
+
+\begin{remarque}
+La rigueur tient au fait que ($\dagger$) est une égalité de lois \emph{jointes}
+calculée d'avance : à aucun moment on ne conditionne par la valeur du temps
+aléatoire $\Xord1$. L'énoncé intuitif « à l'instant de la première panne, les
+$n-1$ horloges survivantes redémarrent à neuf » est précisément le contenu de la
+factorisation du membre de droite de ($\dagger$) en
+$\Prob(I=j)\times\Prob(M>t)\times\prod_i\Prob(R_i>r_i)$.
+\end{remarque}
+
+%===================================================================
+\section{Conséquences}
+%===================================================================
+
+On note $H_m=\sum_{j=1}^m 1/j$ le $m$-ième nombre harmonique, $H_0=0$.
+
+\begin{corollaire}[Moments]
+Pour $1\le i\le n$,
+\[
+\E[\Xord i]=\frac{1}{\lambda}\bigl(H_n-H_{n-i}\bigr),
+\qquad
+\Var(\Xord i)=\frac{1}{\lambda^2}\sum_{j=n-i+1}^{n}\frac{1}{j^2}.
+\]
+En particulier $\E[\Xord n]=H_n/\lambda$ et
+$\Var(\Xord n)=\lambda^{-2}\sum_{j=1}^n j^{-2}\to\pi^2/(6\lambda^2)$.
+\end{corollaire}
+
+\begin{proof}
+Par le théorème \ref{th:renyi}, $\Xord i=\sum_{k=1}^i D_k$ avec $D_k$
+indépendantes, $\E[D_k]=1/((n-k+1)\lambda)$ et
+$\Var(D_k)=1/((n-k+1)\lambda)^2$. La linéarité de l'espérance et l'additivité de
+la variance \emph{sous indépendance} donnent
+\[
+\E[\Xord i]=\frac1\lambda\sum_{k=1}^i\frac{1}{n-k+1},
+\qquad
+\Var(\Xord i)=\frac1{\lambda^2}\sum_{k=1}^i\frac{1}{(n-k+1)^2}.
+\]
+Le changement d'indice $j=n-k+1$ (bijection de $\{1,\dots,i\}$ sur
+$\{n-i+1,\dots,n\}$) transforme la première somme en
+$\sum_{j=n-i+1}^n 1/j=H_n-H_{n-i}$ et la seconde en $\sum_{j=n-i+1}^n 1/j^2$.
+Pour $i=n$ on retrouve $H_n$ et $\sum_{j=1}^n 1/j^2$, dont la limite est
+$\zeta(2)=\pi^2/6$.
+\end{proof}
+
+\begin{theoreme}[Domaine d'attraction : loi de Gumbel]
+Avec $X_i$ i.i.d.\ $\Expo(\lambda)$,
+\[
+\lambda\Xord n-\log n\ \cvloi\ G,\qquad \Prob(G\le x)=e^{-e^{-x}},\ x\in\R .
+\]
+\end{theoreme}
+
+\begin{proof}
+Fixons $x\in\R$ et soit $n>e^{-x}$, de sorte que $(x+\log n)/\lambda>0$. Comme
+$\Xord n=\max_i X_i$, l'indépendance donne
+\[
+\Prob\bigl(\lambda\Xord n-\log n\le x\bigr)
+=\Prob\Bigl(\max_i X_i\le\frac{x+\log n}{\lambda}\Bigr)
+=\Bigl[F\Bigl(\frac{x+\log n}{\lambda}\Bigr)\Bigr]^{n}
+=\Bigl[1-e^{-(x+\log n)}\Bigr]^{n},
+\]
+soit $\bigl(1-\frac{e^{-x}}{n}\bigr)^{n}$. Or pour $a\in\R$ fixé,
+$n\log(1-a/n)=n\bigl(-a/n+O(n^{-2})\bigr)\to-a$, donc
+$(1-a/n)^n\to e^{-a}$. Avec $a=e^{-x}$ :
+\[
+\Prob\bigl(\lambda\Xord n-\log n\le x\bigr)\xrightarrow[n\to\infty]{}e^{-e^{-x}} .
+\]
+La limite est une fonction de répartition continue sur $\R$, donc la convergence
+en tout point équivaut à la convergence en loi.
+\end{proof}
+
+\begin{remarque}
+La démonstration n'utilise que $\barF(x)=e^{-\lambda x}$ exactement, c'est-à-dire
+la queue exponentielle pure fournie par le taux de panne constant. Elle
+n'utilise \emph{pas} le théorème \ref{th:renyi} : l'argument souvent avancé
+(« $\E[\Xord n]\sim\log n/\lambda$ et $\Var(\Xord n)$ reste bornée, donc la
+limite existe ») ne constitue pas une preuve, la tension d'une suite ne
+suffisant pas à identifier une loi limite.
+\end{remarque}
+
+\vspace{1.2em}
+\begin{center}
+\rule{0.35\textwidth}{0.4pt}\\[0.5em]
+\textit{Le taux de panne est l'opposé de la dérivée logarithmique de la survie ;
+l'exponentielle est l'unique loi de taux constant ; et cette constance, lue au
+niveau du vecteur ordonné, se traduit exactement par l'indépendance des
+espacements.}
+\end{center}
+
+\end{document}
